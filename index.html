@@ -555,10 +555,43 @@
       user-select: none;
       -webkit-user-select: none;
     }
-    /* Seitenleisten einklappen für maximale Schreibfläche */
+    /* Seitenleisten einklappen für maximale Notizfläche (Fokus-Modus) */
+    #view-notes.modules-hidden .col-modules {
+      display: none !important;
+    }
+    #view-notes.modules-hidden #btn-show-modules {
+      display: inline-flex !important;
+    }
+    #view-notes.topics-hidden .col-topics {
+      display: none !important;
+    }
     #view-notes.sidebars-hidden .col-modules,
     #view-notes.sidebars-hidden .col-topics {
       display: none !important;
+    }
+
+    .btn-sidebar-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 5px 11px;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .btn-sidebar-toggle:hover {
+      background: var(--card-hover);
+      border-color: var(--primary);
+    }
+    #view-notes.sidebars-hidden .btn-sidebar-toggle,
+    #view-notes.sidebars-mobile-open .btn-sidebar-toggle {
+      background: var(--primary) !important;
+      color: #fff !important;
+      border-color: var(--primary) !important;
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
     }
 
     /* Markdown Styling & Math */
@@ -1757,7 +1790,10 @@
         <aside class="col-modules" id="col-modules">
           <div class="col-header">
             <span>Module</span>
-            <button class="btn btn-primary" id="btn-add-module" style="padding: 2px 7px; font-size: 0.75rem;">+ Neu</button>
+            <div style="display:flex; gap:0.25rem; align-items:center;">
+              <button class="btn btn-primary" id="btn-add-module" style="padding: 2px 7px; font-size: 0.75rem;">+ Neu</button>
+              <button class="btn btn-icon btn-sm" onclick="toggleModuleSidebar()" title="Module einklappen" style="padding: 2px 6px; font-size: 0.75rem;">◀</button>
+            </div>
           </div>
           <div class="scroll-list" id="module-list"></div>
         </aside>
@@ -1765,11 +1801,15 @@
         <!-- Spalte 2: Vorlesungswochen / Themen & PDFs -->
         <section class="col-topics" id="col-topics">
           <div class="col-header">
-            <span id="module-title-heading" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:85px;" title="Mitschriften & PDFs">Mitschriften & PDFs</span>
-            <div style="display:flex; gap:0.25rem;">
+            <div style="display:flex; align-items:center; gap:4px; overflow:hidden;">
+              <button class="btn btn-sm" id="btn-show-modules" onclick="toggleModuleSidebar()" title="Module wieder einblenden" style="display:none; padding:2px 6px; font-size:0.72rem; margin-right:4px;">📁 Module</button>
+              <span id="module-title-heading" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:85px;" title="Mitschriften & PDFs">Mitschriften</span>
+            </div>
+            <div style="display:flex; gap:0.25rem; align-items:center;">
               <button class="btn" id="btn-add-folder" title="Neuen Ordner anlegen" style="padding: 2px 6px; font-size: 0.72rem;">📁+ Ordner</button>
               <button class="btn btn-primary" id="btn-add-note" title="Neue Notiz anlegen" style="padding: 2px 6px; font-size: 0.72rem;">+ Notiz</button>
               <button class="btn btn-pdf" id="btn-add-pdf-direct" title="Vorlesungs-PDF ablegen" style="padding: 2px 6px; font-size: 0.72rem;">+ PDF</button>
+              <button class="btn btn-icon btn-sm" onclick="toggleTopicsSidebar()" title="Notizliste einklappen" style="padding: 2px 6px; font-size: 0.75rem;">◀</button>
             </div>
           </div>
           <!-- Notizen & PDF Schnellsuche -->
@@ -1792,7 +1832,7 @@
         <section class="col-editor">
           <div class="editor-top">
             <div class="editor-title-row">
-              <button class="btn btn-sidebar-toggle" id="btn-toggle-sidebar" title="Fächer & Themen ein-/ausblenden" onclick="toggleSidebars()">☰ Fächer</button>
+              <button class="btn btn-sidebar-toggle" id="btn-toggle-sidebar" title="Module und Notiztitel einklappen für maximale Schreibfläche" onclick="toggleSidebars()">⛶ Nur Notiz (Fokus)</button>
               <input type="text" id="note-title" class="note-title-input" placeholder="Titel der Notiz...">
               <button class="btn btn-primary" id="btn-quick-pencil" title="Apple Pencil Zeichenfläche ein-/ausschalten" onclick="togglePencilQuickMode()">✏️ Apple Pencil</button>
               <div class="note-options-wrapper">
@@ -5254,23 +5294,79 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       };
 
       // =========================================================================
-      // IPAD DRAWER & NOTIZ-OPTIONEN
+      // SEITENLEISTEN & FOKUS-MODUS (MODULE & NOTIZLISTE EINKLAPPEN)
       // =========================================================================
+      function updateSidebarToggleButtons() {
+        const notesView = document.getElementById("view-notes");
+        if (!notesView) return;
+        const btn = document.getElementById("btn-toggle-sidebar");
+        const isAllHidden = notesView.classList.contains("sidebars-hidden") ||
+          (notesView.classList.contains("modules-hidden") && notesView.classList.contains("topics-hidden"));
+        
+        if (btn) {
+          if (isAllHidden) {
+            btn.innerHTML = "📖 Fächer & Notizen anzeigen";
+            btn.classList.add("btn-primary");
+            btn.title = "Module und Notizliste wieder einblenden";
+          } else {
+            btn.innerHTML = "⛶ Nur Notiz (Fokus)";
+            btn.classList.remove("btn-primary");
+            btn.title = "Module und Notizentitel ausblenden für maximale Notizfläche";
+          }
+        }
+      }
+
       function toggleSidebars() {
         const notesView = document.getElementById("view-notes");
         if (!notesView) return;
         if (window.innerWidth <= 1024) {
           notesView.classList.toggle("sidebars-mobile-open");
-        } else {
-          notesView.classList.toggle("sidebars-hidden");
-          const isHidden = notesView.classList.contains("sidebars-hidden");
+          const isOpen = notesView.classList.contains("sidebars-mobile-open");
           const btn = document.getElementById("btn-toggle-sidebar");
-          if (btn) btn.textContent = isHidden ? "📖 Fächer" : "☰ Fächer";
+          if (btn) {
+            btn.innerHTML = isOpen ? "✕ Schließen" : "📖 Fächer & Notizen";
+          }
+        } else {
+          const isCurrentlyHidden = notesView.classList.contains("sidebars-hidden") ||
+            (notesView.classList.contains("modules-hidden") && notesView.classList.contains("topics-hidden"));
+          if (isCurrentlyHidden) {
+            notesView.classList.remove("sidebars-hidden", "modules-hidden", "topics-hidden");
+            try { localStorage.setItem("studspace_sidebars_collapsed", "false"); } catch(e){}
+            showToast("📖 Seitenleisten eingeblendet");
+          } else {
+            notesView.classList.add("sidebars-hidden");
+            notesView.classList.remove("modules-hidden", "topics-hidden");
+            try { localStorage.setItem("studspace_sidebars_collapsed", "true"); } catch(e){}
+            showToast("⛶ Fokus-Modus: Nur Notiz");
+          }
+          updateSidebarToggleButtons();
         }
         setTimeout(() => {
-          initPencilCanvas(true);
+          if (typeof initPencilCanvas === "function") initPencilCanvas(true);
         }, 80);
-      };
+      }
+
+      function toggleModuleSidebar() {
+        const notesView = document.getElementById("view-notes");
+        if (!notesView) return;
+        notesView.classList.remove("sidebars-hidden");
+        notesView.classList.toggle("modules-hidden");
+        updateSidebarToggleButtons();
+        setTimeout(() => {
+          if (typeof initPencilCanvas === "function") initPencilCanvas(true);
+        }, 80);
+      }
+
+      function toggleTopicsSidebar() {
+        const notesView = document.getElementById("view-notes");
+        if (!notesView) return;
+        notesView.classList.remove("sidebars-hidden");
+        notesView.classList.toggle("topics-hidden");
+        updateSidebarToggleButtons();
+        setTimeout(() => {
+          if (typeof initPencilCanvas === "function") initPencilCanvas(true);
+        }, 80);
+      }
 
       function closeSidebarsMobile() {
         const notesView = document.getElementById("view-notes");
@@ -7782,11 +7878,12 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         setTheme(cur === "dark" ? "light" : "dark");
       };
 
-      // Shortcuts (Ctrl+S, Ctrl+F)
+      // Shortcuts (Ctrl+S, Ctrl+F, Ctrl+\ / Ctrl+B für Fokus)
       window.onkeydown = (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === "s") {
           e.preventDefault();
           saveData();
+          showToast("💾 Alle Änderungen gespeichert");
         }
         if ((e.ctrlKey || e.metaKey) && e.key === "f") {
           if (searchInp && document.activeElement !== searchInp) {
@@ -7794,6 +7891,10 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
             searchInp.focus();
             searchInp.select();
           }
+        }
+        if ((e.ctrlKey || e.metaKey) && (e.key === "\\" || (e.key === "b" && document.activeElement !== noteContentArea))) {
+          e.preventDefault();
+          toggleSidebars();
         }
       };
 
@@ -8498,6 +8599,15 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         if (!document.hidden) cloudSyncPull();
       }, 25000);
 
+      // Restore sidebars collapsed state
+      try {
+        if (localStorage.getItem("studspace_sidebars_collapsed") === "true" && window.innerWidth > 1024) {
+          const nv = document.getElementById("view-notes");
+          if (nv) nv.classList.add("sidebars-hidden");
+          updateSidebarToggleButtons();
+        }
+      } catch(e) {}
+
       // =======================================================================
       // GLOBAL WINDOW EXPORTS FOR HTML ONCLICK / ONCHANGE HANDLERS
       // =======================================================================
@@ -8511,6 +8621,8 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       window.switchAppView = switchAppView;
       window.setPlannerFocusMode = setPlannerFocusMode;
       window.toggleSidebars = toggleSidebars;
+      window.toggleModuleSidebar = toggleModuleSidebar;
+      window.toggleTopicsSidebar = toggleTopicsSidebar;
       window.closeSidebarsMobile = closeSidebarsMobile;
       window.toggleNoteOptionsMenu = toggleNoteOptionsMenu;
       window.closeNoteOptionsMenu = closeNoteOptionsMenu;
