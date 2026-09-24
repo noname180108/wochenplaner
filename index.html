@@ -1202,7 +1202,7 @@
     .modal-overlay {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: rgba(0, 0, 0, 0.6); display: none; align-items: center; justify-content: center;
-      z-index: 1000; backdrop-filter: blur(4px);
+      z-index: 10000; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
     }
     .modal-overlay.active {
       display: flex !important;
@@ -3323,6 +3323,8 @@
         </div>
       </div>
     </div>
+  </div>
+
   <!-- MODAL: MEHR / WEITERE FUNKTIONEN & EINSTELLUNGEN -->
   <div class="modal-overlay" id="more-menu-modal">
     <div class="modal-box more-modal-box">
@@ -3390,13 +3392,13 @@
             <p>Alle Daten als JSON-Datei auf deinem Rechner sichern</p>
           </div>
         </div>
-        <div class="more-item-tile" id="btn-import-backup" onclick="triggerDirectImport()">
+        <label for="file-import" class="more-item-tile" id="btn-import-backup" onclick="closeMoreMenuModal()" style="cursor:pointer;">
           <div class="tile-icon">📂</div>
           <div class="tile-content">
             <h4>Backup wiederherstellen</h4>
             <p>Gesicherte JSON-Datei importieren</p>
           </div>
-        </div>
+        </label>
       </div>
     </div>
   </div>
@@ -3485,9 +3487,9 @@
               Lade deine gespeicherte <strong>.json</strong>-Backup-Datei hoch, um alle Fächer, Notizen und Termine wiederherzustellen:
             </p>
             <div style="display:flex; flex-direction:column; gap:10px;">
-              <button class="btn btn-primary" onclick="triggerDirectImport()" style="padding:12px; font-weight:700; font-size:0.95rem;">
+              <label for="file-import" class="btn btn-primary" onclick="closeSyncModal()" style="padding:12px; font-weight:700; font-size:0.95rem; text-align:center; cursor:pointer;">
                 📂 Backup-Datei (.json) jetzt auswählen & hochladen
-              </button>
+              </label>
               <button class="btn" onclick="triggerDirectExport()" style="padding:10px; font-size:0.85rem;">
                 💾 Aktuelles Backup als Datei herunterladen
               </button>
@@ -3499,9 +3501,9 @@
     </div>
   </div>
 
-  <!-- Versteckte Datei-Inputs für Uploads -->
-  <input type="file" id="file-import-pdf" accept=".pdf" style="display:none">
-  <input type="file" id="file-import" accept=".json" style="display:none">
+  <!-- Versteckte Datei-Inputs für Uploads (iOS & Safari optimiert) -->
+  <input type="file" id="file-import-pdf" accept=".pdf" style="position:fixed; top:-9999px; left:-9999px; opacity:0; pointer-events:none;">
+  <input type="file" id="file-import" accept=".json,application/json,text/json,text/plain" style="position:fixed; top:-9999px; left:-9999px; opacity:0; pointer-events:none;">
 
   <!-- Toast Notification -->
   <div id="sync-toast" class="sync-toast">
@@ -4562,7 +4564,6 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       // APPLIKATIONS-NAVIGATION (TABS: NOTIZEN vs PLANER vs COCKPIT)
       // =======================================================================
       function switchAppView(viewName) {
-        window.switchAppView = switchAppView;
         if (typeof saveCurrentDrawingToActiveNote === "function") {
           saveCurrentDrawingToActiveNote();
         }
@@ -4591,7 +4592,6 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
 
       // Verknüpfung aus Notiz ins Fach im Wochenplaner
       function jumpCurrentNoteToPlanner() {
-        window.jumpCurrentNoteToPlanner = jumpCurrentNoteToPlanner;
         const mod = getActiveModule();
         switchAppView("planner");
         if (mod) {
@@ -4612,7 +4612,6 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
 
       // Verknüpfung aus Wochenplaner-Event in die Vorlesungsnotiz
       function openNoteForModule(modKey, defaultModName, defaultNoteTitle) {
-        window.openNoteForModule = openNoteForModule;
         let targetMod = state.modules.find(m => m.name.toLowerCase().includes(modKey) || m.id.includes(modKey));
         if (!targetMod) {
           // Erstelle das Fach, falls es noch fehlt
@@ -5258,7 +5257,6 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       // IPAD DRAWER & NOTIZ-OPTIONEN
       // =========================================================================
       function toggleSidebars() {
-        window.toggleSidebars = toggleSidebars;
         const notesView = document.getElementById("view-notes");
         if (!notesView) return;
         if (window.innerWidth <= 1024) {
@@ -5275,19 +5273,16 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       };
 
       function closeSidebarsMobile() {
-        window.closeSidebarsMobile = closeSidebarsMobile;
         const notesView = document.getElementById("view-notes");
         if (notesView) notesView.classList.remove("sidebars-mobile-open");
       };
 
       function toggleNoteOptionsMenu() {
-        window.toggleNoteOptionsMenu = toggleNoteOptionsMenu;
         const dd = document.getElementById("note-options-dropdown");
         if (dd) dd.classList.toggle("open");
       };
 
       function closeNoteOptionsMenu() {
-        window.closeNoteOptionsMenu = closeNoteOptionsMenu;
         const dd = document.getElementById("note-options-dropdown");
         if (dd) dd.classList.remove("open");
       };
@@ -5302,7 +5297,6 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       // MODAL CONTROLS: MEHR & SYNC
       // =========================================================================
       function openMoreMenuModal() {
-        window.openMoreMenuModal = openMoreMenuModal;
         const m = document.getElementById("more-menu-modal");
         if (m) {
           m.style.display = "flex";
@@ -5311,7 +5305,6 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       };
 
       function closeMoreMenuModal() {
-        window.closeMoreMenuModal = closeMoreMenuModal;
         const m = document.getElementById("more-menu-modal");
         if (m) {
           m.style.display = "none";
@@ -5320,26 +5313,35 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       };
 
       function openSyncModal() {
-        window.openSyncModal = openSyncModal;
         const m = document.getElementById("sync-modal");
         if (m) {
           m.style.display = "flex";
           m.classList.add("active");
-          refreshSyncModal();
+          try {
+            refreshSyncModal();
+          } catch (err) {
+            console.error("refreshSyncModal error:", err);
+          }
         }
-      };
+      }
 
       function closeSyncModal() {
-        window.closeSyncModal = closeSyncModal;
         const m = document.getElementById("sync-modal");
         if (m) {
           m.style.display = "none";
           m.classList.remove("active");
         }
-      };
+      }
+
+      // Direkte Bindung für Header-Buttons
+      const btnHdrSync = document.getElementById("btn-header-sync");
+      if (btnHdrSync) btnHdrSync.onclick = openSyncModal;
+      const btnHdrBadge = document.getElementById("btn-sync-badge");
+      if (btnHdrBadge) btnHdrBadge.onclick = openSyncModal;
+      const btnMoreMenu = document.getElementById("btn-more-menu");
+      if (btnMoreMenu) btnMoreMenu.onclick = openMoreMenuModal;
 
       function triggerDirectImport() {
-        window.triggerDirectImport = triggerDirectImport;
         window.closeMoreMenuModal();
         window.closeSyncModal();
         const fileInput = document.getElementById("file-import");
@@ -5347,7 +5349,6 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       };
 
       function triggerDirectExport() {
-        window.triggerDirectExport = triggerDirectExport;
         window.closeMoreMenuModal();
         window.closeSyncModal();
         const backupData = {
@@ -5371,7 +5372,6 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       };
 
       function triggerThemeToggle() {
-        window.triggerThemeToggle = triggerThemeToggle;
         const curTheme = document.body.getAttribute("data-theme") || "light";
         const newTheme = curTheme === "dark" ? "light" : "dark";
         setTheme(newTheme);
@@ -5390,7 +5390,6 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       // WOCHENPLANER FOKUS-UMSCHALTER (IPAD OPTIMIERT)
       // =========================================================================
       function setPlannerFocusMode(mode) {
-        window.setPlannerFocusMode = setPlannerFocusMode;
         const planner = document.getElementById("view-planner");
         if (!planner) return;
         planner.classList.remove("focus-schedule", "focus-deadlines", "focus-dashboard", "focus-all");
@@ -5414,10 +5413,15 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
 
       function getSyncDeviceId() {
         if (syncDeviceId) return syncDeviceId;
-        let id = localStorage.getItem("uzh_sync_device_id");
+        let id = null;
+        try {
+          id = localStorage.getItem("uzh_sync_device_id");
+        } catch(e) {}
         if (!id) {
           id = "dev_" + Math.random().toString(36).substring(2, 10);
-          localStorage.setItem("uzh_sync_device_id", id);
+          try {
+            localStorage.setItem("uzh_sync_device_id", id);
+          } catch(e) {}
         }
         syncDeviceId = id;
         return syncDeviceId;
@@ -5434,12 +5438,16 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           autoSync: true,
           lastSync: null
         };
-        localStorage.setItem(SYNC_CONFIG_KEY, JSON.stringify(cfg));
+        try {
+          localStorage.setItem(SYNC_CONFIG_KEY, JSON.stringify(cfg));
+        } catch (e) {}
         return cfg;
       }
 
       function saveSyncConfig(cfg) {
-        localStorage.setItem(SYNC_CONFIG_KEY, JSON.stringify(cfg));
+        try {
+          localStorage.setItem(SYNC_CONFIG_KEY, JSON.stringify(cfg));
+        } catch (e) {}
       }
 
       function exportFullStateObject() {
@@ -6088,44 +6096,56 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       };
 
       const fileInputBackup = document.getElementById("file-import");
-      document.getElementById("btn-import-backup").onclick = () => fileInputBackup.click();
-
-      fileInputBackup.onchange = (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          try {
-            const data = JSON.parse(event.target.result);
-            if (data.notesState) {
-              state = data.notesState;
-              if (data.plannerState) localStorage.setItem(PLANNER_STORAGE_KEY, data.plannerState);
-              if (data.habits) localStorage.setItem(HABIT_KEY, data.habits);
-              if (data.coffee) localStorage.setItem(COFFEE_KEY, data.coffee);
-              if (data.brainDump) localStorage.setItem(NOTES_KEY, data.brainDump);
+      if (fileInputBackup) {
+        fileInputBackup.onchange = (e) => {
+          const file = e.target.files && e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            try {
+              const data = JSON.parse(event.target.result);
+              let notesData = data.notesState || (data.modules ? data : null);
+              if (notesData) {
+                state = notesData;
+              }
+              if (data.plannerState) {
+                localStorage.setItem(PLANNER_STORAGE_KEY, typeof data.plannerState === "string" ? data.plannerState : JSON.stringify(data.plannerState));
+              }
+              if (data.habits) {
+                localStorage.setItem(HABIT_KEY, typeof data.habits === "string" ? data.habits : JSON.stringify(data.habits));
+              }
+              if (data.coffee) {
+                localStorage.setItem(COFFEE_KEY, typeof data.coffee === "string" ? data.coffee : JSON.stringify(data.coffee));
+              }
+              if (data.brainDump) {
+                localStorage.setItem(NOTES_KEY, typeof data.brainDump === "string" ? data.brainDump : JSON.stringify(data.brainDump));
+              }
               if (data.flashcards) {
-                localStorage.setItem(FLASHCARDS_KEY, data.flashcards);
+                localStorage.setItem(FLASHCARDS_KEY, typeof data.flashcards === "string" ? data.flashcards : JSON.stringify(data.flashcards));
                 flashcards = loadFlashcards();
               }
               if (data.grades) {
-                localStorage.setItem(GRADES_KEY, data.grades);
+                localStorage.setItem(GRADES_KEY, typeof data.grades === "string" ? data.grades : JSON.stringify(data.grades));
                 exams = loadExams();
               }
-            } else if (Array.isArray(data.modules)) {
-              state = data;
+              saveData();
+              renderAll();
+              loadAllPlannerStates();
+              renderGradesTable();
+              if (typeof initCoffee === "function") initCoffee();
+              if (typeof initHabits === "function") initHabits();
+              if (typeof initBrainDump === "function") initBrainDump();
+              showSyncToast("🎉 Backup erfolgreich wiederhergestellt!", "💾");
+              alert("🎉 Backup erfolgreich wiederhergestellt! Alle Notizen, Fächer und Termine wurden geladen.");
+            } catch (err) {
+              console.error(err);
+              alert("Fehler: Ungültige oder beschädigte Backup-Datei.");
             }
-            saveData();
-            renderAll();
-            loadAllPlannerStates();
-            renderGradesTable();
-            alert("Backup erfolgreich wiederhergestellt!");
-          } catch (err) {
-            alert("Fehler: Ungültige Backup-Datei.");
-          }
+          };
+          reader.readAsText(file);
+          fileInputBackup.value = "";
         };
-        reader.readAsText(file);
-        fileInputBackup.value = "";
-      };
+      }
 
       // =======================================================================
       // KI-LERNASSISTENT (GEMINI 3.6 FLASH)
@@ -6246,7 +6266,6 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       // =======================================================================
       // Filter Fächer
       function applyFilter(category, clickedBtn) {
-        window.applyFilter = applyFilter;
         document.querySelectorAll('.filter-pill').forEach(btn => btn.classList.remove('active'));
         if (clickedBtn) clickedBtn.classList.add('active');
 
@@ -6281,7 +6300,6 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         const count = parseInt(localStorage.getItem(COFFEE_KEY) || '0', 10);
         el.textContent = `${count} Tassen`;
       }
-      window.initCoffee = initCoffee;
 
       window.changeCoffee = function (delta) {
         let count = parseInt(localStorage.getItem(COFFEE_KEY) || '0', 10);
@@ -7298,7 +7316,6 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           }
         });
       }
-      window.initHabits = initHabits;
 
       window.toggleHabit = function (habit) {
         const todayKey = new Date().toDateString();
@@ -7318,7 +7335,6 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           el.value = saved;
         }
       }
-      window.initBrainDump = initBrainDump;
 
       let notesTimeout = null;
       window.saveBrainDumpNotes = function () {
@@ -8047,7 +8063,6 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       }
 
       function openFlashcardsModal(filterModKey) {
-        window.openFlashcardsModal = openFlashcardsModal;
         const modal = document.getElementById("flashcard-modal");
         modal.style.display = "flex";
 
@@ -8060,12 +8075,10 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       };
 
       function closeFlashcardModal() {
-        window.closeFlashcardModal = closeFlashcardModal;
         document.getElementById("flashcard-modal").style.display = "none";
       };
 
       function filterFlashcardsByModule() {
-        window.filterFlashcardsByModule = filterFlashcardsByModule;
         const sel = document.getElementById("fc-module-select").value;
         if (sel === "all") {
           activeFcList = [...flashcards];
@@ -8122,13 +8135,11 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       }
 
       function flipFlashcard() {
-        window.flipFlashcard = flipFlashcard;
         const cardEl = document.getElementById("fc-active-card");
         if (cardEl) cardEl.classList.toggle("flipped");
       };
 
       function rateFlashcard(rating) {
-        window.rateFlashcard = rateFlashcard;
         if (activeFcIndex >= activeFcList.length) return;
         const curCard = activeFcList[activeFcIndex];
 
@@ -8256,13 +8267,11 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       }
 
       function openGradesModal() {
-        window.openGradesModal = openGradesModal;
         document.getElementById("grades-modal").style.display = "flex";
         renderGradesTable();
       };
 
       function closeGradesModal() {
-        window.closeGradesModal = closeGradesModal;
         document.getElementById("grades-modal").style.display = "none";
       };
 
@@ -8488,6 +8497,38 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       setInterval(() => {
         if (!document.hidden) cloudSyncPull();
       }, 25000);
+
+      // =======================================================================
+      // GLOBAL WINDOW EXPORTS FOR HTML ONCLICK / ONCHANGE HANDLERS
+      // =======================================================================
+      window.openSyncModal = openSyncModal;
+      window.closeSyncModal = closeSyncModal;
+      window.openMoreMenuModal = openMoreMenuModal;
+      window.closeMoreMenuModal = closeMoreMenuModal;
+      window.triggerDirectImport = triggerDirectImport;
+      window.triggerDirectExport = triggerDirectExport;
+      window.triggerThemeToggle = triggerThemeToggle;
+      window.switchAppView = switchAppView;
+      window.setPlannerFocusMode = setPlannerFocusMode;
+      window.toggleSidebars = toggleSidebars;
+      window.closeSidebarsMobile = closeSidebarsMobile;
+      window.toggleNoteOptionsMenu = toggleNoteOptionsMenu;
+      window.closeNoteOptionsMenu = closeNoteOptionsMenu;
+      window.applyFilter = applyFilter;
+      window.openFlashcardsModal = openFlashcardsModal;
+      window.closeFlashcardModal = closeFlashcardModal;
+      window.filterFlashcardsByModule = filterFlashcardsByModule;
+      window.flipFlashcard = flipFlashcard;
+      window.rateFlashcard = rateFlashcard;
+      window.openGradesModal = openGradesModal;
+      window.closeGradesModal = closeGradesModal;
+      window.openGraphModal = openGraphModal;
+      window.openNoteForModule = openNoteForModule;
+      window.jumpCurrentNoteToPlanner = jumpCurrentNoteToPlanner;
+      window.toggleAiDrawer = function toggleAiDrawer() {
+        if (aiDrawer) aiDrawer.classList.toggle("open");
+      };
+
     })();
   </script>
 </body>
