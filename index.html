@@ -1204,6 +1204,9 @@
       background: rgba(0, 0, 0, 0.6); display: none; align-items: center; justify-content: center;
       z-index: 1000; backdrop-filter: blur(4px);
     }
+    .modal-overlay.active {
+      display: flex !important;
+    }
     .modal-box {
       background: var(--card); border: 1px solid var(--border); border-radius: 12px;
       width: 90%; max-width: 960px; height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
@@ -1768,6 +1771,10 @@
               <button class="btn btn-primary" id="btn-add-note" title="Neue Notiz anlegen" style="padding: 2px 6px; font-size: 0.72rem;">+ Notiz</button>
               <button class="btn btn-pdf" id="btn-add-pdf-direct" title="Vorlesungs-PDF ablegen" style="padding: 2px 6px; font-size: 0.72rem;">+ PDF</button>
             </div>
+          </div>
+          <!-- Notizen & PDF Schnellsuche -->
+          <div style="padding: 6px 10px; border-bottom: 1px solid var(--border);">
+            <input type="text" id="search-input" placeholder="🔍 Notizen & PDFs filtern..." style="width:100%; padding:5px 8px; font-size:0.8rem; border:1px solid var(--border); border-radius:6px; background:var(--card); color:var(--text); outline:none; box-sizing:border-box;">
           </div>
           <!-- Gliederung: Alle / Notizen / PDFs -->
           <div class="topics-filter-bar">
@@ -3334,56 +3341,56 @@
             <p>Mac, iPad & iPhone in Echtzeit oder per Cloud synchron halten</p>
           </div>
         </div>
-        <div class="more-item-tile" id="btn-theme-toggle">
+        <div class="more-item-tile" id="btn-theme-toggle" onclick="triggerThemeToggle()">
           <div class="tile-icon" id="tile-theme-icon">🌙</div>
           <div class="tile-content">
             <h4>Design wechseln</h4>
             <p>Zwischen hellem und dunklem Modus umschalten</p>
           </div>
         </div>
-        <div class="more-item-tile" id="btn-open-flashcards">
+        <div class="more-item-tile" id="btn-open-flashcards" onclick="closeMoreMenuModal(); openFlashcardsModal();">
           <div class="tile-icon">🎴</div>
           <div class="tile-content">
             <h4>Karteikarten & Active Recall</h4>
             <p>Lernkarten für alle Vorlesungen üben</p>
           </div>
         </div>
-        <div class="more-item-tile" id="btn-open-grades">
+        <div class="more-item-tile" id="btn-open-grades" onclick="closeMoreMenuModal(); openGradesModal();">
           <div class="tile-icon">🎯</div>
           <div class="tile-content">
             <h4>Klausuren & Notenrechner</h4>
             <p>UZH Notenschnitt und Klausurdaten im Blick</p>
           </div>
         </div>
-        <div class="more-item-tile" id="btn-open-graph">
+        <div class="more-item-tile" id="btn-open-graph" onclick="closeMoreMenuModal(); openGraphModal();">
           <div class="tile-icon">🕸️</div>
           <div class="tile-content">
             <h4>Wissensnetzwerk</h4>
             <p>Interaktiver Wissensgraph deiner Notizen</p>
           </div>
         </div>
-        <div class="more-item-tile" id="btn-import-pdf">
+        <div class="more-item-tile" id="btn-import-pdf" onclick="closeMoreMenuModal(); document.getElementById('file-import-pdf').click();">
           <div class="tile-icon">📄</div>
           <div class="tile-content">
             <h4>Vorlesungs-PDFs</h4>
             <p>Folien hochladen und neben Notizen ansehen</p>
           </div>
         </div>
-        <div class="more-item-tile" id="btn-toggle-ai">
+        <div class="more-item-tile" id="btn-toggle-ai" onclick="closeMoreMenuModal(); toggleAiDrawer();">
           <div class="tile-icon">✨</div>
           <div class="tile-content">
             <h4>KI-Lernassistent</h4>
             <p>Gemini KI für Zusammenfassungen und Fragen</p>
           </div>
         </div>
-        <div class="more-item-tile" id="btn-export-backup">
+        <div class="more-item-tile" id="btn-export-backup" onclick="triggerDirectExport()">
           <div class="tile-icon">💾</div>
           <div class="tile-content">
             <h4>Backup herunterladen</h4>
             <p>Alle Daten als JSON-Datei auf deinem Rechner sichern</p>
           </div>
         </div>
-        <div class="more-item-tile" id="btn-import-backup">
+        <div class="more-item-tile" id="btn-import-backup" onclick="triggerDirectImport()">
           <div class="tile-icon">📂</div>
           <div class="tile-content">
             <h4>Backup wiederherstellen</h4>
@@ -3414,6 +3421,7 @@
           <button class="sync-tab-btn active" id="tab-sync-qr" onclick="switchSyncModalTab('qr')">📷 1-Klick iPad-Kopplung</button>
           <button class="sync-tab-btn" id="tab-sync-cloud" onclick="switchSyncModalTab('cloud')">☁️ Cloud-Sync</button>
           <button class="sync-tab-btn" id="tab-sync-link" onclick="switchSyncModalTab('link')">🔗 Sofort-Link</button>
+          <button class="sync-tab-btn" id="tab-sync-backup" onclick="switchSyncModalTab('backup')">💾 Backup & Import</button>
         </div>
 
         <!-- BEREICH 1: QR-Code / Live WebRTC Kopplung -->
@@ -3465,6 +3473,24 @@
             </button>
             <div id="direct-link-feedback" style="font-size:0.82rem; color:#10b981; font-weight:600; display:none; text-align:center;">
               ✓ Link in die Zwischenablage kopiert! Öffne ihn auf deinem iPad in Safari.
+            </div>
+          </div>
+        </div>
+
+        <!-- BEREICH 4: Manuelles JSON Backup & Import -->
+        <div id="sync-view-backup" class="sync-view-panel">
+          <div class="sync-card-highlight" style="align-items: stretch; text-align: left;">
+            <h3 style="margin: 0 0 6px 0;">💾 Backup & Wiederherstellung</h3>
+            <p style="margin: 0 0 14px 0; font-size: 0.82rem; color: var(--text-muted);">
+              Lade deine gespeicherte <strong>.json</strong>-Backup-Datei hoch, um alle Fächer, Notizen und Termine wiederherzustellen:
+            </p>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <button class="btn btn-primary" onclick="triggerDirectImport()" style="padding:12px; font-weight:700; font-size:0.95rem;">
+                📂 Backup-Datei (.json) jetzt auswählen & hochladen
+              </button>
+              <button class="btn" onclick="triggerDirectExport()" style="padding:10px; font-size:0.85rem;">
+                💾 Aktuelles Backup als Datei herunterladen
+              </button>
             </div>
           </div>
         </div>
@@ -4535,7 +4561,8 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       // =======================================================================
       // APPLIKATIONS-NAVIGATION (TABS: NOTIZEN vs PLANER vs COCKPIT)
       // =======================================================================
-      window.switchAppView = function (viewName) {
+      function switchAppView(viewName) {
+        window.switchAppView = switchAppView;
         if (typeof saveCurrentDrawingToActiveNote === "function") {
           saveCurrentDrawingToActiveNote();
         }
@@ -4563,7 +4590,8 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       };
 
       // Verknüpfung aus Notiz ins Fach im Wochenplaner
-      window.jumpCurrentNoteToPlanner = function () {
+      function jumpCurrentNoteToPlanner() {
+        window.jumpCurrentNoteToPlanner = jumpCurrentNoteToPlanner;
         const mod = getActiveModule();
         switchAppView("planner");
         if (mod) {
@@ -4583,7 +4611,8 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       };
 
       // Verknüpfung aus Wochenplaner-Event in die Vorlesungsnotiz
-      window.openNoteForModule = function (modKey, defaultModName, defaultNoteTitle) {
+      function openNoteForModule(modKey, defaultModName, defaultNoteTitle) {
+        window.openNoteForModule = openNoteForModule;
         let targetMod = state.modules.find(m => m.name.toLowerCase().includes(modKey) || m.id.includes(modKey));
         if (!targetMod) {
           // Erstelle das Fach, falls es noch fehlt
@@ -5228,7 +5257,8 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       // =========================================================================
       // IPAD DRAWER & NOTIZ-OPTIONEN
       // =========================================================================
-      window.toggleSidebars = function() {
+      function toggleSidebars() {
+        window.toggleSidebars = toggleSidebars;
         const notesView = document.getElementById("view-notes");
         if (!notesView) return;
         if (window.innerWidth <= 1024) {
@@ -5244,17 +5274,20 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         }, 80);
       };
 
-      window.closeSidebarsMobile = function() {
+      function closeSidebarsMobile() {
+        window.closeSidebarsMobile = closeSidebarsMobile;
         const notesView = document.getElementById("view-notes");
         if (notesView) notesView.classList.remove("sidebars-mobile-open");
       };
 
-      window.toggleNoteOptionsMenu = function() {
+      function toggleNoteOptionsMenu() {
+        window.toggleNoteOptionsMenu = toggleNoteOptionsMenu;
         const dd = document.getElementById("note-options-dropdown");
         if (dd) dd.classList.toggle("open");
       };
 
-      window.closeNoteOptionsMenu = function() {
+      function closeNoteOptionsMenu() {
+        window.closeNoteOptionsMenu = closeNoteOptionsMenu;
         const dd = document.getElementById("note-options-dropdown");
         if (dd) dd.classList.remove("open");
       };
@@ -5268,27 +5301,80 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       // =========================================================================
       // MODAL CONTROLS: MEHR & SYNC
       // =========================================================================
-      window.openMoreMenuModal = function() {
+      function openMoreMenuModal() {
+        window.openMoreMenuModal = openMoreMenuModal;
         const m = document.getElementById("more-menu-modal");
-        if (m) m.classList.add("active");
+        if (m) {
+          m.style.display = "flex";
+          m.classList.add("active");
+        }
       };
 
-      window.closeMoreMenuModal = function() {
+      function closeMoreMenuModal() {
+        window.closeMoreMenuModal = closeMoreMenuModal;
         const m = document.getElementById("more-menu-modal");
-        if (m) m.classList.remove("active");
+        if (m) {
+          m.style.display = "none";
+          m.classList.remove("active");
+        }
       };
 
-      window.openSyncModal = function() {
+      function openSyncModal() {
+        window.openSyncModal = openSyncModal;
         const m = document.getElementById("sync-modal");
         if (m) {
+          m.style.display = "flex";
           m.classList.add("active");
           refreshSyncModal();
         }
       };
 
-      window.closeSyncModal = function() {
+      function closeSyncModal() {
+        window.closeSyncModal = closeSyncModal;
         const m = document.getElementById("sync-modal");
-        if (m) m.classList.remove("active");
+        if (m) {
+          m.style.display = "none";
+          m.classList.remove("active");
+        }
+      };
+
+      function triggerDirectImport() {
+        window.triggerDirectImport = triggerDirectImport;
+        window.closeMoreMenuModal();
+        window.closeSyncModal();
+        const fileInput = document.getElementById("file-import");
+        if (fileInput) fileInput.click();
+      };
+
+      function triggerDirectExport() {
+        window.triggerDirectExport = triggerDirectExport;
+        window.closeMoreMenuModal();
+        window.closeSyncModal();
+        const backupData = {
+          version: "uzh_studspace_v10",
+          exportedAt: new Date().toISOString(),
+          notesState: state,
+          plannerState: localStorage.getItem(PLANNER_STORAGE_KEY),
+          habits: localStorage.getItem(HABIT_KEY),
+          coffee: localStorage.getItem(COFFEE_KEY),
+          brainDump: localStorage.getItem(NOTES_KEY),
+          flashcards: localStorage.getItem(FLASHCARDS_KEY),
+          grades: localStorage.getItem(GRADES_KEY)
+        };
+        const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `UZH_StudSpace_Backup_${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      };
+
+      function triggerThemeToggle() {
+        window.triggerThemeToggle = triggerThemeToggle;
+        const curTheme = document.body.getAttribute("data-theme") || "light";
+        const newTheme = curTheme === "dark" ? "light" : "dark";
+        setTheme(newTheme);
       };
 
       window.switchSyncModalTab = function(tab) {
@@ -5303,7 +5389,8 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       // =========================================================================
       // WOCHENPLANER FOKUS-UMSCHALTER (IPAD OPTIMIERT)
       // =========================================================================
-      window.setPlannerFocusMode = function(mode) {
+      function setPlannerFocusMode(mode) {
+        window.setPlannerFocusMode = setPlannerFocusMode;
         const planner = document.getElementById("view-planner");
         if (!planner) return;
         planner.classList.remove("focus-schedule", "focus-deadlines", "focus-dashboard", "focus-all");
@@ -5965,13 +6052,16 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       };
 
       // Drucken
-      document.getElementById("btn-print").onclick = () => window.print();
+      const btnPrint = document.getElementById("btn-print");
+      if (btnPrint) btnPrint.onclick = () => window.print();
 
       // Suche
-      searchInp.oninput = () => {
-        searchQuery = searchInp.value.trim();
-        renderTopics();
-      };
+      if (searchInp) {
+        searchInp.oninput = () => {
+          searchQuery = searchInp.value.trim();
+          renderTopics();
+        };
+      }
 
       // =======================================================================
       // KOMPLETTES BACKUP & IMPORT (NOTIZEN + WOCHENPLANER IN EINER JSON-DATEI)
@@ -6155,7 +6245,8 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       // WOCHENPLANER LOGIK (COUNTDOWNS, FILTER, POMODORO, HABITS, SOUND, SYNC)
       // =======================================================================
       // Filter Fächer
-      window.applyFilter = function (category, clickedBtn) {
+      function applyFilter(category, clickedBtn) {
+        window.applyFilter = applyFilter;
         document.querySelectorAll('.filter-pill').forEach(btn => btn.classList.remove('active'));
         if (clickedBtn) clickedBtn.classList.add('active');
 
@@ -6184,10 +6275,13 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       };
 
       // Kaffee Tracker
-      window.initCoffee = function () {
+      function initCoffee() {
+        const el = document.getElementById('coffeeCountDisplay');
+        if (!el) return;
         const count = parseInt(localStorage.getItem(COFFEE_KEY) || '0', 10);
-        document.getElementById('coffeeCountDisplay').textContent = `${count} Tassen`;
-      };
+        el.textContent = `${count} Tassen`;
+      }
+      window.initCoffee = initCoffee;
 
       window.changeCoffee = function (delta) {
         let count = parseInt(localStorage.getItem(COFFEE_KEY) || '0', 10);
@@ -7186,7 +7280,7 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       }
 
       // Habit Tracker
-      window.initHabits = function () {
+      function initHabits() {
         const todayKey = new Date().toDateString();
         const savedHabits = JSON.parse(localStorage.getItem(HABIT_KEY) || '{}');
         const todayHabits = savedHabits[todayKey] || {};
@@ -7203,7 +7297,8 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
             }
           }
         });
-      };
+      }
+      window.initHabits = initHabits;
 
       window.toggleHabit = function (habit) {
         const todayKey = new Date().toDateString();
@@ -7216,12 +7311,14 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       };
 
       // Brain Dump Notizen
-      window.initBrainDump = function () {
+      function initBrainDump() {
         const saved = localStorage.getItem(NOTES_KEY);
-        if (saved && document.getElementById('brainDumpNotes')) {
-          document.getElementById('brainDumpNotes').value = saved;
+        const el = document.getElementById('brainDumpNotes');
+        if (saved && el) {
+          el.value = saved;
         }
-      };
+      }
+      window.initBrainDump = initBrainDump;
 
       let notesTimeout = null;
       window.saveBrainDumpNotes = function () {
@@ -7676,7 +7773,7 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           saveData();
         }
         if ((e.ctrlKey || e.metaKey) && e.key === "f") {
-          if (document.activeElement !== searchInp) {
+          if (searchInp && document.activeElement !== searchInp) {
             e.preventDefault();
             searchInp.focus();
             searchInp.select();
@@ -7949,7 +8046,8 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         } catch (e) {}
       }
 
-      window.openFlashcardsModal = function (filterModKey) {
+      function openFlashcardsModal(filterModKey) {
+        window.openFlashcardsModal = openFlashcardsModal;
         const modal = document.getElementById("flashcard-modal");
         modal.style.display = "flex";
 
@@ -7961,11 +8059,13 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         filterFlashcardsByModule();
       };
 
-      window.closeFlashcardModal = function () {
+      function closeFlashcardModal() {
+        window.closeFlashcardModal = closeFlashcardModal;
         document.getElementById("flashcard-modal").style.display = "none";
       };
 
-      window.filterFlashcardsByModule = function () {
+      function filterFlashcardsByModule() {
+        window.filterFlashcardsByModule = filterFlashcardsByModule;
         const sel = document.getElementById("fc-module-select").value;
         if (sel === "all") {
           activeFcList = [...flashcards];
@@ -8021,12 +8121,14 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         backText.innerHTML = parseMarkdown(curCard.back);
       }
 
-      window.flipFlashcard = function () {
+      function flipFlashcard() {
+        window.flipFlashcard = flipFlashcard;
         const cardEl = document.getElementById("fc-active-card");
         if (cardEl) cardEl.classList.toggle("flipped");
       };
 
-      window.rateFlashcard = function (rating) {
+      function rateFlashcard(rating) {
+        window.rateFlashcard = rateFlashcard;
         if (activeFcIndex >= activeFcList.length) return;
         const curCard = activeFcList[activeFcIndex];
 
@@ -8153,12 +8255,14 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         } catch (e) {}
       }
 
-      window.openGradesModal = function () {
+      function openGradesModal() {
+        window.openGradesModal = openGradesModal;
         document.getElementById("grades-modal").style.display = "flex";
         renderGradesTable();
       };
 
-      window.closeGradesModal = function () {
+      function closeGradesModal() {
+        window.closeGradesModal = closeGradesModal;
         document.getElementById("grades-modal").style.display = "none";
       };
 
@@ -8357,6 +8461,16 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       renderGradesTable();
       initPencilCanvas();
       attachPencilCanvasListeners();
+
+      // Klick auf den abgedunkelten Hintergrund schließt das Modal
+      document.querySelectorAll(".modal-overlay").forEach(overlay => {
+        overlay.addEventListener("click", (e) => {
+          if (e.target === overlay) {
+            overlay.style.display = "none";
+            overlay.classList.remove("active");
+          }
+        });
+      });
 
       // Initialisierung von Sync & iPad Fokus-Modus
       const savedFocusMode = localStorage.getItem("uzh_planner_focus_mode") || (window.innerWidth <= 1024 ? "schedule" : "all");
