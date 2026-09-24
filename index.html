@@ -554,6 +554,8 @@
       border-radius: 8px;
       user-select: none;
       -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
     }
     /* Seitenleisten einklappen für maximale Notizfläche (Fokus-Modus) */
     #view-notes.modules-hidden .col-modules {
@@ -1932,7 +1934,8 @@
                 <div class="canvas-divider"></div>
 
                 <div class="canvas-color-group">
-                  <button class="canvas-color-dot active" data-color="#0f172a" style="background:#0f172a;" title="Schwarz"></button>
+                  <button class="canvas-color-dot active" data-color="#0f172a" style="background:#0f172a;" title="Schwarz / Dunkel"></button>
+                  <button class="canvas-color-dot" data-color="#ffffff" style="background:#ffffff; border:1px solid var(--border);" title="Weiß (ideal für Dark Mode)"></button>
                   <button class="canvas-color-dot" data-color="#2563eb" style="background:#2563eb;" title="Blau"></button>
                   <button class="canvas-color-dot" data-color="#dc2626" style="background:#dc2626;" title="Rot"></button>
                   <button class="canvas-color-dot" data-color="#16a34a" style="background:#16a34a;" title="Grün"></button>
@@ -1970,9 +1973,12 @@
                 <div class="canvas-divider"></div>
 
                 <div class="canvas-palm-group">
-                  <button class="btn btn-primary" id="btn-palm-rejection" title="Handballenschutz: Ignoriert Handflächen-Berührungen. Nur Apple Pencil zeichnet!" onclick="togglePalmRejection()">
-                    ✋ Handballenschutz: <strong id="palm-status-text">AN</strong>
+                  <button class="btn btn-primary" id="btn-palm-rejection" title="Handballenschutz: Ignoriert Handflächen. Nur Apple Pencil schreibt, Finger scrollt die Seite!" onclick="togglePalmRejection()">
+                    ✋ Handballenschutz: <strong id="palm-status-text">AN (Finger scrollt)</strong>
                   </button>
+                  <span id="pencil-indicator-pill" class="badge" style="font-size:0.75rem; padding:4px 8px; border-radius:12px; background:var(--bg-subtle); border:1px solid var(--border); color:var(--text-muted); display:inline-flex; align-items:center; gap:4px;" title="Status des Apple Pencils">
+                    ✏️ Stift bereit
+                  </span>
                 </div>
 
                 <div class="canvas-divider"></div>
@@ -1981,6 +1987,8 @@
                   <button class="btn btn-icon" id="btn-canvas-undo" title="Rückgängig (Undo)" onclick="undoDrawing()">↩️</button>
                   <button class="btn btn-icon" id="btn-canvas-redo" title="Wiederholen (Redo)" onclick="redoDrawing()">↪️</button>
                   <button class="btn btn-icon" id="btn-canvas-clear" title="Alles löschen" onclick="clearPencilCanvas()">🗑️</button>
+                  <button class="btn btn-icon" id="btn-canvas-scroll-top" title="Ganz nach oben scrollen" onclick="scrollCanvasTo(0)">⬆️</button>
+                  <button class="btn btn-icon" id="btn-canvas-scroll-bottom" title="Ganz nach unten scrollen" onclick="scrollCanvasTo('bottom')">⬇️</button>
                   <button class="btn btn-primary" id="btn-canvas-insert" title="Zeichnung als hochauflösendes Bild in Markdown-Notiz einfügen" onclick="insertDrawingIntoActiveNote()">📥 In Notiz einfügen</button>
                   <button class="btn" id="btn-canvas-export" title="Zeichnung als PNG-Datei herunterladen" onclick="exportDrawingAsPng()">📤 PNG</button>
                   <button class="btn" id="btn-canvas-expand" title="800px mehr Platz nach unten anhängen" onclick="expandCanvasHeight()">➕ Mehr Platz</button>
@@ -3784,7 +3792,34 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           renderNotesTasksInPlanner();
           if (typeof broadcastSyncUpdate === "function") broadcastSyncUpdate();
         } catch (e) {
-          alert("Fehler beim Speichern in den Browser-Speicher.");
+          console.warn("localStorage quota exceeded, pruning large drawingData copies for storage", e);
+          try {
+            // Kopie anlegen und grosse drawingData aus localStorage entfernen (liegen sicher in IndexedDB)
+            const prunedState = JSON.parse(JSON.stringify(state));
+            if (Array.isArray(prunedState.modules)) {
+              prunedState.modules.forEach(m => {
+                if (Array.isArray(m.notes)) m.notes.forEach(n => {
+                  if (n.drawingData && n.drawingData.length > 200000) {
+                    n.hasDrawing = true;
+                    delete n.drawingData;
+                  }
+                });
+                if (Array.isArray(m.pdfs)) m.pdfs.forEach(p => {
+                  if (p.drawingData && p.drawingData.length > 200000) {
+                    p.hasDrawing = true;
+                    delete p.drawingData;
+                  }
+                });
+              });
+            }
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(prunedState));
+            const el = document.getElementById("save-indicator");
+            if (el) el.textContent = "● Gespeichert";
+            renderNotesTasksInPlanner();
+          } catch(err2) {
+            console.error("Critical storage error:", err2);
+            showToast("⚠️ Browser-Speicher voll. Bitte Backup herunterladen!");
+          }
         }
       }
 
@@ -4818,7 +4853,10 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           state.noteViewMode = mode;
           editorBody.className = "editor-body " + mode;
           if (mode.includes("canvas")) {
-            setTimeout(() => initPencilCanvas(true), 40);
+            setTimeout(() => {
+              if (typeof initPencilCanvas === "function") initPencilCanvas(true);
+              if (typeof loadDrawingForCurrentNote === "function") loadDrawingForCurrentNote();
+            }, 50);
           }
           saveData();
         };
@@ -4833,14 +4871,17 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           state.pdfViewMode = mode;
           editorBody.className = "editor-body " + mode;
           if (mode.includes("canvas")) {
-            setTimeout(() => initPencilCanvas(true), 40);
+            setTimeout(() => {
+              if (typeof initPencilCanvas === "function") initPencilCanvas(true);
+              if (typeof loadDrawingForCurrentNote === "function") loadDrawingForCurrentNote();
+            }, 50);
           }
           saveData();
         };
       });
 
       // =======================================================================
-      // APPLE PENCIL & STYLUS HANDWRITING ENGINE
+      // APPLE PENCIL & STYLUS HANDWRITING ENGINE (PROMOTION 120HZ, PALM REJECTION, RETINA)
       // =======================================================================
       let pencilCanvas = null;
       let pencilCtx = null;
@@ -4848,12 +4889,85 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       let currentTool = "pen"; // "pen", "brush", "highlighter", "eraser"
       let currentColor = "#0f172a";
       let currentSize = 3;
-      let palmRejection = true; // Standardmässig AN für Apple Pencil auf iPad
+      let palmRejection = true; // Standardmässig AN: Apple Pencil schreibt, Finger scrollt
       let isDrawing = false;
+      let activePointerId = null;
+      let activePointerType = null;
       let strokePoints = [];
+      let lastPressure = 0.2;
       let undoStack = [];
       let redoStack = [];
       const MAX_UNDO = 30;
+
+      // Finger-Scrollen im Canvas-Viewport bei aktivem Handballenschutz
+      let isTouchPanning = false;
+      let touchPanStartX = 0;
+      let touchPanStartY = 0;
+      let touchPanScrollTop = 0;
+      let touchPanScrollLeft = 0;
+
+      // =======================================================================
+      // INDEXEDDB SPEICHER FÜR ZEICHNUNGEN (SCHÜTZT VOR LOCALSTORAGE-QUOTA)
+      // =======================================================================
+      const DRAWINGS_DB_NAME = "studnotes_drawings_db";
+      const DRAWINGS_STORE_NAME = "drawings";
+      const drawingsMemoryCache = new Map();
+
+      function openDrawingsDb() {
+        return new Promise((resolve) => {
+          if (!window.indexedDB) return resolve(null);
+          try {
+            const req = indexedDB.open(DRAWINGS_DB_NAME, 1);
+            req.onupgradeneeded = (e) => {
+              const db = e.target.result;
+              if (!db.objectStoreNames.contains(DRAWINGS_STORE_NAME)) {
+                db.createObjectStore(DRAWINGS_STORE_NAME, { keyPath: "id" });
+              }
+            };
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = () => resolve(null);
+          } catch(err) {
+            resolve(null);
+          }
+        });
+      }
+
+      async function saveDrawingToStorage(id, dataUrl) {
+        if (!id) return;
+        drawingsMemoryCache.set(id, dataUrl);
+        try {
+          const db = await openDrawingsDb();
+          if (db) {
+            const tx = db.transaction(DRAWINGS_STORE_NAME, "readwrite");
+            tx.objectStore(DRAWINGS_STORE_NAME).put({ id, data: dataUrl, updatedAt: Date.now() });
+          }
+        } catch(e) {
+          console.warn("IndexedDB drawing save fallback", e);
+        }
+      }
+
+      async function getDrawingFromStorage(id) {
+        if (!id) return null;
+        if (drawingsMemoryCache.has(id)) {
+          return drawingsMemoryCache.get(id);
+        }
+        try {
+          const db = await openDrawingsDb();
+          if (db) {
+            return new Promise((resolve) => {
+              const tx = db.transaction(DRAWINGS_STORE_NAME, "readonly");
+              const req = tx.objectStore(DRAWINGS_STORE_NAME).get(id);
+              req.onsuccess = () => {
+                const val = req.result ? req.result.data : null;
+                if (val) drawingsMemoryCache.set(id, val);
+                resolve(val);
+              };
+              req.onerror = () => resolve(null);
+            });
+          }
+        } catch(e) {}
+        return null;
+      }
 
       function initPencilCanvas(preserveExisting = false) {
         pencilCanvas = document.getElementById("pencil-canvas");
@@ -4864,8 +4978,8 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         const wrapper = document.getElementById("canvas-sheet-wrapper");
         if (!viewport || !wrapper) return;
 
-        const containerWidth = viewport.clientWidth - 40;
-        const width = Math.max(680, containerWidth);
+        const containerWidth = (viewport.clientWidth > 40) ? (viewport.clientWidth - 40) : 800;
+        const width = Math.max(800, containerWidth);
         const height = currentCanvasHeight;
 
         let oldData = null;
@@ -4888,6 +5002,27 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
 
         if (oldData) {
           restoreDataUrl(oldData);
+        } else {
+          const active = (state.activeType === "pdf") ? getActivePdf() : getActiveNote();
+          if (active && active.drawingData) {
+            restoreDataUrl(active.drawingData);
+          }
+        }
+      }
+
+      function updatePencilStatusBadge(isActive) {
+        const badge = document.getElementById("pencil-indicator-pill");
+        if (!badge) return;
+        if (isActive) {
+          badge.innerHTML = "✏️ Apple Pencil: <strong>Aktiv</strong> (Druckstufen)";
+          badge.style.color = "var(--primary)";
+          badge.style.borderColor = "var(--primary)";
+          badge.style.background = "var(--primary-subtle)";
+        } else {
+          badge.innerHTML = palmRejection ? "✋ Handballen geschützt (Finger scrollt)" : "👆 Finger-Zeichnen aktiv";
+          badge.style.color = "var(--text-muted)";
+          badge.style.borderColor = "var(--border)";
+          badge.style.background = "var(--bg-subtle)";
         }
       }
 
@@ -4895,31 +5030,38 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         const canvas = document.getElementById("pencil-canvas");
         if (!canvas) return;
 
-        canvas.addEventListener("pointerdown", handlePointerDown);
-        canvas.addEventListener("pointermove", handlePointerMove);
-        canvas.addEventListener("pointerup", handlePointerUp);
-        canvas.addEventListener("pointercancel", handlePointerUp);
+        canvas.addEventListener("pointerdown", handlePointerDown, { passive: false });
+        canvas.addEventListener("pointermove", handlePointerMove, { passive: false });
+        canvas.addEventListener("pointerup", handlePointerUp, { passive: false });
+        canvas.addEventListener("pointercancel", handlePointerUp, { passive: false });
         canvas.addEventListener("pointerleave", (e) => {
           if (isDrawing && e.buttons === 0) handlePointerUp(e);
-        });
+        }, { passive: false });
+
+        // iOS Safari Schutz vor Pull-to-Refresh & Scroll-Konflikten beim Zeichnen
+        canvas.addEventListener("touchstart", (e) => {
+          if (isDrawing || (activePointerType === "pen")) {
+            e.preventDefault();
+          }
+        }, { passive: false });
+        canvas.addEventListener("touchmove", (e) => {
+          if (isDrawing || (activePointerType === "pen")) {
+            e.preventDefault();
+          }
+        }, { passive: false });
 
         // Color picker
         const cp = document.getElementById("canvas-color-picker");
         if (cp) {
           cp.addEventListener("input", (e) => {
-            currentColor = e.target.value;
-            document.querySelectorAll(".canvas-color-dot").forEach(d => d.classList.remove("active"));
-            if (currentTool === "eraser") setCanvasTool("pen");
+            setCanvasColor(e.target.value);
           });
         }
 
         // Color dots
         document.querySelectorAll(".canvas-color-dot").forEach(dot => {
           dot.onclick = () => {
-            document.querySelectorAll(".canvas-color-dot").forEach(d => d.classList.remove("active"));
-            dot.classList.add("active");
-            currentColor = dot.dataset.color;
-            if (currentTool === "eraser") setCanvasTool("pen");
+            setCanvasColor(dot.dataset.color);
           };
         });
 
@@ -4960,96 +5102,210 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       }
 
       function getCanvasCoords(e) {
+        if (!pencilCanvas) return { x: 0, y: 0, pressure: 0.5, pointerType: e.pointerType || "pen" };
         const rect = pencilCanvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const pressure = (e.pointerType === "pen" && typeof e.pressure === "number" && e.pressure > 0)
-          ? e.pressure
-          : 0.5;
-        return { x, y, pressure, pointerType: e.pointerType };
+        const dpr = window.devicePixelRatio || 1;
+        const logicalW = pencilCanvas.width / dpr;
+        const logicalH = pencilCanvas.height / dpr;
+        const scaleX = (rect.width > 0) ? (logicalW / rect.width) : 1;
+        const scaleY = (rect.height > 0) ? (logicalH / rect.height) : 1;
+
+        const x = (e.clientX - rect.left) * scaleX;
+        const y = (e.clientY - rect.top) * scaleY;
+
+        let rawPressure = (typeof e.pressure === "number") ? e.pressure : 0;
+        let pressure = 0.5;
+
+        if (e.pointerType === "pen") {
+          if (rawPressure > 0) {
+            pressure = rawPressure;
+          } else {
+            // Sanfter Druck bei erster Berührung für Apple Pencil
+            pressure = 0.18;
+          }
+        } else {
+          pressure = 0.5;
+        }
+
+        return {
+          x,
+          y,
+          pressure,
+          pointerType: e.pointerType || "mouse",
+          tiltX: e.tiltX || 0,
+          tiltY: e.tiltY || 0
+        };
       }
 
       function handlePointerDown(e) {
         if (!pencilCanvas || !pencilCtx) return;
-        // Handballenschutz: Wenn aktiv, ignorieren wir reine Touch-/Handflächen-Ereignisse
-        if (palmRejection && e.pointerType === "touch") {
+
+        // Handballenschutz: Finger-Scrollen
+        if (e.pointerType === "touch" && palmRejection) {
+          // Falls bereits mit Stift gezeichnet wird: Handfläche ignorieren
+          if (isDrawing && activePointerType === "pen") {
+            e.preventDefault();
+            return;
+          }
+          // Ansonsten: Ein-Finger-Scrollen im Canvas-Viewport starten
+          isTouchPanning = true;
+          touchPanStartX = e.clientX;
+          touchPanStartY = e.clientY;
+          const vp = document.getElementById("canvas-viewport");
+          if (vp) {
+            touchPanScrollTop = vp.scrollTop;
+            touchPanScrollLeft = vp.scrollLeft;
+          }
           return;
         }
 
+        // Apple Pencil setzt auf: Vorheriges Touch-Panning sofort abbrechen
+        if (e.pointerType === "pen") {
+          isTouchPanning = false;
+          activePointerType = "pen";
+          updatePencilStatusBadge(true);
+        } else {
+          activePointerType = e.pointerType;
+        }
+
+        e.preventDefault();
         isDrawing = true;
+        activePointerId = e.pointerId;
+
         try {
           pencilCanvas.setPointerCapture(e.pointerId);
         } catch(err) {}
 
         const pt = getCanvasCoords(e);
+        lastPressure = pt.pressure;
         strokePoints = [pt];
 
         pencilCtx.beginPath();
         applyToolStyle(pt.pressure);
-        pencilCtx.moveTo(pt.x, pt.y);
-
-        // Dot zeichnen
-        const r = Math.max(0.6, getStrokeWidth(pt.pressure) / 2);
+        const r = Math.max(0.5, getStrokeWidth(pt.pressure) / 2);
         pencilCtx.arc(pt.x, pt.y, r, 0, Math.PI * 2);
         pencilCtx.fill();
-        pencilCtx.beginPath();
-        pencilCtx.moveTo(pt.x, pt.y);
       }
 
       function handlePointerMove(e) {
+        // Handballenschutz: Viewport per Finger scrollen
+        if (e.pointerType === "touch" && palmRejection) {
+          if (isDrawing && activePointerType === "pen") {
+            e.preventDefault();
+            return;
+          }
+          if (isTouchPanning) {
+            const vp = document.getElementById("canvas-viewport");
+            if (vp) {
+              const dx = e.clientX - touchPanStartX;
+              const dy = e.clientY - touchPanStartY;
+              vp.scrollTop = touchPanScrollTop - dy;
+              vp.scrollLeft = touchPanScrollLeft - dx;
+            }
+          }
+          return;
+        }
+
         if (!isDrawing || !pencilCtx) return;
-        if (palmRejection && e.pointerType === "touch") return;
+        if (activePointerId !== null && e.pointerId !== activePointerId) return;
 
-        const pt = getCanvasCoords(e);
-        strokePoints.push(pt);
+        e.preventDefault();
 
-        if (strokePoints.length >= 3) {
+        // 120Hz/240Hz Coalesced Events für seidenweiche Kurven auf iPad Pro
+        const events = (typeof e.getCoalescedEvents === "function")
+          ? e.getCoalescedEvents()
+          : [e];
+        const eventList = (events && events.length > 0) ? events : [e];
+
+        for (let i = 0; i < eventList.length; i++) {
+          const subEvent = eventList[i];
+          const rawPt = getCanvasCoords(subEvent);
+          const smoothedPressure = lastPressure * 0.65 + rawPt.pressure * 0.35;
+          lastPressure = smoothedPressure;
+          const pt = { ...rawPt, pressure: smoothedPressure };
+
+          strokePoints.push(pt);
           const len = strokePoints.length;
-          const p0 = strokePoints[len - 3];
-          const p1 = strokePoints[len - 2];
-          const p2 = strokePoints[len - 1];
 
-          const mid1X = (p0.x + p1.x) / 2;
-          const mid1Y = (p0.y + p1.y) / 2;
-          const mid2X = (p1.x + p2.x) / 2;
-          const mid2Y = (p1.y + p2.y) / 2;
+          if (len === 2) {
+            // Erstes Segment: Linie von P0 zu Midpoint(P0, P1)
+            const p0 = strokePoints[0];
+            const p1 = strokePoints[1];
+            const midX = (p0.x + p1.x) / 2;
+            const midY = (p0.y + p1.y) / 2;
 
-          pencilCtx.beginPath();
-          applyToolStyle(p1.pressure);
-          pencilCtx.moveTo(mid1X, mid1Y);
-          pencilCtx.quadraticCurveTo(p1.x, p1.y, mid2X, mid2Y);
-          pencilCtx.stroke();
-        } else {
-          const p0 = strokePoints[0];
-          pencilCtx.beginPath();
-          applyToolStyle(pt.pressure);
-          pencilCtx.moveTo(p0.x, p0.y);
-          pencilCtx.lineTo(pt.x, pt.y);
-          pencilCtx.stroke();
+            pencilCtx.beginPath();
+            applyToolStyle((p0.pressure + p1.pressure) / 2);
+            pencilCtx.moveTo(p0.x, p0.y);
+            pencilCtx.lineTo(midX, midY);
+            pencilCtx.stroke();
+          } else if (len >= 3) {
+            // Quadratische Kurve zwischen den Mittelpunkten
+            const p0 = strokePoints[len - 3];
+            const p1 = strokePoints[len - 2];
+            const p2 = strokePoints[len - 1];
+
+            const mid1X = (p0.x + p1.x) / 2;
+            const mid1Y = (p0.y + p1.y) / 2;
+            const mid2X = (p1.x + p2.x) / 2;
+            const mid2Y = (p1.y + p2.y) / 2;
+
+            pencilCtx.beginPath();
+            applyToolStyle(p1.pressure);
+            pencilCtx.moveTo(mid1X, mid1Y);
+            pencilCtx.quadraticCurveTo(p1.x, p1.y, mid2X, mid2Y);
+            pencilCtx.stroke();
+          }
         }
       }
 
       function handlePointerUp(e) {
+        if (e.pointerType === "touch" && palmRejection) {
+          isTouchPanning = false;
+          if (!isDrawing) return;
+        }
+
         if (!isDrawing) return;
+        if (activePointerId !== null && e.pointerId !== activePointerId) return;
+
+        // Endsegment zeichnen (vom letzten Mittelpunkt zum exakten Endpunkt)
+        const len = strokePoints.length;
+        if (len >= 2 && pencilCtx) {
+          const p1 = strokePoints[len - 2];
+          const p2 = strokePoints[len - 1];
+          const midX = (p1.x + p2.x) / 2;
+          const midY = (p1.y + p2.y) / 2;
+
+          pencilCtx.beginPath();
+          applyToolStyle(p2.pressure);
+          pencilCtx.moveTo(midX, midY);
+          pencilCtx.lineTo(p2.x, p2.y);
+          pencilCtx.stroke();
+        }
+
         isDrawing = false;
         try {
-          pencilCanvas.releasePointerCapture(e.pointerId);
+          if (pencilCanvas.hasPointerCapture(e.pointerId)) {
+            pencilCanvas.releasePointerCapture(e.pointerId);
+          }
         } catch(err) {}
 
+        activePointerId = null;
         strokePoints = [];
         saveUndoState();
         saveCurrentDrawingToActiveNote();
       }
 
       function getStrokeWidth(pressure) {
+        const p = Math.max(0.05, Math.min(1.0, pressure));
         if (currentTool === "brush") {
-          return Math.max(1, currentSize * (0.25 + 1.75 * pressure));
+          return Math.max(1, currentSize * (0.25 + 1.85 * p));
         } else if (currentTool === "pen") {
-          return Math.max(0.8, currentSize * (0.65 + 0.7 * pressure));
+          return Math.max(0.8, currentSize * (0.65 + 0.75 * p));
         } else if (currentTool === "highlighter") {
-          return Math.max(16, currentSize * 3.5);
+          return Math.max(14, currentSize * 3.4);
         } else if (currentTool === "eraser") {
-          return Math.max(14, currentSize * 3);
+          return Math.max(14, currentSize * 3.5);
         }
         return currentSize;
       }
@@ -5076,12 +5332,19 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           pencilCtx.lineCap = "round";
           pencilCtx.lineJoin = "round";
         } else if (currentTool === "highlighter") {
-          pencilCtx.globalCompositeOperation = "source-over";
-          const rgba = hexToRgba(currentColor, 0.38);
+          const isDark = document.body.classList.contains("dark-mode");
+          pencilCtx.globalCompositeOperation = isDark ? "source-over" : "multiply";
+          const rgba = hexToRgba(currentColor, isDark ? 0.45 : 0.38);
           pencilCtx.strokeStyle = rgba;
           pencilCtx.fillStyle = rgba;
           pencilCtx.lineCap = "square";
           pencilCtx.lineJoin = "bevel";
+        } else if (currentTool === "brush") {
+          pencilCtx.globalCompositeOperation = "source-over";
+          pencilCtx.strokeStyle = currentColor;
+          pencilCtx.fillStyle = currentColor;
+          pencilCtx.lineCap = "round";
+          pencilCtx.lineJoin = "round";
         } else {
           pencilCtx.globalCompositeOperation = "source-over";
           pencilCtx.strokeStyle = currentColor;
@@ -5101,6 +5364,18 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         }
       }
 
+      window.setCanvasColor = function(color) {
+        currentColor = color;
+        document.querySelectorAll(".canvas-color-dot").forEach(d => {
+          d.classList.toggle("active", (d.dataset.color || "").toLowerCase() === color.toLowerCase());
+        });
+        const cp = document.getElementById("canvas-color-picker");
+        if (cp) cp.value = color;
+        if (currentTool === "eraser") setCanvasTool("pen");
+      };
+
+      window.setCanvasTool = setCanvasTool;
+
       window.changeCanvasPattern = function(pattern) {
         const vp = document.getElementById("canvas-viewport");
         if (vp) vp.className = "canvas-viewport " + pattern;
@@ -5111,13 +5386,24 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         const btn = document.getElementById("btn-palm-rejection");
         const txt = document.getElementById("palm-status-text");
         if (palmRejection) {
-          if (txt) txt.textContent = "AN";
+          if (txt) txt.textContent = "AN (Finger scrollt)";
           btn?.classList.add("btn-primary");
-          showToast("✋ Handballenschutz AN: Nur Stift zeichnet. Handfläche wird ignoriert!");
+          showToast("✋ Handballenschutz AN: Nur Apple Pencil schreibt. Finger scrollt die Seite!");
         } else {
-          if (txt) txt.textContent = "AUS";
+          if (txt) txt.textContent = "AUS (Finger zeichnet)";
           btn?.classList.remove("btn-primary");
-          showToast("✋ Handballenschutz AUS: Zeichnen mit Finger und Stift möglich.");
+          showToast("👆 Finger-Zeichnen AN: Zeichnen auch mit Finger möglich.");
+        }
+        updatePencilStatusBadge(false);
+      };
+
+      window.scrollCanvasTo = function(pos) {
+        const vp = document.getElementById("canvas-viewport");
+        if (!vp) return;
+        if (pos === "bottom") {
+          vp.scrollTo({ top: vp.scrollHeight, behavior: "smooth" });
+        } else {
+          vp.scrollTo({ top: pos || 0, behavior: "smooth" });
         }
       };
 
@@ -5185,12 +5471,16 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         }
         const img = new Image();
         img.onload = () => {
+          if (!pencilCanvas || !pencilCtx) return;
           pencilCtx.save();
           pencilCtx.setTransform(1, 0, 0, 1, 0, 0);
           pencilCtx.drawImage(img, 0, 0);
           pencilCtx.restore();
           const dpr = window.devicePixelRatio || 1;
           pencilCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          if (callback) callback();
+        };
+        img.onerror = () => {
           if (callback) callback();
         };
         img.src = dataUrl;
@@ -5201,20 +5491,36 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         const active = (state.activeType === "pdf") ? getActivePdf() : getActiveNote();
         if (!active) return;
         try {
-          active.drawingData = pencilCanvas.toDataURL("image/png");
+          const dataUrl = pencilCanvas.toDataURL("image/png");
+          active.drawingData = dataUrl;
+          if (typeof saveDrawingToStorage === "function") {
+            saveDrawingToStorage(active.id, dataUrl);
+          }
           triggerAutoSave();
-        } catch(e) {}
+        } catch(e) {
+          console.warn("Could not save canvas drawing", e);
+        }
       }
 
-      function loadDrawingForCurrentNote() {
+      async function loadDrawingForCurrentNote() {
         if (!pencilCanvas) return;
         const active = (state.activeType === "pdf") ? getActivePdf() : getActiveNote();
         clearCanvasOnly();
         undoStack = [];
         redoStack = [];
 
-        if (active && active.drawingData) {
-          restoreDataUrl(active.drawingData, () => {
+        if (!active) {
+          saveUndoState();
+          return;
+        }
+
+        let drawing = active.drawingData;
+        if (!drawing && typeof getDrawingFromStorage === "function") {
+          drawing = await getDrawingFromStorage(active.id);
+        }
+
+        if (drawing) {
+          restoreDataUrl(drawing, () => {
             saveUndoState();
           });
         } else {
@@ -5230,7 +5536,8 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         exportCanvas.width = pencilCanvas.width;
         exportCanvas.height = pencilCanvas.height;
         const eCtx = exportCanvas.getContext("2d");
-        eCtx.fillStyle = "#ffffff";
+        const isDark = document.body.classList.contains("dark-mode");
+        eCtx.fillStyle = isDark ? "#1e293b" : "#ffffff";
         eCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
         eCtx.drawImage(pencilCanvas, 0, 0);
 
@@ -5270,7 +5577,8 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         exportCanvas.width = pencilCanvas.width;
         exportCanvas.height = pencilCanvas.height;
         const eCtx = exportCanvas.getContext("2d");
-        eCtx.fillStyle = "#ffffff";
+        const isDark = document.body.classList.contains("dark-mode");
+        eCtx.fillStyle = isDark ? "#1e293b" : "#ffffff";
         eCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
         eCtx.drawImage(pencilCanvas, 0, 0);
 
@@ -5916,7 +6224,10 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           });
         }
         if (state.noteViewMode?.includes("canvas") || state.pdfViewMode?.includes("canvas")) {
-          setTimeout(() => initPencilCanvas(true), 40);
+          setTimeout(() => {
+            if (typeof initPencilCanvas === "function") initPencilCanvas(true);
+            if (typeof loadDrawingForCurrentNote === "function") loadDrawingForCurrentNote();
+          }, 50);
         }
         saveData();
       };
@@ -5930,7 +6241,10 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
             b.classList.toggle("active", b.dataset.mode === state.noteViewMode);
           });
         }
-        setTimeout(() => initPencilCanvas(true), 50);
+        setTimeout(() => {
+          if (typeof initPencilCanvas === "function") initPencilCanvas(true);
+          if (typeof loadDrawingForCurrentNote === "function") loadDrawingForCurrentNote();
+        }, 50);
       };
 
       function showToast(msg) {
@@ -7871,6 +8185,13 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         document.body.classList.toggle("dark-mode", theme === "dark");
         localStorage.setItem(THEME_KEY, theme);
         document.getElementById("btn-theme-toggle").textContent = theme === "dark" ? "☀️" : "🌙";
+        if (typeof setCanvasColor === "function") {
+          if (theme === "dark" && currentColor === "#0f172a") {
+            setCanvasColor("#ffffff");
+          } else if (theme === "light" && (currentColor === "#ffffff" || currentColor === "#f8fafc")) {
+            setCanvasColor("#0f172a");
+          }
+        }
       }
 
       document.getElementById("btn-theme-toggle").onclick = () => {
@@ -8637,6 +8958,9 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       window.openGraphModal = openGraphModal;
       window.openNoteForModule = openNoteForModule;
       window.jumpCurrentNoteToPlanner = jumpCurrentNoteToPlanner;
+      window.setCanvasColor = setCanvasColor;
+      window.setCanvasTool = setCanvasTool;
+      window.scrollCanvasTo = scrollCanvasTo;
       window.toggleAiDrawer = function toggleAiDrawer() {
         if (aiDrawer) aiDrawer.classList.toggle("open");
       };
