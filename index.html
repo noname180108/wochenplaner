@@ -351,12 +351,13 @@
     }
     .pdf-viewport {
       flex: 1;
-      overflow: auto;
+      overflow-y: auto;
+      overflow-x: auto;
       -webkit-overflow-scrolling: touch;
-      padding: 18px;
+      padding: 20px 14px 80px 14px;
       display: flex;
-      justify-content: center;
-      align-items: flex-start;
+      flex-direction: column;
+      align-items: center;
       position: relative;
       user-select: none;
       -webkit-user-select: none;
@@ -366,9 +367,67 @@
     body.dark-mode .pdf-viewport {
       background: #0f172a;
     }
+    .pdf-printout-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 26px;
+      width: 100%;
+    }
+    .pdf-page-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      flex-shrink: 0;
+      transition: transform 0.15s ease;
+    }
+    .pdf-page-card-header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 6px;
+      margin-bottom: 6px;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.78rem;
+      font-weight: 600;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .pdf-page-badge {
+      background: rgba(15, 23, 42, 0.75);
+      padding: 3px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+    .pdf-page-actions {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .pdf-page-actions .btn {
+      font-size: 0.72rem;
+      padding: 2px 8px;
+      background: rgba(15, 23, 42, 0.75);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(4px);
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .pdf-page-actions .btn:hover {
+      background: var(--primary);
+      color: #fff;
+    }
     .pdf-sheet-wrapper {
       position: relative;
-      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 6px 30px rgba(0, 0, 0, 0.4);
       border-radius: 6px;
       overflow: hidden;
       background: #ffffff;
@@ -377,12 +436,12 @@
       -webkit-user-select: none;
       -webkit-touch-callout: none;
     }
-    #pdf-render-canvas {
+    .pdf-render-canvas, #pdf-render-canvas {
       display: block;
       user-select: none;
       -webkit-user-select: none;
     }
-    #pdf-markup-canvas {
+    .pdf-markup-canvas, #pdf-markup-canvas {
       position: absolute;
       top: 0;
       left: 0;
@@ -1963,6 +2022,7 @@
               <button class="btn btn-icon" data-format="img" title="Bild ([!Bild](url))">🖼️</button>
               <button class="btn btn-icon" data-format="wiki" title="Begriff vernetzen ([[Notiz]])">🔗 [[ ]]</button>
               <button class="btn btn-icon" data-format="hr" title="Trennlinie (---)">—</button>
+              <button class="btn btn-sm" id="btn-insert-pdf-printout-direct" title="PDF als Dateiausdruck in Notiz einfügen (OneNote-Style)" onclick="promptInsertPdfPrintoutIntoNote()" style="font-size:0.75rem; padding:2px 6px; font-weight:600; margin-left:4px;">🖨️ Ausdruck</button>
             </div>
             <!-- Ansichtsmodi für Notizen -->
             <div class="view-modes" id="note-view-modes">
@@ -1990,11 +2050,23 @@
               <!-- Obere PDF Navigationsleiste -->
               <div class="pdf-top-toolbar" id="pdf-top-toolbar">
                 <div style="display:flex; align-items:center; gap:6px;">
-                  <button class="btn btn-icon" id="btn-pdf-prev-page" title="Vorherige Seite (◀)" onclick="changePdfPage(-1)">◀</button>
-                  <span style="font-size:0.82rem; font-weight:600; white-space:nowrap;">
-                    Seite <input type="number" id="inp-pdf-page-num" min="1" max="1" value="1" style="width:44px; text-align:center; padding:2px 4px; border-radius:4px; border:1px solid var(--border); background:var(--card); font-weight:700;" onchange="jumpToPdfPage(parseInt(this.value))"> / <span id="pdf-page-total">1</span>
-                  </span>
-                  <button class="btn btn-icon" id="btn-pdf-next-page" title="Nächste Seite (▶)" onclick="changePdfPage(1)">▶</button>
+                  <div style="display:inline-flex; border-radius:6px; background:var(--bg); border:1px solid var(--border); overflow:hidden;">
+                    <button class="btn btn-sm active" id="btn-pdf-mode-printout" onclick="setPdfDisplayMode('printout')" title="Alle Folien untereinander als Ausdruck (Endlos-Scroll)">📜 Ausdruck</button>
+                    <button class="btn btn-sm" id="btn-pdf-mode-single" onclick="setPdfDisplayMode('single')" title="Einzelne Folie anzeigen (Präsentationsmodus)">📄 Einzelfolie</button>
+                  </div>
+                  <div id="pdf-printout-jump-nav" style="display:inline-flex; align-items:center; gap:5px;">
+                    <span style="font-size:0.8rem; font-weight:600; color:var(--text-muted);"><span id="pdf-printout-total-count">0</span> Folien</span>
+                    <select id="sel-pdf-jump-page" onchange="scrollToPdfPage(parseInt(this.value))" style="font-size:0.75rem; padding:2px 6px; border-radius:4px; border:1px solid var(--border); background:var(--card); color:var(--text); font-weight:600;">
+                      <option value="1">Folie 1...</option>
+                    </select>
+                  </div>
+                  <div id="pdf-single-page-nav" style="display:none; align-items:center; gap:6px;">
+                    <button class="btn btn-icon" id="btn-pdf-prev-page" title="Vorherige Seite (◀)" onclick="changePdfPage(-1)">◀</button>
+                    <span style="font-size:0.82rem; font-weight:600; white-space:nowrap;">
+                      Seite <input type="number" id="inp-pdf-page-num" min="1" max="1" value="1" style="width:44px; text-align:center; padding:2px 4px; border-radius:4px; border:1px solid var(--border); background:var(--card); font-weight:700;" onchange="jumpToPdfPage(parseInt(this.value))"> / <span id="pdf-page-total">1</span>
+                    </span>
+                    <button class="btn btn-icon" id="btn-pdf-next-page" title="Nächste Seite (▶)" onclick="changePdfPage(1)">▶</button>
+                  </div>
                 </div>
 
                 <div style="display:flex; align-items:center; gap:4px;">
@@ -2068,11 +2140,10 @@
                 </div>
               </div>
 
-              <!-- PDF Viewport mit Folien- und Annotations-Canvas -->
+              <!-- PDF Viewport mit Ausdruck-Container -->
               <div class="pdf-viewport" id="pdf-viewport">
-                <div class="pdf-sheet-wrapper" id="pdf-sheet-wrapper">
-                  <canvas id="pdf-render-canvas"></canvas>
-                  <canvas id="pdf-markup-canvas"></canvas>
+                <div class="pdf-printout-container" id="pdf-printout-container">
+                  <!-- Dynamisch gerenderte Folienkarten -->
                 </div>
               </div>
             </div>
@@ -5774,43 +5845,46 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       };
 
       // =========================================================================
-      // PDF.JS VORLESUNGSFOLIEN-RENDERING & APPLE PENCIL MARKUP ENGINE
+      // PDF.JS DATEIAUSDRUCK (CONTINUOUS MULTI-PAGE PRINTOUT) & APPLE PENCIL ENGINE
       // =========================================================================
       let currentPdfDoc = null;
       let currentPdfId = null;
       let currentPdfPageNum = 1;
+      let activePdfPageNum = 1;
       let totalPdfPages = 1;
       let currentPdfScale = 1.0;
-      let pdfRenderTask = null;
-      let isPdfRendering = false;
+      let pdfDisplayMode = "printout"; // "printout" (Endlos-Ausdruck) oder "single" (Einzelfolie)
       let pdfRawViewActive = false;
 
       let pdfMarkupTool = "pen"; // "pen", "brush", "highlighter", "eraser"
       let pdfMarkupColor = "#dc2626";
       let pdfMarkupSize = 3;
       let pdfPalmRejection = true;
+
       let isPdfDrawing = false;
       let pdfActivePointerId = null;
       let pdfActivePointerType = null;
+      let activePdfCanvas = null;
+      let activePdfCtx = null;
       let pdfStrokePoints = [];
       let pdfLastPressure = 0.2;
-      let pdfUndoStack = [];
-      let pdfRedoStack = [];
+
+      // Pro Seite Undo & Redo History
+      const pdfUndoStacks = new Map(); // pageNum -> Array of dataUrls
+      const pdfRedoStacks = new Map(); // pageNum -> Array of dataUrls
       const MAX_PDF_UNDO = 30;
 
+      // Handballenschutz: Viewport per Finger scrollen
       let isPdfTouchPanning = false;
       let pdfTouchPanStartX = 0;
       let pdfTouchPanStartY = 0;
       let pdfTouchPanScrollTop = 0;
       let pdfTouchPanScrollLeft = 0;
-      let pdfListenersAttached = false;
 
       async function initPdfViewerAndMarkup(pdfId) {
         if (!pdfId) return;
         try {
-          if (currentPdfDoc && currentPdfId) {
-            savePdfPageDrawing(currentPdfId, currentPdfPageNum);
-          }
+          saveAllPendingPdfDrawings();
 
           const blob = await getPdfBlobFromDb(pdfId);
           if (!blob) {
@@ -5837,27 +5911,35 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
             currentPdfDoc = await loadingTask.promise;
             currentPdfId = pdfId;
             currentPdfPageNum = 1;
+            activePdfPageNum = 1;
             totalPdfPages = currentPdfDoc.numPages || 1;
+            pdfUndoStacks.clear();
+            pdfRedoStacks.clear();
 
-            const inp = document.getElementById("inp-pdf-page-num");
-            const totalSpan = document.getElementById("pdf-page-total");
-            if (inp) {
-              inp.value = 1;
-              inp.min = 1;
-              inp.max = totalPdfPages;
-            }
-            if (totalSpan) totalSpan.textContent = totalPdfPages;
+            updatePdfHeaderControls();
 
-            attachPdfMarkupListeners();
-            await fitPdfPageToWidth(true);
-
+            // Automatische Breitenanpassung für das iPad
             const vp = document.getElementById("pdf-viewport");
+            try {
+              const p1 = await currentPdfDoc.getPage(1);
+              const unscaledVp = p1.getViewport({ scale: 1.0 });
+              const availableW = Math.max(320, (vp?.clientWidth || 800) - 48);
+              let s = availableW / unscaledVp.width;
+              s = Math.max(0.3, Math.min(2.5, s));
+              currentPdfScale = Math.round(s * 100) / 100;
+            } catch(e) {
+              currentPdfScale = 1.0;
+            }
+
+            // Alle Seiten des Ausdrucks rendern
+            await renderAllPdfPrintoutPages(false);
+
             const toolbar = document.getElementById("pdf-markup-toolbar");
             if (vp && !pdfRawViewActive) vp.style.display = "flex";
             if (toolbar && !pdfRawViewActive) toolbar.style.display = "flex";
             if (pdfViewerFrame && !pdfRawViewActive) pdfViewerFrame.style.display = "none";
           }
-        } catch (e) {
+        } catch(e) {
           console.error("Fehler beim Laden des PDFs mit PDF.js:", e);
           if (pdfViewerFrame) pdfViewerFrame.style.display = "block";
           const vp = document.getElementById("pdf-viewport");
@@ -5865,38 +5947,101 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         }
       }
 
-      async function renderCurrentPdfPage(preserveExistingMarkup = false) {
-        if (!currentPdfDoc || !currentPdfId) return;
+      function updatePdfHeaderControls() {
+        // Folienanzahl & Sprungliste im Ausdruck
+        const countSpan = document.getElementById("pdf-printout-total-count");
+        if (countSpan) countSpan.textContent = totalPdfPages;
 
-        const rCanvas = document.getElementById("pdf-render-canvas");
-        const mCanvas = document.getElementById("pdf-markup-canvas");
-        const wrapper = document.getElementById("pdf-sheet-wrapper");
-        const vp = document.getElementById("pdf-viewport");
-        if (!rCanvas || !mCanvas || !wrapper || !vp) return;
-
-        const rCtx = rCanvas.getContext("2d");
-        const mCtx = mCanvas.getContext("2d");
-
-        let markupDataBefore = null;
-        if (preserveExistingMarkup && mCanvas.width > 0 && mCanvas.height > 0) {
-          try {
-            markupDataBefore = mCanvas.toDataURL("image/png");
-          } catch(e) {}
+        const sel = document.getElementById("sel-pdf-jump-page");
+        if (sel) {
+          sel.innerHTML = "";
+          for (let p = 1; p <= totalPdfPages; p++) {
+            const opt = document.createElement("option");
+            opt.value = p;
+            opt.textContent = `Folie ${p} / ${totalPdfPages}`;
+            sel.appendChild(opt);
+          }
+          sel.value = currentPdfPageNum || 1;
         }
 
-        if (pdfRenderTask) {
-          try {
-            await pdfRenderTask.cancel();
-          } catch(e) {}
-          pdfRenderTask = null;
+        // Einzelfolien-Controls
+        const inp = document.getElementById("inp-pdf-page-num");
+        const totalSpan = document.getElementById("pdf-page-total");
+        if (inp) {
+          inp.value = currentPdfPageNum || 1;
+          inp.min = 1;
+          inp.max = totalPdfPages;
+        }
+        if (totalSpan) totalSpan.textContent = totalPdfPages;
+
+        const btnPrev = document.getElementById("btn-pdf-prev-page");
+        const btnNext = document.getElementById("btn-pdf-next-page");
+        if (btnPrev) btnPrev.disabled = (currentPdfPageNum <= 1);
+        if (btnNext) btnNext.disabled = (currentPdfPageNum >= totalPdfPages);
+
+        const zoomLabel = document.getElementById("pdf-zoom-label");
+        if (zoomLabel) zoomLabel.textContent = Math.round((currentPdfScale || 1.0) * 100) + "%";
+      }
+
+      async function renderAllPdfPrintoutPages(preserveMarkup = false) {
+        if (!currentPdfDoc) return;
+        const container = document.getElementById("pdf-printout-container");
+        if (!container) return;
+
+        // Karten für alle Folien erzeugen
+        container.innerHTML = "";
+        for (let p = 1; p <= totalPdfPages; p++) {
+          const card = document.createElement("div");
+          card.className = "pdf-page-card";
+          card.id = `pdf-page-card-${p}`;
+          card.dataset.page = p;
+          if (pdfDisplayMode === "single" && p !== currentPdfPageNum) {
+            card.style.display = "none";
+          }
+
+          card.innerHTML = `
+            <div class="pdf-page-card-header">
+              <span class="pdf-page-badge">📄 Folie ${p} / ${totalPdfPages}</span>
+              <div class="pdf-page-actions">
+                <button class="btn btn-xs" onclick="clearPdfMarkupPage(${p})" title="Handschrift auf Folie ${p} leeren">🗑️ Leeren</button>
+                <button class="btn btn-xs" onclick="insertAnnotatedPdfPageIntoNote(${p})" title="Folie ${p} mit Notizen in Mitschrift einfügen">📥 In Notiz</button>
+                <button class="btn btn-xs" onclick="exportAnnotatedPdfPageAsPng(${p})" title="Folie ${p} als PNG herunterladen">📤 PNG</button>
+              </div>
+            </div>
+            <div class="pdf-sheet-wrapper" id="pdf-sheet-${p}">
+              <canvas class="pdf-render-canvas" id="pdf-render-canvas-${p}"></canvas>
+              <canvas class="pdf-markup-canvas" id="pdf-markup-canvas-${p}" data-page="${p}"></canvas>
+            </div>
+          `;
+          container.appendChild(card);
+
+          const mCanvas = card.querySelector(".pdf-markup-canvas");
+          attachSingleMarkupCanvasListeners(mCanvas);
         }
 
-        isPdfRendering = true;
+        updatePdfHeaderControls();
+
+        // Alle Seiten nacheinander rendern
+        for (let p = 1; p <= totalPdfPages; p++) {
+          await renderSinglePdfPageCard(p, currentPdfScale, preserveMarkup);
+        }
+      }
+
+      async function renderSinglePdfPageCard(pageNum, scale, preserveMarkup = false) {
+        if (!currentPdfDoc) return;
+        const rCanvas = document.getElementById(`pdf-render-canvas-${pageNum}`);
+        const mCanvas = document.getElementById(`pdf-markup-canvas-${pageNum}`);
+        const wrapper = document.getElementById(`pdf-sheet-${pageNum}`);
+        if (!rCanvas || !mCanvas || !wrapper) return;
+
+        let existingMarkupData = null;
+        if (preserveMarkup && mCanvas.width > 0 && mCanvas.height > 0) {
+          try { existingMarkupData = mCanvas.toDataURL("image/png"); } catch(e) {}
+        }
 
         try {
-          const page = await currentPdfDoc.getPage(currentPdfPageNum);
-          let scale = currentPdfScale || 1.0;
-          const pageVp = page.getViewport({ scale: scale });
+          const page = await currentPdfDoc.getPage(pageNum);
+          const pageVp = page.getViewport({ scale: scale || 1.0 });
           const cssW = Math.floor(pageVp.width);
           const cssH = Math.floor(pageVp.height);
 
@@ -5909,291 +6054,220 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           rCanvas.height = Math.floor(cssH * dpr);
           rCanvas.style.width = cssW + "px";
           rCanvas.style.height = cssH + "px";
+          const rCtx = rCanvas.getContext("2d");
           rCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
           mCanvas.width = Math.floor(cssW * dpr);
           mCanvas.height = Math.floor(cssH * dpr);
           mCanvas.style.width = cssW + "px";
           mCanvas.style.height = cssH + "px";
+          const mCtx = mCanvas.getContext("2d");
           mCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-          const renderContext = {
-            canvasContext: rCtx,
-            viewport: pageVp
-          };
-          pdfRenderTask = page.render(renderContext);
-          await pdfRenderTask.promise;
-          pdfRenderTask = null;
+          // Folie mit PDF.js zeichnen
+          await page.render({ canvasContext: rCtx, viewport: pageVp }).promise;
 
-          if (markupDataBefore) {
-            restorePdfMarkupDataUrl(markupDataBefore, cssW, cssH);
+          // Handschrift wiederherstellen
+          if (existingMarkupData) {
+            restoreCanvasDataUrl(mCanvas, existingMarkupData, cssW, cssH);
           } else {
-            await loadPdfPageDrawing(currentPdfId, currentPdfPageNum, cssW, cssH);
+            await loadPdfPageDrawing(currentPdfId, pageNum, cssW, cssH);
           }
-
-          const btnPrev = document.getElementById("btn-pdf-prev-page");
-          const btnNext = document.getElementById("btn-pdf-next-page");
-          if (btnPrev) btnPrev.disabled = (currentPdfPageNum <= 1);
-          if (btnNext) btnNext.disabled = (currentPdfPageNum >= totalPdfPages);
-          const inp = document.getElementById("inp-pdf-page-num");
-          if (inp) inp.value = currentPdfPageNum;
-
-          const zoomLabel = document.getElementById("pdf-zoom-label");
-          if (zoomLabel) zoomLabel.textContent = Math.round(scale * 100) + "%";
-
         } catch(e) {
-          if (e?.name !== "RenderingCancelledException") {
-            console.error("Fehler beim Rendern der PDF-Seite:", e);
-          }
-        } finally {
-          isPdfRendering = false;
+          console.error(`Fehler beim Rendern von Folie ${pageNum}:`, e);
         }
       }
 
-      async function fitPdfPageToWidth(isInitial = false) {
-        if (!currentPdfDoc) return;
-        const vp = document.getElementById("pdf-viewport");
-        if (!vp) return;
-        try {
-          const page = await currentPdfDoc.getPage(currentPdfPageNum);
-          const unscaledVp = page.getViewport({ scale: 1.0 });
-          const availableW = Math.max(300, (vp.clientWidth || 800) - 44);
-          let scale = availableW / unscaledVp.width;
-          scale = Math.max(0.3, Math.min(3.0, scale));
-          currentPdfScale = Math.round(scale * 100) / 100;
-          await renderCurrentPdfPage(!isInitial);
-        } catch(e) {
-          console.error("Fehler bei fitPdfPageToWidth:", e);
-        }
-      }
+      function attachSingleMarkupCanvasListeners(mCanvas) {
+        if (!mCanvas) return;
+        mCanvas.addEventListener("pointerdown", handleMarkupPointerDown, { passive: false });
+        mCanvas.addEventListener("pointermove", handleMarkupPointerMove, { passive: false });
+        mCanvas.addEventListener("pointerup", handleMarkupPointerUp, { passive: false });
+        mCanvas.addEventListener("pointercancel", handleMarkupPointerUp, { passive: false });
+        mCanvas.addEventListener("pointerleave", (e) => {
+          if (isPdfDrawing && e.buttons === 0) handleMarkupPointerUp(e);
+        }, { passive: false });
 
-      async function changePdfZoom(delta) {
-        if (!currentPdfDoc) return;
-        let s = (currentPdfScale || 1.0) + delta;
-        s = Math.max(0.35, Math.min(3.5, s));
-        currentPdfScale = Math.round(s * 100) / 100;
-        await renderCurrentPdfPage(true);
-      }
-
-      async function changePdfPage(delta) {
-        if (!currentPdfDoc) return;
-        const target = currentPdfPageNum + delta;
-        if (target < 1 || target > totalPdfPages) return;
-        await jumpToPdfPage(target);
-      }
-
-      async function jumpToPdfPage(pageNum) {
-        if (!currentPdfDoc) return;
-        const target = Math.max(1, Math.min(totalPdfPages, pageNum || 1));
-        if (target === currentPdfPageNum) return;
-
-        savePdfPageDrawing(currentPdfId, currentPdfPageNum);
-        currentPdfPageNum = target;
-        pdfUndoStack = [];
-        pdfRedoStack = [];
-
-        await renderCurrentPdfPage(false);
-      }
-
-      function savePdfPageDrawing(pdfId, pageNum) {
-        const mCanvas = document.getElementById("pdf-markup-canvas");
-        if (!mCanvas || !pdfId || !pageNum) return;
-        try {
-          const dataUrl = mCanvas.toDataURL("image/png");
-          const key = `pdf_${pdfId}_p${pageNum}`;
-          if (typeof saveDrawingToStorage === "function") {
-            saveDrawingToStorage(key, dataUrl);
+        mCanvas.addEventListener("touchstart", (e) => {
+          if (isPdfDrawing || (pdfActivePointerType === "pen")) {
+            e.preventDefault();
           }
-          const activePdf = getActivePdf();
-          if (activePdf && activePdf.id === pdfId) {
-            activePdf.annotatedPages = activePdf.annotatedPages || [];
-            if (!activePdf.annotatedPages.includes(pageNum)) {
-              activePdf.annotatedPages.push(pageNum);
+        }, { passive: false });
+        mCanvas.addEventListener("touchmove", (e) => {
+          if (isPdfDrawing || (pdfActivePointerType === "pen")) {
+            e.preventDefault();
+          }
+        }, { passive: false });
+      }
+
+      function handleMarkupPointerDown(e) {
+        const mCanvas = e.currentTarget;
+        const pageNum = parseInt(mCanvas.dataset.page, 10);
+        if (!pageNum || !mCanvas) return;
+
+        activePdfCanvas = mCanvas;
+        activePdfCtx = mCanvas.getContext("2d");
+        activePdfPageNum = pageNum;
+        currentPdfPageNum = pageNum;
+
+        // Handballenschutz: Ein-Finger-Scrollen im gesamten Dokument
+        if (e.pointerType === "touch" && pdfPalmRejection) {
+          if (isPdfDrawing && pdfActivePointerType === "pen") {
+            e.preventDefault();
+            return;
+          }
+          isPdfTouchPanning = true;
+          pdfTouchPanStartX = e.clientX;
+          pdfTouchPanStartY = e.clientY;
+          const vp = document.getElementById("pdf-viewport");
+          if (vp) {
+            pdfTouchPanScrollTop = vp.scrollTop;
+            pdfTouchPanScrollLeft = vp.scrollLeft;
+          }
+          return;
+        }
+
+        if (e.pointerType === "pen") {
+          isPdfTouchPanning = false;
+          pdfActivePointerType = "pen";
+          updatePdfPencilBadge(true);
+        } else {
+          pdfActivePointerType = e.pointerType;
+        }
+
+        e.preventDefault();
+        isPdfDrawing = true;
+        pdfActivePointerId = e.pointerId;
+
+        try {
+          mCanvas.setPointerCapture(e.pointerId);
+        } catch(err) {}
+
+        const pt = getPdfCanvasCoordsForElement(e, mCanvas);
+        pdfLastPressure = pt.pressure;
+        pdfStrokePoints = [pt];
+
+        activePdfCtx.beginPath();
+        applyPdfToolStyle(activePdfCtx, pt.pressure);
+        const r = Math.max(0.5, getPdfStrokeWidth(pt.pressure) / 2);
+        activePdfCtx.arc(pt.x, pt.y, r, 0, Math.PI * 2);
+        activePdfCtx.fill();
+      }
+
+      function handleMarkupPointerMove(e) {
+        if (e.pointerType === "touch" && pdfPalmRejection) {
+          if (isPdfDrawing && pdfActivePointerType === "pen") {
+            e.preventDefault();
+            return;
+          }
+          if (isPdfTouchPanning) {
+            const vp = document.getElementById("pdf-viewport");
+            if (vp) {
+              const dy = e.clientY - pdfTouchPanStartY;
+              const dx = e.clientX - pdfTouchPanStartX;
+              vp.scrollTop = pdfTouchPanScrollTop - dy;
+              vp.scrollLeft = pdfTouchPanScrollLeft - dx;
             }
-            activePdf.updatedAt = Date.now();
           }
-        } catch(e) {
-          console.warn("Could not save PDF page markup", e);
-        }
-      }
-
-      async function loadPdfPageDrawing(pdfId, pageNum, cssW, cssH) {
-        clearPdfMarkupCanvasOnly();
-        pdfUndoStack = [];
-        pdfRedoStack = [];
-        if (!pdfId || !pageNum) {
-          savePdfUndoState();
           return;
         }
-        const key = `pdf_${pdfId}_p${pageNum}`;
-        let drawing = null;
-        if (typeof getDrawingFromStorage === "function") {
-          drawing = await getDrawingFromStorage(key);
-        }
-        if (drawing) {
-          restorePdfMarkupDataUrl(drawing, cssW, cssH, () => {
-            savePdfUndoState();
-          });
-        } else {
-          savePdfUndoState();
+
+        if (!isPdfDrawing || !activePdfCanvas || !activePdfCtx) return;
+        if (pdfActivePointerId !== null && e.pointerId !== pdfActivePointerId) return;
+
+        e.preventDefault();
+
+        const events = (typeof e.getCoalescedEvents === "function") ? e.getCoalescedEvents() : [e];
+        const eventList = (events && events.length > 0) ? events : [e];
+
+        for (let i = 0; i < eventList.length; i++) {
+          const subEvent = eventList[i];
+          const rawPt = getPdfCanvasCoordsForElement(subEvent, activePdfCanvas);
+          const smoothedPressure = pdfLastPressure * 0.65 + rawPt.pressure * 0.35;
+          pdfLastPressure = smoothedPressure;
+          const pt = { ...rawPt, pressure: smoothedPressure };
+
+          pdfStrokePoints.push(pt);
+          const len = pdfStrokePoints.length;
+
+          if (len === 2) {
+            const p0 = pdfStrokePoints[0];
+            const p1 = pdfStrokePoints[1];
+            const midX = (p0.x + p1.x) / 2;
+            const midY = (p0.y + p1.y) / 2;
+
+            activePdfCtx.beginPath();
+            applyPdfToolStyle(activePdfCtx, (p0.pressure + p1.pressure) / 2);
+            activePdfCtx.moveTo(p0.x, p0.y);
+            activePdfCtx.lineTo(midX, midY);
+            activePdfCtx.stroke();
+          } else if (len >= 3) {
+            const p0 = pdfStrokePoints[len - 3];
+            const p1 = pdfStrokePoints[len - 2];
+            const p2 = pdfStrokePoints[len - 1];
+
+            const mid1X = (p0.x + p1.x) / 2;
+            const mid1Y = (p0.y + p1.y) / 2;
+            const mid2X = (p1.x + p2.x) / 2;
+            const mid2Y = (p1.y + p2.y) / 2;
+
+            activePdfCtx.beginPath();
+            applyPdfToolStyle(activePdfCtx, p1.pressure);
+            activePdfCtx.moveTo(mid1X, mid1Y);
+            activePdfCtx.quadraticCurveTo(p1.x, p1.y, mid2X, mid2Y);
+            activePdfCtx.stroke();
+          }
         }
       }
 
-      function clearPdfMarkupCanvasOnly() {
-        const mCanvas = document.getElementById("pdf-markup-canvas");
-        if (!mCanvas) return;
-        const mCtx = mCanvas.getContext("2d");
-        mCtx.save();
-        mCtx.setTransform(1, 0, 0, 1, 0, 0);
-        mCtx.clearRect(0, 0, mCanvas.width, mCanvas.height);
-        mCtx.restore();
-        const dpr = window.devicePixelRatio || 1;
-        mCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      }
-
-      function restorePdfMarkupDataUrl(dataUrl, targetW, targetH, callback) {
-        const mCanvas = document.getElementById("pdf-markup-canvas");
-        if (!mCanvas) return;
-        const mCtx = mCanvas.getContext("2d");
-        clearPdfMarkupCanvasOnly();
-        if (!dataUrl) {
-          if (callback) callback();
-          return;
+      function handleMarkupPointerUp(e) {
+        if (e.pointerType === "touch" && pdfPalmRejection) {
+          isPdfTouchPanning = false;
+          if (!isPdfDrawing) return;
         }
-        const img = new Image();
-        img.onload = () => {
-          if (!mCanvas) return;
-          const w = targetW || (mCanvas.width / (window.devicePixelRatio || 1));
-          const h = targetH || (mCanvas.height / (window.devicePixelRatio || 1));
-          mCtx.save();
-          mCtx.drawImage(img, 0, 0, w, h);
-          mCtx.restore();
-          if (callback) callback();
-        };
-        img.onerror = () => {
-          if (callback) callback();
-        };
-        img.src = dataUrl;
-      }
 
-      function savePdfUndoState() {
-        const mCanvas = document.getElementById("pdf-markup-canvas");
-        if (!mCanvas) return;
+        if (!isPdfDrawing) return;
+        if (pdfActivePointerId !== null && e.pointerId !== pdfActivePointerId) return;
+
+        if (activePdfCanvas && activePdfCtx) {
+          const len = pdfStrokePoints.length;
+          if (len >= 2) {
+            const p1 = pdfStrokePoints[len - 2];
+            const p2 = pdfStrokePoints[len - 1];
+            const midX = (p1.x + p2.x) / 2;
+            const midY = (p1.y + p2.y) / 2;
+
+            activePdfCtx.beginPath();
+            applyPdfToolStyle(activePdfCtx, p2.pressure);
+            activePdfCtx.moveTo(midX, midY);
+            activePdfCtx.lineTo(p2.x, p2.y);
+            activePdfCtx.stroke();
+          }
+        }
+
+        isPdfDrawing = false;
         try {
-          const data = mCanvas.toDataURL("image/png");
-          pdfUndoStack.push(data);
-          if (pdfUndoStack.length > MAX_PDF_UNDO) pdfUndoStack.shift();
-          pdfRedoStack = [];
-        } catch(e) {}
-      }
-
-      function undoPdfMarkup() {
-        if (pdfUndoStack.length <= 1) {
-          if (pdfUndoStack.length === 1) {
-            pdfRedoStack.push(pdfUndoStack.pop());
-            clearPdfMarkupCanvasOnly();
-            savePdfPageDrawing(currentPdfId, currentPdfPageNum);
+          if (activePdfCanvas && activePdfCanvas.hasPointerCapture(e.pointerId)) {
+            activePdfCanvas.releasePointerCapture(e.pointerId);
           }
-          return;
-        }
-        const current = pdfUndoStack.pop();
-        pdfRedoStack.push(current);
-        const prev = pdfUndoStack[pdfUndoStack.length - 1];
-        restorePdfMarkupDataUrl(prev, null, null, () => {
-          savePdfPageDrawing(currentPdfId, currentPdfPageNum);
-        });
-      }
+        } catch(err) {}
 
-      function redoPdfMarkup() {
-        if (pdfRedoStack.length === 0) return;
-        const next = pdfRedoStack.pop();
-        pdfUndoStack.push(next);
-        restorePdfMarkupDataUrl(next, null, null, () => {
-          savePdfPageDrawing(currentPdfId, currentPdfPageNum);
-        });
-      }
+        pdfActivePointerId = null;
+        pdfStrokePoints = [];
 
-      function clearPdfMarkupCurrentPage() {
-        if (confirm(`Handschrift auf Folie ${currentPdfPageNum} wirklich löschen? Die PDF-Folie bleibt unberührt!`)) {
-          clearPdfMarkupCanvasOnly();
-          savePdfUndoState();
-          savePdfPageDrawing(currentPdfId, currentPdfPageNum);
-          showToast(`🗑️ Notizen auf Folie ${currentPdfPageNum} gelöscht.`);
+        if (activePdfCanvas && activePdfPageNum) {
+          savePdfPageUndoState(activePdfPageNum);
+          savePdfPageDrawing(currentPdfId, activePdfPageNum);
+          triggerAutoSave();
         }
       }
 
-      function setPdfMarkupTool(tool) {
-        pdfMarkupTool = tool;
-        document.querySelectorAll("#pdf-markup-toolbar .btn-canvas-tool").forEach(b => {
-          b.classList.toggle("active", b.id === `pdf-tool-${tool}`);
-        });
-      }
-
-      function setPdfMarkupColor(hex) {
-        pdfMarkupColor = hex;
-        document.querySelectorAll("#pdf-markup-toolbar .canvas-color-dot").forEach(dot => {
-          dot.classList.toggle("active", (dot.dataset.color || "").toLowerCase() === hex.toLowerCase());
-        });
-        const cp = document.getElementById("pdf-markup-color-picker");
-        if (cp && cp.value.toLowerCase() !== hex.toLowerCase()) {
-          cp.value = hex;
-        }
-        if (pdfMarkupTool === "eraser") {
-          setPdfMarkupTool("pen");
-        }
-      }
-
-      function setPdfMarkupSize(size, btnEl) {
-        pdfMarkupSize = parseFloat(size);
-        if (btnEl) {
-          document.querySelectorAll("#pdf-markup-toolbar .btn-canvas-size").forEach(b => b.classList.remove("active"));
-          btnEl.classList.add("active");
-        }
-        const slider = document.getElementById("pdf-stroke-slider");
-        const val = document.getElementById("pdf-stroke-val");
-        if (slider) slider.value = pdfMarkupSize;
-        if (val) val.textContent = pdfMarkupSize + "px";
-      }
-
-      function togglePdfPalmRejection() {
-        pdfPalmRejection = !pdfPalmRejection;
-        const btn = document.getElementById("btn-pdf-palm-rejection");
-        const txt = document.getElementById("pdf-palm-status-text");
-        if (pdfPalmRejection) {
-          if (txt) txt.textContent = "AN (Finger scrollt)";
-          btn?.classList.add("btn-primary");
-          showToast("✋ PDF-Handballenschutz AN: Nur Apple Pencil schreibt. Finger scrollt!");
-        } else {
-          if (txt) txt.textContent = "AUS (Finger zeichnet)";
-          btn?.classList.remove("btn-primary");
-          showToast("👆 PDF Finger-Zeichnen AN: Zeichnen auch mit Finger.");
-        }
-        updatePdfPencilBadge(false);
-      }
-
-      function updatePdfPencilBadge(isActive) {
-        const badge = document.getElementById("pdf-pencil-indicator-pill");
-        if (!badge) return;
-        if (isActive) {
-          badge.innerHTML = "✏️ Apple Pencil: <strong>Aktiv</strong>";
-          badge.style.color = "var(--primary)";
-          badge.style.borderColor = "var(--primary)";
-          badge.style.background = "var(--primary-subtle)";
-        } else {
-          badge.innerHTML = pdfPalmRejection ? "✋ Handballen geschützt" : "👆 Finger aktiv";
-          badge.style.color = "var(--text-muted)";
-          badge.style.borderColor = "var(--border)";
-          badge.style.background = "var(--bg-subtle)";
-        }
-      }
-
-      function getPdfCanvasCoords(e) {
-        const mCanvas = document.getElementById("pdf-markup-canvas");
-        if (!mCanvas) return { x: 0, y: 0, pressure: 0.5, pointerType: e.pointerType || "pen" };
-        const rect = mCanvas.getBoundingClientRect();
+      function getPdfCanvasCoordsForElement(e, canvasEl) {
+        if (!canvasEl) return { x: 0, y: 0, pressure: 0.5, pointerType: e.pointerType || "pen" };
+        const rect = canvasEl.getBoundingClientRect();
         const dpr = window.devicePixelRatio || 1;
-        const logicalW = mCanvas.width / dpr;
-        const logicalH = mCanvas.height / dpr;
+        const logicalW = canvasEl.width / dpr;
+        const logicalH = canvasEl.height / dpr;
         const scaleX = (rect.width > 0) ? (logicalW / rect.width) : 1;
         const scaleY = (rect.height > 0) ? (logicalH / rect.height) : 1;
 
@@ -6201,17 +6275,7 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         const y = (e.clientY - rect.top) * scaleY;
 
         let rawPressure = (typeof e.pressure === "number") ? e.pressure : 0;
-        let pressure = 0.5;
-
-        if (e.pointerType === "pen") {
-          if (rawPressure > 0) {
-            pressure = rawPressure;
-          } else {
-            pressure = 0.2;
-          }
-        } else {
-          pressure = 0.5;
-        }
+        let pressure = (e.pointerType === "pen") ? (rawPressure > 0 ? rawPressure : 0.2) : 0.5;
 
         return {
           x,
@@ -6269,195 +6333,323 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         }
       }
 
-      function handlePdfPointerDown(e) {
-        const mCanvas = document.getElementById("pdf-markup-canvas");
-        if (!mCanvas) return;
-        const mCtx = mCanvas.getContext("2d");
+      function setPdfDisplayMode(mode) {
+        pdfDisplayMode = mode;
+        const btnPrintout = document.getElementById("btn-pdf-mode-printout");
+        const btnSingle = document.getElementById("btn-pdf-mode-single");
+        const printoutNav = document.getElementById("pdf-printout-jump-nav");
+        const singleNav = document.getElementById("pdf-single-page-nav");
 
-        if (e.pointerType === "touch" && pdfPalmRejection) {
-          if (isPdfDrawing && pdfActivePointerType === "pen") {
-            e.preventDefault();
-            return;
-          }
-          isPdfTouchPanning = true;
-          pdfTouchPanStartX = e.clientX;
-          pdfTouchPanStartY = e.clientY;
-          const vp = document.getElementById("pdf-viewport");
-          if (vp) {
-            pdfTouchPanScrollTop = vp.scrollTop;
-            pdfTouchPanScrollLeft = vp.scrollLeft;
-          }
-          return;
-        }
+        btnPrintout?.classList.toggle("active", mode === "printout");
+        btnSingle?.classList.toggle("active", mode === "single");
 
-        if (e.pointerType === "pen") {
-          isPdfTouchPanning = false;
-          pdfActivePointerType = "pen";
-          updatePdfPencilBadge(true);
+        const cards = document.querySelectorAll("#pdf-printout-container .pdf-page-card");
+        if (mode === "printout") {
+          if (printoutNav) printoutNav.style.display = "inline-flex";
+          if (singleNav) singleNav.style.display = "none";
+          cards.forEach(c => { c.style.display = "flex"; });
+          showToast("📜 Ausdruck-Modus: Alle Folien fortlaufend untereinander.");
+          scrollToPdfPage(currentPdfPageNum);
         } else {
-          pdfActivePointerType = e.pointerType;
+          if (printoutNav) printoutNav.style.display = "none";
+          if (singleNav) singleNav.style.display = "inline-flex";
+          cards.forEach(c => {
+            c.style.display = (parseInt(c.dataset.page, 10) === currentPdfPageNum) ? "flex" : "none";
+          });
+          const inp = document.getElementById("inp-pdf-page-num");
+          if (inp) inp.value = currentPdfPageNum;
+          showToast(`📄 Einzelfolie: Folie ${currentPdfPageNum} angezeigt.`);
         }
-
-        e.preventDefault();
-        isPdfDrawing = true;
-        pdfActivePointerId = e.pointerId;
-
-        try {
-          mCanvas.setPointerCapture(e.pointerId);
-        } catch(err) {}
-
-        const pt = getPdfCanvasCoords(e);
-        pdfLastPressure = pt.pressure;
-        pdfStrokePoints = [pt];
-
-        mCtx.beginPath();
-        applyPdfToolStyle(mCtx, pt.pressure);
-        const r = Math.max(0.5, getPdfStrokeWidth(pt.pressure) / 2);
-        mCtx.arc(pt.x, pt.y, r, 0, Math.PI * 2);
-        mCtx.fill();
       }
 
-      function handlePdfPointerMove(e) {
-        if (e.pointerType === "touch" && pdfPalmRejection) {
-          if (isPdfDrawing && pdfActivePointerType === "pen") {
-            e.preventDefault();
-            return;
+      function scrollToPdfPage(pageNum) {
+        currentPdfPageNum = Math.max(1, Math.min(totalPdfPages, pageNum || 1));
+        activePdfPageNum = currentPdfPageNum;
+        if (pdfDisplayMode === "single") {
+          document.querySelectorAll("#pdf-printout-container .pdf-page-card").forEach(c => {
+            c.style.display = (parseInt(c.dataset.page, 10) === currentPdfPageNum) ? "flex" : "none";
+          });
+          const inp = document.getElementById("inp-pdf-page-num");
+          if (inp) inp.value = currentPdfPageNum;
+        } else {
+          const card = document.getElementById(`pdf-page-card-${currentPdfPageNum}`);
+          if (card) {
+            card.scrollIntoView({ behavior: "smooth", block: "start" });
           }
-          if (isPdfTouchPanning) {
-            const vp = document.getElementById("pdf-viewport");
-            if (vp) {
-              const dx = e.clientX - pdfTouchPanStartX;
-              const dy = e.clientY - pdfTouchPanStartY;
-              vp.scrollTop = pdfTouchPanScrollTop - dy;
-              vp.scrollLeft = pdfTouchPanScrollLeft - dx;
+        }
+        const sel = document.getElementById("sel-pdf-jump-page");
+        if (sel) sel.value = currentPdfPageNum;
+        updatePdfHeaderControls();
+      }
+
+      async function fitPdfPageToWidth() {
+        if (!currentPdfDoc) return;
+        const vp = document.getElementById("pdf-viewport");
+        if (!vp) return;
+        try {
+          const page = await currentPdfDoc.getPage(1);
+          const unscaledVp = page.getViewport({ scale: 1.0 });
+          const availableW = Math.max(300, (vp.clientWidth || 800) - 48);
+          let scale = availableW / unscaledVp.width;
+          scale = Math.max(0.3, Math.min(3.0, scale));
+          currentPdfScale = Math.round(scale * 100) / 100;
+          await renderAllPdfPrintoutPages(true);
+        } catch(e) {
+          console.error("Fehler bei fitPdfPageToWidth:", e);
+        }
+      }
+
+      async function changePdfZoom(delta) {
+        if (!currentPdfDoc) return;
+        let s = (currentPdfScale || 1.0) + delta;
+        s = Math.max(0.35, Math.min(3.5, s));
+        currentPdfScale = Math.round(s * 100) / 100;
+        await renderAllPdfPrintoutPages(true);
+      }
+
+      async function changePdfPage(delta) {
+        if (!currentPdfDoc) return;
+        const target = currentPdfPageNum + delta;
+        if (target < 1 || target > totalPdfPages) return;
+        scrollToPdfPage(target);
+      }
+
+      async function jumpToPdfPage(pageNum) {
+        if (!currentPdfDoc) return;
+        const target = Math.max(1, Math.min(totalPdfPages, pageNum || 1));
+        scrollToPdfPage(target);
+      }
+
+      function savePdfPageDrawing(pdfId, pageNum) {
+        const mCanvas = document.getElementById(`pdf-markup-canvas-${pageNum}`);
+        if (!mCanvas || !pdfId || !pageNum) return;
+        try {
+          const dataUrl = mCanvas.toDataURL("image/png");
+          const key = `pdf_${pdfId}_p${pageNum}`;
+          if (typeof saveDrawingToStorage === "function") {
+            saveDrawingToStorage(key, dataUrl);
+          }
+          const activePdf = getActivePdf();
+          if (activePdf && activePdf.id === pdfId) {
+            activePdf.annotatedPages = activePdf.annotatedPages || [];
+            if (!activePdf.annotatedPages.includes(pageNum)) {
+              activePdf.annotatedPages.push(pageNum);
             }
+            activePdf.updatedAt = Date.now();
+          }
+        } catch(e) {
+          console.warn("Could not save PDF page markup", e);
+        }
+      }
+
+      function saveAllPendingPdfDrawings() {
+        if (!currentPdfDoc || !currentPdfId) return;
+        for (let p = 1; p <= totalPdfPages; p++) {
+          savePdfPageDrawing(currentPdfId, p);
+        }
+      }
+
+      async function loadPdfPageDrawing(pdfId, pageNum, cssW, cssH) {
+        const mCanvas = document.getElementById(`pdf-markup-canvas-${pageNum}`);
+        if (!mCanvas) return;
+        clearSingleCanvasOnly(mCanvas);
+
+        if (!pdfId || !pageNum) {
+          savePdfPageUndoState(pageNum);
+          return;
+        }
+
+        const key = `pdf_${pdfId}_p${pageNum}`;
+        let drawing = null;
+        if (typeof getDrawingFromStorage === "function") {
+          drawing = await getDrawingFromStorage(key);
+        }
+        if (drawing) {
+          restoreCanvasDataUrl(mCanvas, drawing, cssW, cssH, () => {
+            savePdfPageUndoState(pageNum);
+          });
+        } else {
+          savePdfPageUndoState(pageNum);
+        }
+      }
+
+      function clearSingleCanvasOnly(canvasEl) {
+        if (!canvasEl) return;
+        const ctx = canvasEl.getContext("2d");
+        ctx.save();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
+        ctx.restore();
+        const dpr = window.devicePixelRatio || 1;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function restoreCanvasDataUrl(canvasEl, dataUrl, targetW, targetH, callback) {
+        if (!canvasEl) return;
+        const ctx = canvasEl.getContext("2d");
+        clearSingleCanvasOnly(canvasEl);
+        if (!dataUrl) {
+          if (callback) callback();
+          return;
+        }
+        const img = new Image();
+        img.onload = () => {
+          if (!canvasEl) return;
+          const w = targetW || (canvasEl.width / (window.devicePixelRatio || 1));
+          const h = targetH || (canvasEl.height / (window.devicePixelRatio || 1));
+          ctx.save();
+          ctx.drawImage(img, 0, 0, w, h);
+          ctx.restore();
+          if (callback) callback();
+        };
+        img.onerror = () => { if (callback) callback(); };
+        img.src = dataUrl;
+      }
+
+      function savePdfPageUndoState(pageNum) {
+        const mCanvas = document.getElementById(`pdf-markup-canvas-${pageNum}`);
+        if (!mCanvas) return;
+        try {
+          const data = mCanvas.toDataURL("image/png");
+          let stack = pdfUndoStacks.get(pageNum);
+          if (!stack) {
+            stack = [];
+            pdfUndoStacks.set(pageNum, stack);
+          }
+          stack.push(data);
+          if (stack.length > MAX_PDF_UNDO) stack.shift();
+          pdfRedoStacks.set(pageNum, []);
+        } catch(e) {}
+      }
+
+      function undoPdfMarkup() {
+        const pageNum = activePdfPageNum || currentPdfPageNum || 1;
+        const mCanvas = document.getElementById(`pdf-markup-canvas-${pageNum}`);
+        if (!mCanvas) return;
+
+        let undoStack = pdfUndoStacks.get(pageNum) || [];
+        let redoStack = pdfRedoStacks.get(pageNum) || [];
+
+        if (undoStack.length <= 1) {
+          if (undoStack.length === 1) {
+            redoStack.push(undoStack.pop());
+            clearSingleCanvasOnly(mCanvas);
+            savePdfPageDrawing(currentPdfId, pageNum);
           }
           return;
         }
 
-        if (!isPdfDrawing) return;
-        if (pdfActivePointerId !== null && e.pointerId !== pdfActivePointerId) return;
-
-        const mCanvas = document.getElementById("pdf-markup-canvas");
-        if (!mCanvas) return;
-        const mCtx = mCanvas.getContext("2d");
-
-        e.preventDefault();
-
-        const events = (typeof e.getCoalescedEvents === "function") ? e.getCoalescedEvents() : [e];
-        const eventList = (events && events.length > 0) ? events : [e];
-
-        for (let i = 0; i < eventList.length; i++) {
-          const subEvent = eventList[i];
-          const rawPt = getPdfCanvasCoords(subEvent);
-          const smoothedPressure = pdfLastPressure * 0.65 + rawPt.pressure * 0.35;
-          pdfLastPressure = smoothedPressure;
-          const pt = { ...rawPt, pressure: smoothedPressure };
-
-          pdfStrokePoints.push(pt);
-          const len = pdfStrokePoints.length;
-
-          if (len === 2) {
-            const p0 = pdfStrokePoints[0];
-            const p1 = pdfStrokePoints[1];
-            const midX = (p0.x + p1.x) / 2;
-            const midY = (p0.y + p1.y) / 2;
-
-            mCtx.beginPath();
-            applyPdfToolStyle(mCtx, (p0.pressure + p1.pressure) / 2);
-            mCtx.moveTo(p0.x, p0.y);
-            mCtx.lineTo(midX, midY);
-            mCtx.stroke();
-          } else if (len >= 3) {
-            const p0 = pdfStrokePoints[len - 3];
-            const p1 = pdfStrokePoints[len - 2];
-            const p2 = pdfStrokePoints[len - 1];
-
-            const mid1X = (p0.x + p1.x) / 2;
-            const mid1Y = (p0.y + p1.y) / 2;
-            const mid2X = (p1.x + p2.x) / 2;
-            const mid2Y = (p1.y + p2.y) / 2;
-
-            mCtx.beginPath();
-            applyPdfToolStyle(mCtx, p1.pressure);
-            mCtx.moveTo(mid1X, mid1Y);
-            mCtx.quadraticCurveTo(p1.x, p1.y, mid2X, mid2Y);
-            mCtx.stroke();
-          }
-        }
+        const current = undoStack.pop();
+        redoStack.push(current);
+        const prev = undoStack[undoStack.length - 1];
+        restoreCanvasDataUrl(mCanvas, prev, null, null, () => {
+          savePdfPageDrawing(currentPdfId, pageNum);
+        });
       }
 
-      function handlePdfPointerUp(e) {
-        if (e.pointerType === "touch" && pdfPalmRejection) {
-          isPdfTouchPanning = false;
-          if (!isPdfDrawing) return;
-        }
-
-        if (!isPdfDrawing) return;
-        if (pdfActivePointerId !== null && e.pointerId !== pdfActivePointerId) return;
-
-        const mCanvas = document.getElementById("pdf-markup-canvas");
-        if (mCanvas) {
-          const mCtx = mCanvas.getContext("2d");
-          const len = pdfStrokePoints.length;
-          if (len >= 2) {
-            const p1 = pdfStrokePoints[len - 2];
-            const p2 = pdfStrokePoints[len - 1];
-            const midX = (p1.x + p2.x) / 2;
-            const midY = (p1.y + p2.y) / 2;
-
-            mCtx.beginPath();
-            applyPdfToolStyle(mCtx, p2.pressure);
-            mCtx.moveTo(midX, midY);
-            mCtx.lineTo(p2.x, p2.y);
-            mCtx.stroke();
-          }
-        }
-
-        isPdfDrawing = false;
-        try {
-          if (mCanvas && mCanvas.hasPointerCapture(e.pointerId)) {
-            mCanvas.releasePointerCapture(e.pointerId);
-          }
-        } catch(err) {}
-
-        pdfActivePointerId = null;
-        pdfStrokePoints = [];
-        savePdfUndoState();
-        savePdfPageDrawing(currentPdfId, currentPdfPageNum);
-        triggerAutoSave();
-      }
-
-      function attachPdfMarkupListeners() {
-        if (pdfListenersAttached) return;
-        const mCanvas = document.getElementById("pdf-markup-canvas");
+      function redoPdfMarkup() {
+        const pageNum = activePdfPageNum || currentPdfPageNum || 1;
+        const mCanvas = document.getElementById(`pdf-markup-canvas-${pageNum}`);
         if (!mCanvas) return;
 
-        mCanvas.addEventListener("pointerdown", handlePdfPointerDown, { passive: false });
-        mCanvas.addEventListener("pointermove", handlePdfPointerMove, { passive: false });
-        mCanvas.addEventListener("pointerup", handlePdfPointerUp, { passive: false });
-        mCanvas.addEventListener("pointercancel", handlePdfPointerUp, { passive: false });
-        mCanvas.addEventListener("pointerleave", (e) => {
-          if (isPdfDrawing && e.buttons === 0) handlePdfPointerUp(e);
-        }, { passive: false });
+        let undoStack = pdfUndoStacks.get(pageNum) || [];
+        let redoStack = pdfRedoStacks.get(pageNum) || [];
 
-        mCanvas.addEventListener("touchstart", (e) => {
-          if (isPdfDrawing || (pdfActivePointerType === "pen")) {
-            e.preventDefault();
-          }
-        }, { passive: false });
-        mCanvas.addEventListener("touchmove", (e) => {
-          if (isPdfDrawing || (pdfActivePointerType === "pen")) {
-            e.preventDefault();
-          }
-        }, { passive: false });
-
-        pdfListenersAttached = true;
+        if (redoStack.length === 0) return;
+        const next = redoStack.pop();
+        undoStack.push(next);
+        restoreCanvasDataUrl(mCanvas, next, null, null, () => {
+          savePdfPageDrawing(currentPdfId, pageNum);
+        });
       }
 
-      function getMergedPdfCanvas() {
-        const rCanvas = document.getElementById("pdf-render-canvas");
-        const mCanvas = document.getElementById("pdf-markup-canvas");
+      function clearPdfMarkupCurrentPage() {
+        const p = activePdfPageNum || currentPdfPageNum || 1;
+        clearPdfMarkupPage(p);
+      }
+
+      function clearPdfMarkupPage(pageNum) {
+        const p = pageNum || activePdfPageNum || currentPdfPageNum || 1;
+        if (confirm(`Handschrift auf Folie ${p} wirklich löschen? Die PDF-Folie bleibt unberührt!`)) {
+          const mCanvas = document.getElementById(`pdf-markup-canvas-${p}`);
+          if (mCanvas) {
+            clearSingleCanvasOnly(mCanvas);
+            savePdfPageUndoState(p);
+            savePdfPageDrawing(currentPdfId, p);
+            showToast(`🗑️ Notizen auf Folie ${p} gelöscht.`);
+          }
+        }
+      }
+
+      function setPdfMarkupTool(tool) {
+        pdfMarkupTool = tool;
+        document.querySelectorAll("#pdf-markup-toolbar .btn-canvas-tool").forEach(b => {
+          b.classList.toggle("active", b.id === `pdf-tool-${tool}`);
+        });
+      }
+
+      function setPdfMarkupColor(hex) {
+        pdfMarkupColor = hex;
+        document.querySelectorAll("#pdf-markup-toolbar .canvas-color-dot").forEach(dot => {
+          dot.classList.toggle("active", (dot.dataset.color || "").toLowerCase() === hex.toLowerCase());
+        });
+        const cp = document.getElementById("pdf-markup-color-picker");
+        if (cp && cp.value.toLowerCase() !== hex.toLowerCase()) {
+          cp.value = hex;
+        }
+        if (pdfMarkupTool === "eraser") {
+          setPdfMarkupTool("pen");
+        }
+      }
+
+      function setPdfMarkupSize(size, btnEl) {
+        pdfMarkupSize = parseFloat(size);
+        if (btnEl) {
+          document.querySelectorAll("#pdf-markup-toolbar .btn-canvas-size").forEach(b => b.classList.remove("active"));
+          btnEl.classList.add("active");
+        }
+        const slider = document.getElementById("pdf-stroke-slider");
+        const val = document.getElementById("pdf-stroke-val");
+        if (slider) slider.value = pdfMarkupSize;
+        if (val) val.textContent = pdfMarkupSize + "px";
+      }
+
+      function togglePdfPalmRejection() {
+        pdfPalmRejection = !pdfPalmRejection;
+        const btn = document.getElementById("btn-pdf-palm-rejection");
+        const txt = document.getElementById("pdf-palm-status-text");
+        if (pdfPalmRejection) {
+          if (txt) txt.textContent = "AN (Finger scrollt)";
+          btn?.classList.add("btn-primary");
+          showToast("✋ PDF-Handballenschutz AN: Nur Apple Pencil schreibt. Finger scrollt das Skript!");
+        } else {
+          if (txt) txt.textContent = "AUS (Finger zeichnet)";
+          btn?.classList.remove("btn-primary");
+          showToast("👆 PDF Finger-Zeichnen AN: Zeichnen auch mit dem Finger.");
+        }
+        updatePdfPencilBadge(false);
+      }
+
+      function updatePdfPencilBadge(isActive) {
+        const badge = document.getElementById("pdf-pencil-indicator-pill");
+        if (!badge) return;
+        if (isActive) {
+          badge.innerHTML = "✏️ Apple Pencil: <strong>Aktiv</strong>";
+          badge.style.color = "var(--primary)";
+          badge.style.borderColor = "var(--primary)";
+          badge.style.background = "var(--primary-subtle)";
+        } else {
+          badge.innerHTML = pdfPalmRejection ? "✋ Handballen geschützt" : "👆 Finger aktiv";
+          badge.style.color = "var(--text-muted)";
+          badge.style.borderColor = "var(--border)";
+          badge.style.background = "var(--bg-subtle)";
+        }
+      }
+
+      function getMergedPdfCanvasForPage(pageNum) {
+        const p = pageNum || activePdfPageNum || currentPdfPageNum || 1;
+        const rCanvas = document.getElementById(`pdf-render-canvas-${p}`);
+        const mCanvas = document.getElementById(`pdf-markup-canvas-${p}`);
         if (!rCanvas || !mCanvas) return null;
 
         const merged = document.createElement("canvas");
@@ -6473,8 +6665,9 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         return merged;
       }
 
-      function insertAnnotatedPdfPageIntoNote() {
-        const merged = getMergedPdfCanvas();
+      function insertAnnotatedPdfPageIntoNote(pageNum) {
+        const p = pageNum || activePdfPageNum || currentPdfPageNum || 1;
+        const merged = getMergedPdfCanvasForPage(p);
         if (!merged) {
           showToast("⚠️ Keine PDF-Folie zum Einfügen vorhanden.");
           return;
@@ -6483,7 +6676,7 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           const dataUrl = merged.toDataURL("image/png");
           const timeStr = new Date().toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
           const dateStr = new Date().toLocaleDateString("de-CH");
-          const snippet = `\n\n### 📑 Folie ${currentPdfPageNum} (${dateStr}, ${timeStr})\n![Folie ${currentPdfPageNum}](${dataUrl})\n\n`;
+          const snippet = `\n\n### 📑 Folie ${p} (${dateStr}, ${timeStr})\n![Folie ${p}](${dataUrl})\n\n`;
 
           const active = (state.activeType === "pdf") ? getActivePdf() : getActiveNote();
           if (active) {
@@ -6498,15 +6691,16 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           attachPreviewCheckboxListeners();
           updateWordCounts(noteContentArea.value);
           triggerAutoSave();
-          showToast(`📥 Folie ${currentPdfPageNum} mit Notizen erfolgreich eingefügt!`);
+          showToast(`📥 Folie ${p} mit Notizen erfolgreich eingefügt!`);
         } catch(e) {
           console.error("Fehler beim Einfügen der Folie in die Notiz:", e);
           showToast("⚠️ Fehler beim Einfügen der Folie.");
         }
       }
 
-      function exportAnnotatedPdfPageAsPng() {
-        const merged = getMergedPdfCanvas();
+      function exportAnnotatedPdfPageAsPng(pageNum) {
+        const p = pageNum || activePdfPageNum || currentPdfPageNum || 1;
+        const merged = getMergedPdfCanvasForPage(p);
         if (!merged) {
           showToast("⚠️ Keine Folie vorhanden.");
           return;
@@ -6516,12 +6710,12 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           const a = document.createElement("a");
           const pdf = getActivePdf();
           const title = (pdf && pdf.title) ? pdf.title.replace(/[^a-zA-Z0-9_-]/g, "_") : "Vorlesung";
-          a.download = `${title}_Seite_${currentPdfPageNum}_Notizen.png`;
+          a.download = `${title}_Seite_${p}_Notizen.png`;
           a.href = dataUrl;
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
-          showToast(`📤 Folie ${currentPdfPageNum} als PNG heruntergeladen!`);
+          showToast(`📤 Folie ${p} als PNG heruntergeladen!`);
         } catch(e) {
           console.error("Export-Fehler:", e);
         }
@@ -6555,6 +6749,81 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         }
       }
 
+      // Dialog zum Einfügen eines PDF-Dateiausdrucks in eine reguläre Notiz
+      async function promptInsertPdfPrintoutIntoNote() {
+        const mod = getActiveModule();
+        if (!mod) return;
+        const pdfs = mod.pdfs || [];
+        if (pdfs.length === 0) {
+          if (confirm("Kein PDF in diesem Fach vorhanden. Möchtest du jetzt ein PDF hochladen und als Ausdruck einfügen?")) {
+            const input = document.getElementById("file-import-pdf");
+            if (input) input.click();
+          }
+          return;
+        }
+
+        const options = pdfs.map((p, idx) => `${idx + 1}: ${p.title}`).join("\n");
+        const choice = prompt(`Welches Dokument als Ausdruck einfügen?\n\n${options}\n\nGib die Nummer (1-${pdfs.length}) ein:`, "1");
+        if (!choice) return;
+        const idx = parseInt(choice, 10) - 1;
+        if (isNaN(idx) || idx < 0 || idx >= pdfs.length) return;
+
+        const targetPdf = pdfs[idx];
+        showToast("⏳ Erzeuge Dateiausdruck...");
+
+        try {
+          const blob = await getPdfBlobFromDb(targetPdf.id);
+          if (!blob) return;
+          const arrayBuffer = await blob.arrayBuffer();
+          const doc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+          let markdownSnippet = `\n\n## 🖨️ Dateiausdruck: ${targetPdf.title}\n\n`;
+
+          for (let p = 1; p <= doc.numPages; p++) {
+            const page = await doc.getPage(p);
+            const pageVp = page.getViewport({ scale: 1.2 });
+            const c = document.createElement("canvas");
+            c.width = Math.floor(pageVp.width);
+            c.height = Math.floor(pageVp.height);
+            const ctx = c.getContext("2d");
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, c.width, c.height);
+            await page.render({ canvasContext: ctx, viewport: pageVp }).promise;
+
+            // Vorhandene Notizen dieser Seite hinzumischen falls vorhanden
+            const savedDrawing = await getDrawingFromStorage(`pdf_${targetPdf.id}_p${p}`);
+            if (savedDrawing) {
+              await new Promise(resolve => {
+                const img = new Image();
+                img.onload = () => { ctx.drawImage(img, 0, 0, c.width, c.height); resolve(); };
+                img.onerror = resolve;
+                img.src = savedDrawing;
+              });
+            }
+
+            const pageUrl = c.toDataURL("image/png");
+            markdownSnippet += `### Folie ${p}\n![Folie ${p}](${pageUrl})\n\n`;
+          }
+
+          noteContentArea.value = (noteContentArea.value || "") + markdownSnippet;
+          const active = getActiveNote();
+          if (active) {
+            active.content = noteContentArea.value;
+            active.updatedAt = Date.now();
+          }
+          notePreview.innerHTML = parseMarkdown(noteContentArea.value);
+          attachPreviewCheckboxListeners();
+          updateWordCounts(noteContentArea.value);
+          triggerAutoSave();
+          showToast(`🎉 Dateiausdruck (${doc.numPages} Folien) erfolgreich in Notiz eingefügt!`);
+        } catch(err) {
+          console.error("Fehler beim Dateiausdruck:", err);
+          showToast("⚠️ Fehler beim Erstellen des Dateiausdrucks.");
+        }
+      }
+
+      window.setPdfDisplayMode = setPdfDisplayMode;
+      window.scrollToPdfPage = scrollToPdfPage;
+      window.clearPdfMarkupPage = clearPdfMarkupPage;
       window.changePdfPage = changePdfPage;
       window.jumpToPdfPage = jumpToPdfPage;
       window.changePdfZoom = changePdfZoom;
@@ -6570,14 +6839,17 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       window.exportAnnotatedPdfPageAsPng = exportAnnotatedPdfPageAsPng;
       window.togglePdfRawView = togglePdfRawView;
       window.loadPdfIntoViewer = initPdfViewerAndMarkup;
-      window.renderCurrentPdfPage = renderCurrentPdfPage;
+      window.renderCurrentPdfPage = renderAllPdfPrintoutPages;
+      window.promptInsertPdfPrintoutIntoNote = promptInsertPdfPrintoutIntoNote;
       window.getCurrentPdfState = function() {
         return {
           hasDoc: currentPdfDoc !== null,
           id: currentPdfId,
           pageNum: currentPdfPageNum,
+          activePage: activePdfPageNum,
           totalPages: totalPdfPages,
           scale: currentPdfScale,
+          displayMode: pdfDisplayMode,
           tool: pdfMarkupTool,
           color: pdfMarkupColor,
           size: pdfMarkupSize
