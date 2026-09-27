@@ -36,102 +36,106 @@
 
   <style>
     :root {
-      --bg: #f8fafc;
-      --bg-body: #f8fafc;
-      --sidebar: #f1f5f9;
+      --bg: #fbfbfd;
+      --bg-body: #fbfbfd;
+      --sidebar: #f5f5f7;
       --card: #ffffff;
       --bg-card: #ffffff;
-      --card-hover: #f8fafc;
-      --card-active: #e2e8f0;
-      --bg-subtle: #f8fafc;
-      --border: #e2e8f0;
-      --border-focus: #94a3b8;
-      --text: #0f172a;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --text-dim: #94a3b8;
-      --text-light: #94a3b8;
-      --primary: #4f46e5;
-      --primary-hover: #4338ca;
-      --primary-subtle: #eef2ff;
-      --ai-accent: #8b5cf6;
-      --ai-subtle: #f5f3ff;
-      --danger: #ef4444;
-      --code-bg: #f1f5f9;
-      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
-      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+      --card-hover: #ebebee;
+      --card-active: #e2e2e7;
+      --bg-subtle: #f5f5f7;
+      --border: rgba(0, 0, 0, 0.08);
+      --border-subtle: rgba(0, 0, 0, 0.04);
+      --border-focus: #0071e3;
+      --text: #1d1d1f;
+      --text-main: #1d1d1f;
+      --text-muted: #6e6e73;
+      --text-dim: #86868b;
+      --text-light: #86868b;
+      --primary: #0071e3;
+      --primary-hover: #0077ed;
+      --primary-subtle: rgba(0, 113, 227, 0.08);
+      --ai-accent: #7c3aed;
+      --ai-subtle: rgba(124, 58, 237, 0.08);
+      --danger: #ff3b30;
+      --code-bg: #f5f5f7;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.06);
+      --shadow-float: 0 12px 36px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.04);
       --radius: 12px;
       --radius-sm: 8px;
-      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, monospace;
 
-      /* Fachfarben */
-      --philo-bg: #f5f3ff;
-      --philo-border: #ddd6fe;
+      /* Fachfarben - dezente Apple Chips */
+      --philo-bg: rgba(139, 92, 246, 0.08);
+      --philo-border: rgba(139, 92, 246, 0.2);
       --philo-text: #6d28d9;
 
-      --critical-bg: #fff1f2;
-      --critical-border: #fecdd3;
+      --critical-bg: rgba(244, 63, 94, 0.08);
+      --critical-border: rgba(244, 63, 94, 0.2);
       --critical-text: #be123c;
 
-      --logic-bg: #fffbeb;
-      --logic-border: #fde68a;
+      --logic-bg: rgba(245, 158, 11, 0.08);
+      --logic-border: rgba(245, 158, 11, 0.2);
       --logic-text: #b45309;
 
-      --finance-bg: #ecfdf5;
-      --finance-border: #a7f3d0;
+      --finance-bg: rgba(16, 185, 129, 0.08);
+      --finance-border: rgba(16, 185, 129, 0.2);
       --finance-text: #047857;
 
-      --accounting-bg: #f0fdfa;
-      --accounting-border: #99f6e4;
-      --accounting-text: #0f766e;
+      --accounting-bg: rgba(14, 165, 233, 0.08);
+      --accounting-border: rgba(14, 165, 233, 0.2);
+      --accounting-text: #0369a1;
     }
 
     [data-theme="dark"], body.dark-mode {
-      --bg: #090d16;
-      --bg-body: #090d16;
-      --sidebar: #0f172a;
-      --card: #131b2e;
-      --bg-card: #131b2e;
-      --card-hover: #1b2844;
-      --card-active: #223255;
-      --bg-subtle: #19233c;
-      --border: #24324f;
+      --bg: #0c0c0e;
+      --bg-body: #0c0c0e;
+      --sidebar: #131316;
+      --card: #1c1c20;
+      --bg-card: #1c1c20;
+      --card-hover: #24242a;
+      --card-active: #2c2c34;
+      --bg-subtle: #18181c;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-subtle: rgba(255, 255, 255, 0.04);
       --border-focus: #3b82f6;
-      --text: #f8fafc;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --text-dim: #64748b;
-      --text-light: #64748b;
-      --primary: #6366f1;
-      --primary-hover: #818cf8;
-      --primary-subtle: rgba(99, 102, 241, 0.15);
+      --text: #f5f5f7;
+      --text-main: #f5f5f7;
+      --text-muted: #86868b;
+      --text-dim: #636366;
+      --text-light: #636366;
+      --primary: #3b82f6;
+      --primary-hover: #60a5fa;
+      --primary-subtle: rgba(59, 130, 246, 0.15);
       --ai-accent: #a78bfa;
-      --ai-subtle: rgba(139, 92, 246, 0.15);
-      --danger: #f87171;
-      --code-bg: #0b1120;
-      --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.35);
-      --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.45);
+      --ai-subtle: rgba(167, 139, 250, 0.15);
+      --danger: #ff453a;
+      --code-bg: #141418;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.5);
+      --shadow-float: 0 16px 44px rgba(0, 0, 0, 0.65), 0 2px 8px rgba(0, 0, 0, 0.3);
 
-      --philo-bg: #1e1b4b;
-      --philo-border: #3730a3;
-      --philo-text: #c7d2fe;
+      --philo-bg: rgba(139, 92, 246, 0.14);
+      --philo-border: rgba(139, 92, 246, 0.28);
+      --philo-text: #c4b5fd;
 
-      --critical-bg: #4c0519;
-      --critical-border: #881337;
+      --critical-bg: rgba(244, 63, 94, 0.14);
+      --critical-border: rgba(244, 63, 94, 0.28);
       --critical-text: #fecdd3;
 
-      --logic-bg: #451a03;
-      --logic-border: #78350f;
+      --logic-bg: rgba(245, 158, 11, 0.14);
+      --logic-border: rgba(245, 158, 11, 0.28);
       --logic-text: #fde68a;
 
-      --finance-bg: #022c22;
-      --finance-border: #065f46;
+      --finance-bg: rgba(16, 185, 129, 0.14);
+      --finance-border: rgba(16, 185, 129, 0.28);
       --finance-text: #a7f3d0;
 
-      --accounting-bg: #042f2e;
-      --accounting-border: #115e59;
-      --accounting-text: #99f6e4;
+      --accounting-bg: rgba(14, 165, 233, 0.14);
+      --accounting-border: rgba(14, 165, 233, 0.28);
+      --accounting-text: #bae6fd;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -291,70 +295,438 @@
     .folder-header.drag-over { background: var(--primary-subtle); border-color: var(--primary); }
 
     /* Editor-Bereich */
-    .editor-top { padding: 0.75rem 1.25rem 0.5rem; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.4rem; background: var(--card); }
-    .editor-title-row { display: flex; align-items: center; gap: 0.5rem; }
-    .note-title-input {
-      flex: 1; border: none; font-size: 1.35rem; font-weight: 700; color: var(--text);
-      background: transparent; outline: none; padding: 2px 0;
+    /* Editor-Bereich: Minimalist & Spatiös */
+    .editor-top {
+      padding: 0.5rem 1.25rem 0.25rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--card);
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      flex-shrink: 0;
     }
-    .editor-meta-row { display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); flex-wrap: wrap; gap: 0.5rem; }
+    .editor-meta-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      flex-wrap: nowrap;
+    }
+    .editor-meta-left, .editor-meta-right {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-shrink: 0;
+    }
+    .editor-meta-center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .btn-ghost-subtle {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: var(--radius-sm);
+      font-size: 0.76rem;
+      font-weight: 500;
+      padding: 3px 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+    .btn-ghost-subtle:hover {
+      background: var(--card-hover);
+      color: var(--text);
+      border-color: var(--border-hover);
+    }
+    .meta-pill-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
     .select-category {
-      background: var(--bg); border: 1px solid var(--border); border-radius: 4px;
-      color: var(--text); padding: 2px 6px; font-size: 0.75rem; outline: none; cursor: pointer;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      padding: 2px 7px;
+      font-size: 0.73rem;
+      outline: none;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .meta-date {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      display: none;
+    }
+    @media (min-width: 1400px) {
+      .meta-date {
+        display: inline;
+      }
+    }
+    .meta-save {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+    }
+    .editor-hero-row {
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+    .note-title-input, .note-hero-title-input {
+      width: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      padding: 2px 0 4px 0;
+      font-family: var(--font-sans);
+    }
+    .note-title-input::placeholder, .note-hero-title-input::placeholder {
+      color: var(--text-dim);
+      font-weight: 500;
     }
 
-    /* Editor Toolbar */
+    /* Editor Toolbar: Schmale, elegante Ribbon-Leiste */
     .editor-toolbar {
-      padding: 0.35rem 1rem; border-bottom: 1px solid var(--border); display: flex;
-      align-items: center; justify-content: space-between; background: var(--sidebar); gap: 0.5rem; flex-wrap: wrap;
+      padding: 0.25rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg);
+      gap: 0.5rem;
+      flex-wrap: wrap;
     }
-    .tools-left { display: flex; align-items: center; gap: 0.2rem; flex-wrap: wrap; }
-    .view-modes { display: flex; align-items: center; gap: 0.2rem; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 2px; }
+    .tools-left {
+      display: flex;
+      align-items: center;
+      gap: 0.15rem;
+      flex-wrap: wrap;
+    }
+    .tools-left .btn, .tools-left .btn-icon {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      padding: 3px 6px;
+      border-radius: 6px;
+      box-shadow: none;
+    }
+    .tools-left .btn:hover, .tools-left .btn-icon:hover {
+      background: var(--card-hover);
+      color: var(--text);
+    }
+    .tools-left #btn-insert-pdf-printout-direct {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-weight: 600;
+      border-radius: 6px;
+    }
+    .view-modes {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      background: rgba(120, 120, 128, 0.08);
+      border: none;
+      border-radius: 9999px;
+      padding: 2px;
+    }
     .view-btn {
-      padding: 3px 8px; border: none; background: transparent; color: var(--text-muted);
-      font-size: 0.72rem; font-weight: 600; cursor: pointer; border-radius: 4px; transition: all 0.15s;
+      padding: 3px 9px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 9999px;
+      transition: all 0.15s;
     }
     .view-btn:hover { color: var(--text); }
-    .view-btn.active { background: var(--primary); color: #fff; }
+    .view-btn.active {
+      background: var(--card);
+      color: var(--text);
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
 
     /* Editor Body */
     .editor-body { flex: 1; display: flex; overflow: hidden; position: relative; }
     .pane-text, .pane-view, .pane-pdf { height: 100%; overflow-y: auto; }
-    .pane-text { flex: 1; display: flex; border-right: 1px solid var(--border); }
-    .pane-pdf { flex: 1; display: none; flex-direction: column; background: #334155; border-right: 1px solid var(--border); position: relative; overflow: hidden; }
+    .pane-text {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+    }
+    .textarea-edit {
+      width: 100%;
+      height: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 1.05rem;
+      line-height: 1.75;
+      resize: none;
+    }
+    .pane-view {
+      flex: 1;
+      background: var(--card);
+      padding: 1.5rem 2rem;
+    }
+    .pane-pdf {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      background: var(--bg);
+      border-right: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Context-sensitive Hiding of Markdown Toolbar */
+    .col-editor:has(.editor-body.pdf-view-pdfonly) .editor-toolbar,
+    .col-editor:has(.editor-body.pdf-view-canvas) .editor-toolbar,
+    .col-editor:has(.editor-body.view-canvas-only) .editor-toolbar {
+      display: none !important;
+    }
+
+    /* PDF Toolbar: Minimal, single-line, no wrapping */
     .pdf-top-toolbar {
-      padding: 0.35rem 0.75rem;
-      background: var(--sidebar);
+      padding: 0 0.85rem;
+      height: 38px;
+      min-height: 38px;
+      background: var(--card);
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 0.5rem;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
       flex-shrink: 0;
       z-index: 12;
       user-select: none;
       -webkit-user-select: none;
     }
+    .pdf-top-toolbar::-webkit-scrollbar {
+      display: none;
+    }
+    .pdf-top-toolbar .btn-ghost-subtle {
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .pdf-top-toolbar .btn-icon {
+      width: 26px;
+      height: 26px;
+      padding: 0;
+      font-size: 0.75rem;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+    @media (max-width: 650px) {
+      .pdf-top-toolbar .pdf-btn-text {
+        display: none;
+      }
+    }
+
+    /* Schwebende Apple Pencil Palette (iPadOS Tool Palette / PencilKit Style) */
     .pdf-markup-toolbar {
-      padding: 0.35rem 0.75rem;
-      background: var(--bg-subtle);
-      border-bottom: 1px solid var(--border);
+      position: absolute;
+      top: 48px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 90;
       display: flex;
       align-items: center;
-      gap: 0.4rem;
-      flex-wrap: wrap;
-      flex-shrink: 0;
-      z-index: 11;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background: rgba(24, 24, 28, 0.88);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.15);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       user-select: none;
       -webkit-user-select: none;
+      max-width: calc(100% - 20px);
+      width: max-content;
+      box-sizing: border-box;
     }
+    [data-theme="light"] .pdf-markup-toolbar,
+    body:not(.dark-mode) .pdf-markup-toolbar {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+    .canvas-tool-group {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .btn-canvas-tool {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      font-weight: 500;
+      padding: 3px 7px;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-canvas-tool:hover {
+      background: rgba(120, 120, 128, 0.12);
+      color: var(--text);
+    }
+    .btn-canvas-tool.active {
+      background: var(--card);
+      color: var(--text);
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    }
+    .canvas-divider {
+      width: 1px;
+      height: 16px;
+      background: var(--border);
+      margin: 0 3px;
+    }
+    .canvas-color-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .canvas-color-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      position: relative;
+    }
+    .canvas-color-dot:hover {
+      transform: scale(1.15);
+    }
+    .canvas-color-dot.active {
+      transform: scale(1.2);
+      box-shadow: 0 0 0 2px var(--card), 0 0 0 4px var(--primary);
+    }
+    .pdf-markup-toolbar .canvas-color-picker-label {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      background: transparent;
+      border: 1px dashed var(--border);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .canvas-size-group {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .btn-canvas-size {
+      border: none;
+      background: transparent;
+      padding: 2px 6px;
+      border-radius: 9999px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .btn-canvas-size.active {
+      background: var(--card);
+      color: var(--text);
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    .pdf-markup-toolbar .canvas-slider-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 0.66rem;
+      color: var(--text-muted);
+    }
+    .pdf-markup-toolbar input[type="range"] {
+      width: 44px;
+      height: 4px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+    .btn-canvas-palm {
+      border: 1px solid var(--border);
+      background: transparent;
+      padding: 2px 7px;
+      border-radius: 9999px;
+      font-size: 0.71rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      transition: all 0.15s ease;
+    }
+    .btn-canvas-palm.active,
+    .btn-canvas-palm.btn-primary {
+      background: var(--primary-subtle) !important;
+      color: var(--primary) !important;
+      border-color: var(--primary) !important;
+      font-weight: 600;
+      box-shadow: none !important;
+    }
+    .pdf-markup-toolbar #pdf-pencil-indicator-pill {
+      border-radius: 9999px !important;
+      font-size: 0.7rem !important;
+      padding: 2px 8px !important;
+    }
+    .pdf-markup-toolbar .canvas-action-group .btn-icon {
+      border: none;
+      background: transparent;
+      padding: 3px 6px;
+      font-size: 0.82rem;
+      border-radius: 9999px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .pdf-markup-toolbar .canvas-action-group .btn-icon:hover {
+      background: rgba(120, 120, 128, 0.15);
+      color: var(--text);
+    }
+
+    /* PDF Viewport & Continuous Dateiausdruck (Floating Paper) */
     .pdf-viewport {
       flex: 1;
       overflow-y: auto;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
-      padding: 20px 14px 80px 14px;
+      padding: 36px 20px 100px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -362,16 +734,17 @@
       user-select: none;
       -webkit-user-select: none;
       -webkit-touch-callout: none;
-      background: #475569;
+      background: #0c0c0e;
     }
-    body.dark-mode .pdf-viewport {
-      background: #0f172a;
+    [data-theme="light"] .pdf-viewport,
+    body:not(.dark-mode) .pdf-viewport {
+      background: #ececee;
     }
     .pdf-printout-container {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 26px;
+      gap: 32px;
       width: 100%;
     }
     .pdf-page-card {
@@ -380,61 +753,62 @@
       align-items: center;
       position: relative;
       flex-shrink: 0;
-      transition: transform 0.15s ease;
     }
     .pdf-page-card-header {
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 4px 6px;
-      margin-bottom: 6px;
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 0.78rem;
-      font-weight: 600;
+      padding: 0 4px 6px 4px;
+      color: var(--text-muted);
+      font-size: 0.75rem;
       user-select: none;
       -webkit-user-select: none;
     }
     .pdf-page-badge {
-      background: rgba(15, 23, 42, 0.75);
-      padding: 3px 10px;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      backdrop-filter: blur(4px);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      background: transparent;
+      padding: 0;
+      border: none;
+      box-shadow: none;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
     }
     .pdf-page-actions {
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
+      opacity: 0.3;
+      transition: opacity 0.2s ease;
+    }
+    .pdf-page-card:hover .pdf-page-actions {
+      opacity: 1;
     }
     .pdf-page-actions .btn {
       font-size: 0.72rem;
-      padding: 2px 8px;
-      background: rgba(15, 23, 42, 0.75);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      backdrop-filter: blur(4px);
+      padding: 2px 7px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
       border-radius: 6px;
-      cursor: pointer;
+      box-shadow: var(--shadow-sm);
     }
     .pdf-page-actions .btn:hover {
-      background: var(--primary);
-      color: #fff;
+      background: var(--card-hover);
+      color: var(--text);
     }
     .pdf-sheet-wrapper {
       position: relative;
-      box-shadow: 0 6px 30px rgba(0, 0, 0, 0.4);
-      border-radius: 6px;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.08);
+      border-radius: 8px;
       overflow: hidden;
       background: #ffffff;
       flex-shrink: 0;
       user-select: none;
       -webkit-user-select: none;
       -webkit-touch-callout: none;
+      transition: box-shadow 0.2s ease;
     }
     .pdf-render-canvas, #pdf-render-canvas {
       display: block;
@@ -720,28 +1094,160 @@
       border-color: var(--primary);
     }
     #view-notes.sidebars-hidden .btn-sidebar-toggle,
-    #view-notes.sidebars-mobile-open .btn-sidebar-toggle {
-      background: var(--primary) !important;
-      color: #fff !important;
+    #view-notes.sidebars-mobile-open .btn-sidebar-toggle,
+    .btn-sidebar-toggle.btn-primary {
+      background: var(--primary-subtle) !important;
+      color: var(--primary) !important;
       border-color: var(--primary) !important;
-      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
+      box-shadow: none !important;
     }
 
-    /* Markdown Styling & Math */
-    .markdown { font-size: 0.95rem; line-height: 1.7; color: var(--text); }
-    .markdown h1 { font-size: 1.6rem; margin: 0.8rem 0 0.5rem; font-weight: 700; border-bottom: 1px solid var(--border); padding-bottom: 0.3rem; }
-    .markdown h2 { font-size: 1.3rem; margin: 0.8rem 0 0.4rem; font-weight: 700; }
-    .markdown h3 { font-size: 1.1rem; margin: 0.6rem 0 0.3rem; font-weight: 600; }
-    .markdown p { margin-bottom: 0.75rem; }
-    .markdown ul, .markdown ol { margin: 0.4rem 0 0.75rem 1.4rem; }
-    .markdown li { margin-bottom: 0.25rem; }
-    .markdown blockquote { border-left: 3px solid var(--primary); padding: 0.4rem 0.8rem; background: var(--bg-subtle); margin: 0.5rem 0; border-radius: 0 6px 6px 0; color: var(--text-muted); font-style: italic; }
-    .markdown pre { background: var(--code-bg); padding: 0.8rem; border-radius: 6px; overflow-x: auto; margin: 0.75rem 0; border: 1px solid var(--border); }
-    .markdown code { font-family: var(--font-mono); font-size: 0.88rem; background: var(--code-bg); padding: 2px 4px; border-radius: 4px; }
-    .markdown table { width: 100%; border-collapse: collapse; margin: 0.8rem 0; font-size: 0.88rem; }
-    .markdown th, .markdown td { border: 1px solid var(--border); padding: 6px 10px; text-align: left; }
-    .markdown th { background: var(--bg-subtle); font-weight: 600; }
-    .markdown mark { background: #fef08a; color: #000; padding: 1px 3px; border-radius: 3px; }
+    /* =========================================================================
+       OBERE TOOLS AUSBLENDEN (Fokus / Vollbild für Notizen, Canvas & PDF-Ausdruck)
+       ========================================================================= */
+    body.top-tools-hidden .navbar,
+    body.top-tools-hidden #navbar {
+      display: none !important;
+    }
+    body.top-tools-hidden .view-container {
+      height: 100vh !important;
+      max-height: 100vh !important;
+    }
+    #view-notes.top-tools-hidden .editor-top,
+    #view-notes.top-tools-hidden .editor-toolbar,
+    #view-notes.top-tools-hidden #pdf-top-toolbar,
+    #view-notes.top-tools-hidden #canvas-toolbar {
+      display: none !important;
+    }
+    #view-notes.top-tools-hidden #pdf-markup-toolbar {
+      display: none;
+      top: 14px;
+    }
+    #view-notes.top-tools-hidden.show-floating-pencil #pdf-markup-toolbar {
+      display: flex !important;
+    }
+
+    .floating-top-tools-pill {
+      position: fixed;
+      top: 12px;
+      right: 16px;
+      z-index: 10000;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.32);
+      padding: 4px 10px;
+      border-radius: 24px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      user-select: none;
+      -webkit-user-select: none;
+      animation: fadeInDownTools 0.2s ease-out;
+    }
+    .floating-top-tools-pill .btn {
+      border-radius: 16px;
+    }
+    @keyframes fadeInDownTools {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Markdown Styling: Craft & Apple Notes Typography */
+    .markdown {
+      font-size: 1rem;
+      line-height: 1.75;
+      color: var(--text);
+      max-width: 820px;
+      margin: 0 auto;
+    }
+    .markdown h1 {
+      font-size: 1.85rem;
+      margin: 1.6rem 0 0.8rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+    }
+    .markdown h2 {
+      font-size: 1.4rem;
+      margin: 1.4rem 0 0.6rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    .markdown h3 {
+      font-size: 1.15rem;
+      margin: 1.1rem 0 0.4rem;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+    }
+    .markdown p {
+      margin-bottom: 1rem;
+    }
+    .markdown ul, .markdown ol {
+      margin: 0.4rem 0 1rem 1.4rem;
+    }
+    .markdown li {
+      margin-bottom: 0.35rem;
+    }
+    .markdown blockquote {
+      border-left: 3px solid var(--primary);
+      padding: 0.5rem 1rem;
+      background: var(--bg-subtle);
+      margin: 0.8rem 0;
+      border-radius: 0 8px 8px 0;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+    .markdown pre {
+      background: var(--code-bg);
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1rem 0;
+      border: 1px solid var(--border);
+    }
+    .markdown code {
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      background: var(--code-bg);
+      padding: 2px 5px;
+      border-radius: 4px;
+      color: var(--text);
+    }
+    .markdown table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .markdown th, .markdown td {
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      padding: 8px 12px;
+      text-align: left;
+    }
+    .markdown th:last-child, .markdown td:last-child {
+      border-right: none;
+    }
+    .markdown tr:last-child td {
+      border-bottom: none;
+    }
+    .markdown th {
+      background: var(--bg-subtle);
+      font-weight: 600;
+    }
+    .markdown mark {
+      background: rgba(250, 204, 21, 0.3);
+      color: var(--text);
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
     .markdown del { color: var(--text-dim); }
     .markdown hr { border: none; border-top: 1px solid var(--border); margin: 1.2rem 0; }
     .wikilink { color: var(--primary); text-decoration: none; font-weight: 600; background: var(--primary-subtle); padding: 1px 4px; border-radius: 4px; cursor: pointer; }
@@ -1883,7 +2389,7 @@
 <body data-theme="light">
   <div class="app">
     <!-- Top-Navigationsleiste (Apple iPadOS Style) -->
-    <header class="navbar">
+    <header class="navbar" id="navbar">
       <div class="brand-wrap">
         <div class="brand">🎓 StudSpace</div>
         <button id="btn-sync-badge" class="sync-badge" onclick="openSyncModal()" title="Geräte-Synchronisation verwalten">
@@ -1963,45 +2469,91 @@
 
         <!-- Spalte 3: Notiz-Workspace -->
         <section class="col-editor">
+          <!-- Schwebende Leiste zum Wieder-Einblenden der oberen Tools -->
+          <div id="floating-top-tools-pill" class="floating-top-tools-pill" style="display:none;">
+            <div class="floating-quick-actions" id="floating-quick-actions" style="display:none; align-items:center; gap:4px;">
+              <button class="btn btn-icon btn-sm" id="btn-floating-toggle-pencil" onclick="togglePdfMarkupToolbarOnly()" title="Apple Pencil Werkzeug-Kapsel umschalten">✏️</button>
+              <button class="btn btn-icon btn-sm" onclick="quickSelectPen()" title="Stift">🖊️</button>
+              <button class="btn btn-icon btn-sm" onclick="quickSelectMarker()" title="Marker">🖍️</button>
+              <button class="btn btn-icon btn-sm" onclick="quickSelectEraser()" title="Radierer">🧹</button>
+              <button class="btn btn-icon btn-sm" onclick="quickUndoDrawing()" title="Rückgängig (Undo)">↩️</button>
+              <div style="width:1px; height:18px; background:var(--border); margin:0 3px;"></div>
+            </div>
+            <button class="btn btn-primary btn-sm" id="btn-floating-restore-tools" onclick="toggleTopTools()" title="Alle oberen Werkzeuge wieder einblenden">
+              ▼ Tools einblenden
+            </button>
+          </div>
+
           <div class="editor-top">
-            <div class="editor-title-row">
-              <button class="btn btn-sidebar-toggle" id="btn-toggle-sidebar" title="Module und Notiztitel einklappen für maximale Schreibfläche" onclick="toggleSidebars()">⛶ Nur Notiz (Fokus)</button>
-              <input type="text" id="note-title" class="note-title-input" placeholder="Titel der Notiz...">
-              <button class="btn btn-primary" id="btn-quick-pencil" title="Apple Pencil Zeichenfläche ein-/ausschalten" onclick="togglePencilQuickMode()">✏️ Apple Pencil</button>
-              <div class="note-options-wrapper">
-                <button class="btn btn-icon" id="btn-note-options-toggle" title="Weitere Notiz-Aktionen" onclick="toggleNoteOptionsMenu()">···</button>
-                <div class="note-options-dropdown" id="note-options-dropdown">
-                  <button class="note-opt-item" onclick="closeNoteOptionsMenu(); jumpCurrentNoteToPlanner();">📅 Im Wochenplaner anzeigen</button>
-                  <button class="note-opt-item" id="btn-quick-flashcards">🎴 Karteikarten üben</button>
-                  <button class="note-opt-item" id="btn-quick-pdf">📄 PDF anhängen / anzeigen</button>
-                  <button class="note-opt-item" id="btn-quick-ai">✨ KI-Assistent befragen</button>
-                  <button class="note-opt-item" id="btn-export-md">📥 Als Markdown herunterladen</button>
-                  <button class="note-opt-item" id="btn-print">🖨️ Drucken / PDF</button>
-                  <button class="note-opt-item opt-danger" id="btn-delete-note">🗑️ Notiz löschen</button>
+            <div class="editor-meta-bar">
+              <div class="editor-meta-left">
+                <button class="btn btn-ghost-subtle" id="btn-toggle-sidebar" title="Module und Notiztitel einklappen für maximale Schreibfläche" onclick="toggleSidebars()">
+                  ⛶ <span class="btn-label-text">Fokus</span>
+                </button>
+                <button class="btn btn-ghost-subtle" id="btn-toggle-top-tools-header" title="Alle oberen Leisten & Werkzeuge ausblenden" onclick="toggleTopTools()">
+                  ▲ <span class="btn-label-text">Zen</span>
+                </button>
+                <div class="meta-pill-group">
+                  <select id="note-category" class="select-category" title="Notiz-Kategorie">
+                    <option value="Vorlesung">Vorlesung</option>
+                    <option value="Seminar">Seminar</option>
+                    <option value="Übung">Übung</option>
+                    <option value="Klausur">Klausur</option>
+                    <option value="Zusammenfassung">Zusammenfassung</option>
+                  </select>
+                  <span id="folder-select-label" style="display:none;"></span>
+                  <select id="note-folder-select" class="select-category" title="Ordner zuweisen">
+                    <option value="">📁 (Kein Ordner)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Ansichtsmodi direkt in der Kopfzeile -->
+              <div class="editor-meta-center">
+                <!-- Ansichtsmodi für Notizen -->
+                <div class="view-modes" id="note-view-modes">
+                  <button class="view-btn" data-mode="view-only-edit">Editor</button>
+                  <button class="view-btn active" data-mode="view-split">Geteilt</button>
+                  <button class="view-btn" data-mode="view-canvas-split" title="Text links, Apple Pencil rechts">✏️ Stift + Notiz</button>
+                  <button class="view-btn" data-mode="view-canvas-only" title="Vollbild Apple Pencil Zeichenfläche">🎨 Nur Stift</button>
+                  <button class="view-btn" data-mode="view-only-preview">Vorschau</button>
+                </div>
+                <!-- Ansichtsmodi für PDF + Mitschrift -->
+                <div class="view-modes" id="pdf-view-modes" style="display:none;">
+                  <button class="view-btn" data-pdf-mode="pdf-view-pdfonly">📄 Nur PDF</button>
+                  <button class="view-btn active" data-pdf-mode="pdf-view-split">🌓 PDF + Notiz</button>
+                  <button class="view-btn" data-pdf-mode="pdf-view-canvas" title="Vorlesungsfolie links, Apple Pencil Mitschrift rechts">✏️ PDF + Stift</button>
+                  <button class="view-btn" data-pdf-mode="pdf-view-notesonly">📝 Nur Notiz</button>
+                </div>
+              </div>
+
+              <div class="editor-meta-right">
+                <span id="note-date" class="meta-date">Zuletzt bearbeitet: -</span>
+                <span id="save-indicator" class="meta-save">● Gespeichert</span>
+                <button class="btn btn-ghost-subtle" id="btn-quick-pencil" title="Apple Pencil Zeichenfläche ein-/ausschalten" onclick="togglePencilQuickMode()">✏️ Stift</button>
+                <div class="note-options-wrapper">
+                  <button class="btn btn-icon btn-ghost-subtle" id="btn-note-options-toggle" title="Weitere Notiz-Aktionen" onclick="toggleNoteOptionsMenu()">···</button>
+                  <div class="note-options-dropdown" id="note-options-dropdown">
+                    <button class="note-opt-item" onclick="closeNoteOptionsMenu(); toggleTopTools();">▲ Obere Tools ausblenden</button>
+                    <button class="note-opt-item" onclick="closeNoteOptionsMenu(); jumpCurrentNoteToPlanner();">📅 Im Wochenplaner anzeigen</button>
+                    <button class="note-opt-item" id="btn-quick-flashcards">🎴 Karteikarten üben</button>
+                    <button class="note-opt-item" id="btn-quick-pdf">📄 PDF anhängen / anzeigen</button>
+                    <button class="note-opt-item" id="btn-quick-ai">✨ KI-Assistent befragen</button>
+                    <button class="note-opt-item" id="btn-export-md">📥 Als Markdown herunterladen</button>
+                    <button class="note-opt-item" id="btn-print">🖨️ Drucken / PDF</button>
+                    <button class="note-opt-item opt-danger" id="btn-delete-note">🗑️ Notiz löschen</button>
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="editor-meta-row">
-              <div style="display: flex; gap: 0.65rem; align-items: center; flex-wrap: wrap;">
-                <span>Typ:</span>
-                <select id="note-category" class="select-category">
-                  <option value="Vorlesung">Vorlesung</option>
-                  <option value="Seminar">Seminar</option>
-                  <option value="Übung">Übung</option>
-                  <option value="Klausur">Klausur</option>
-                  <option value="Zusammenfassung">Zusammenfassung</option>
-                </select>
-                <span id="folder-select-label">Ordner:</span>
-                <select id="note-folder-select" class="select-category" title="Ordner zuweisen">
-                  <option value="">📁 (Kein Ordner)</option>
-                </select>
-                <span id="note-date">Zuletzt bearbeitet: -</span>
-              </div>
-              <span id="save-indicator" style="color: var(--text-dim);">● Gespeichert</span>
+
+            <!-- Zweite Zeile: Vollbreiter, eleganter Notiztitel -->
+            <div class="editor-hero-row">
+              <input type="text" id="note-title" class="note-title-input" placeholder="Titel der Notiz...">
             </div>
           </div>
 
-          <!-- Formatierungs- und Ansichtsleiste -->
+          <!-- Formatierungs-Ribbon (rein fokussiert auf Markdown-Werkzeuge) -->
           <div class="editor-toolbar">
             <div class="tools-left">
               <button class="btn btn-icon" data-format="bold" title="Fett (**text**)"><b>B</b></button>
@@ -2022,22 +2574,7 @@
               <button class="btn btn-icon" data-format="img" title="Bild ([!Bild](url))">🖼️</button>
               <button class="btn btn-icon" data-format="wiki" title="Begriff vernetzen ([[Notiz]])">🔗 [[ ]]</button>
               <button class="btn btn-icon" data-format="hr" title="Trennlinie (---)">—</button>
-              <button class="btn btn-sm" id="btn-insert-pdf-printout-direct" title="PDF als Dateiausdruck in Notiz einfügen (OneNote-Style)" onclick="promptInsertPdfPrintoutIntoNote()" style="font-size:0.75rem; padding:2px 6px; font-weight:600; margin-left:4px;">🖨️ Ausdruck</button>
-            </div>
-            <!-- Ansichtsmodi für Notizen -->
-            <div class="view-modes" id="note-view-modes">
-              <button class="view-btn" data-mode="view-only-edit">Editor</button>
-              <button class="view-btn active" data-mode="view-split">Geteilt</button>
-              <button class="view-btn" data-mode="view-canvas-split" title="Text links, Apple Pencil rechts">✏️ Stift + Notiz</button>
-              <button class="view-btn" data-mode="view-canvas-only" title="Vollbild Apple Pencil Zeichenfläche">🎨 Nur Stift</button>
-              <button class="view-btn" data-mode="view-only-preview">Vorschau</button>
-            </div>
-            <!-- Ansichtsmodi für PDF + Mitschrift -->
-            <div class="view-modes" id="pdf-view-modes" style="display:none;">
-              <button class="view-btn" data-pdf-mode="pdf-view-pdfonly">📄 Nur PDF</button>
-              <button class="view-btn active" data-pdf-mode="pdf-view-split">🌓 PDF + Notiz</button>
-              <button class="view-btn" data-pdf-mode="pdf-view-canvas" title="Vorlesungsfolie links, Apple Pencil Mitschrift rechts">✏️ PDF + Stift</button>
-              <button class="view-btn" data-pdf-mode="pdf-view-notesonly">📝 Nur Notiz</button>
+              <button class="btn btn-sm" id="btn-insert-pdf-printout-direct" title="PDF als Dateiausdruck in Notiz einfügen (OneNote-Style)" onclick="promptInsertPdfPrintoutIntoNote()" style="font-size:0.75rem; padding:2px 7px; font-weight:600; margin-left:4px;">🖨️ Ausdruck</button>
             </div>
           </div>
 
@@ -2049,59 +2586,60 @@
 
               <!-- Obere PDF Navigationsleiste -->
               <div class="pdf-top-toolbar" id="pdf-top-toolbar">
-                <div style="display:flex; align-items:center; gap:6px;">
-                  <div style="display:inline-flex; border-radius:6px; background:var(--bg); border:1px solid var(--border); overflow:hidden;">
-                    <button class="btn btn-sm active" id="btn-pdf-mode-printout" onclick="setPdfDisplayMode('printout')" title="Alle Folien untereinander als Ausdruck (Endlos-Scroll)">📜 Ausdruck</button>
-                    <button class="btn btn-sm" id="btn-pdf-mode-single" onclick="setPdfDisplayMode('single')" title="Einzelne Folie anzeigen (Präsentationsmodus)">📄 Einzelfolie</button>
+                <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
+                  <div style="display:inline-flex; border-radius:9999px; background:var(--bg); border:1px solid var(--border); padding:2px; overflow:hidden;">
+                    <button class="btn btn-sm active" id="btn-pdf-mode-printout" onclick="setPdfDisplayMode('printout')" title="Alle Folien untereinander als Ausdruck (Endlos-Scroll)" style="border-radius:9999px; padding:2px 8px; font-size:0.74rem;">📜 Ausdruck</button>
+                    <button class="btn btn-sm" id="btn-pdf-mode-single" onclick="setPdfDisplayMode('single')" title="Einzelne Folie anzeigen (Präsentationsmodus)" style="border-radius:9999px; padding:2px 8px; font-size:0.74rem;">📄 Einzeln</button>
                   </div>
                   <div id="pdf-printout-jump-nav" style="display:inline-flex; align-items:center; gap:5px;">
-                    <span style="font-size:0.8rem; font-weight:600; color:var(--text-muted);"><span id="pdf-printout-total-count">0</span> Folien</span>
-                    <select id="sel-pdf-jump-page" onchange="scrollToPdfPage(parseInt(this.value))" style="font-size:0.75rem; padding:2px 6px; border-radius:4px; border:1px solid var(--border); background:var(--card); color:var(--text); font-weight:600;">
+                    <span style="font-size:0.76rem; font-weight:600; color:var(--text-muted);"><span id="pdf-printout-total-count">0</span> Folien</span>
+                    <select id="sel-pdf-jump-page" onchange="scrollToPdfPage(parseInt(this.value))" style="font-size:0.72rem; padding:2px 6px; border-radius:6px; border:1px solid var(--border); background:var(--card); color:var(--text); font-weight:500;">
                       <option value="1">Folie 1...</option>
                     </select>
                   </div>
                   <div id="pdf-single-page-nav" style="display:none; align-items:center; gap:6px;">
                     <button class="btn btn-icon" id="btn-pdf-prev-page" title="Vorherige Seite (◀)" onclick="changePdfPage(-1)">◀</button>
-                    <span style="font-size:0.82rem; font-weight:600; white-space:nowrap;">
-                      Seite <input type="number" id="inp-pdf-page-num" min="1" max="1" value="1" style="width:44px; text-align:center; padding:2px 4px; border-radius:4px; border:1px solid var(--border); background:var(--card); font-weight:700;" onchange="jumpToPdfPage(parseInt(this.value))"> / <span id="pdf-page-total">1</span>
+                    <span style="font-size:0.76rem; font-weight:600; white-space:nowrap;">
+                      Seite <input type="number" id="inp-pdf-page-num" min="1" max="1" value="1" style="width:38px; text-align:center; padding:1px 3px; border-radius:4px; border:1px solid var(--border); background:var(--card); font-weight:600;" onchange="jumpToPdfPage(parseInt(this.value))"> / <span id="pdf-page-total">1</span>
                     </span>
                     <button class="btn btn-icon" id="btn-pdf-next-page" title="Nächste Seite (▶)" onclick="changePdfPage(1)">▶</button>
                   </div>
                 </div>
 
-                <div style="display:flex; align-items:center; gap:4px;">
+                <div style="display:flex; align-items:center; gap:4px; flex-shrink:0;">
                   <button class="btn btn-icon" id="btn-pdf-zoom-out" title="Verkleinern" onclick="changePdfZoom(-0.15)">🔍−</button>
-                  <span id="pdf-zoom-label" style="font-size:0.75rem; min-width:38px; text-align:center; color:var(--text-muted);">100%</span>
+                  <span id="pdf-zoom-label" style="font-size:0.73rem; min-width:34px; text-align:center; color:var(--text-muted);">100%</span>
                   <button class="btn btn-icon" id="btn-pdf-zoom-in" title="Vergrößern" onclick="changePdfZoom(0.15)">🔍+</button>
-                  <button class="btn" id="btn-pdf-zoom-fit" style="font-size:0.75rem; padding:3px 8px;" onclick="fitPdfPageToWidth()">↔️ Breite</button>
+                  <button class="btn btn-ghost-subtle" id="btn-pdf-zoom-fit" style="font-size:0.72rem; padding:2px 6px;" onclick="fitPdfPageToWidth()">↔️</button>
                 </div>
 
-                <div style="display:flex; align-items:center; gap:5px;">
-                  <button class="btn btn-primary" id="btn-pdf-insert-note" title="Folie mit deinen Apple Pencil Notizen als Bild in Markdown-Notiz einfügen" onclick="insertAnnotatedPdfPageIntoNote()">📥 In Notiz einfügen</button>
-                  <button class="btn" id="btn-pdf-export-png" title="Folie mit Notizen als PNG-Datei herunterladen" onclick="exportAnnotatedPdfPageAsPng()">📤 PNG</button>
-                  <button class="btn btn-icon" id="btn-pdf-toggle-view" title="Reine PDF-Ansicht (ohne Notiz-Overlay) umschalten" onclick="togglePdfRawView()">📄</button>
+                <div style="display:flex; align-items:center; gap:4px; flex-shrink:0;">
+                  <button class="btn btn-ghost-subtle" id="btn-pdf-insert-note" title="Folie mit deinen Apple Pencil Notizen als Bild in Markdown-Notiz einfügen" onclick="insertAnnotatedPdfPageIntoNote()">📥 <span class="pdf-btn-text">In Notiz</span></button>
+                  <button class="btn btn-ghost-subtle" id="btn-pdf-export-png" title="Folie mit Notizen als PNG-Datei herunterladen" onclick="exportAnnotatedPdfPageAsPng()">📤 <span class="pdf-btn-text">PNG</span></button>
+                  <button class="btn btn-icon btn-ghost-subtle" id="btn-pdf-toggle-view" title="Reine PDF-Ansicht (ohne Notiz-Overlay) umschalten" onclick="togglePdfRawView()">📄</button>
+                  <button class="btn btn-ghost-subtle" id="btn-toggle-pdf-markup-bar" onclick="togglePdfMarkupToolbarOnly()" title="Stift-Werkzeugleiste ein-/ausblenden">✏️ <span class="pdf-btn-text">Stift</span></button>
+                  <button class="btn btn-ghost-subtle" id="btn-pdf-toggle-tools" onclick="toggleTopTools()" title="Alle oberen Leisten & Werkzeuge ausblenden für maximalen Vollbild-Dateiausdruck">▲ Zen</button>
                 </div>
               </div>
 
-              <!-- Apple Pencil Werkzeugleiste direkt für das PDF -->
+              <!-- Apple Pencil Werkzeugleiste direkt für das PDF (iPadOS PencilKit Palette) -->
               <div class="pdf-markup-toolbar" id="pdf-markup-toolbar">
                 <div class="canvas-tool-group">
-                  <button class="btn btn-canvas-tool active" id="pdf-tool-pen" onclick="setPdfMarkupTool('pen')" title="Fineliner / Stift (Drucksensitiv)">🖊️ Stift</button>
-                  <button class="btn btn-canvas-tool" id="pdf-tool-brush" onclick="setPdfMarkupTool('brush')" title="Füllfederhalter / Pinsel">🖌️ Füller</button>
-                  <button class="btn btn-canvas-tool" id="pdf-tool-highlighter" onclick="setPdfMarkupTool('highlighter')" title="Textmarker (Halbtransparent)">🖍️ Marker</button>
-                  <button class="btn btn-canvas-tool" id="pdf-tool-eraser" onclick="setPdfMarkupTool('eraser')" title="Radierer (löscht Handschrift, Folie bleibt unberührt!)">🧹 Radierer</button>
+                  <button class="btn btn-canvas-tool active" id="pdf-tool-pen" onclick="setPdfMarkupTool('pen')" title="Fineliner / Stift (Drucksensitiv)">🖊️</button>
+                  <button class="btn btn-canvas-tool" id="pdf-tool-brush" onclick="setPdfMarkupTool('brush')" title="Füllfederhalter / Pinsel">🖌️</button>
+                  <button class="btn btn-canvas-tool" id="pdf-tool-highlighter" onclick="setPdfMarkupTool('highlighter')" title="Textmarker (Halbtransparent)">🖍️</button>
+                  <button class="btn btn-canvas-tool" id="pdf-tool-eraser" onclick="setPdfMarkupTool('eraser')" title="Radierer">🧹</button>
                 </div>
 
                 <div class="canvas-divider"></div>
 
                 <div class="canvas-color-group">
-                  <button class="canvas-color-dot active" data-color="#dc2626" style="background:#dc2626;" onclick="setPdfMarkupColor('#dc2626')" title="Rot (Standard für Folienkorrekturen & Notizen)"></button>
+                  <button class="canvas-color-dot active" data-color="#dc2626" style="background:#dc2626;" onclick="setPdfMarkupColor('#dc2626')" title="Rot"></button>
                   <button class="canvas-color-dot" data-color="#2563eb" style="background:#2563eb;" onclick="setPdfMarkupColor('#2563eb')" title="Blau"></button>
                   <button class="canvas-color-dot" data-color="#0f172a" style="background:#0f172a;" onclick="setPdfMarkupColor('#0f172a')" title="Schwarz"></button>
                   <button class="canvas-color-dot" data-color="#ffffff" style="background:#ffffff; border:1px solid var(--border);" onclick="setPdfMarkupColor('#ffffff')" title="Weiß"></button>
+                  <button class="canvas-color-dot" data-color="#facc15" style="background:#facc15;" onclick="setPdfMarkupColor('#facc15')" title="Gelb"></button>
                   <button class="canvas-color-dot" data-color="#16a34a" style="background:#16a34a;" onclick="setPdfMarkupColor('#16a34a')" title="Grün"></button>
-                  <button class="canvas-color-dot" data-color="#facc15" style="background:#facc15;" onclick="setPdfMarkupColor('#facc15')" title="Marker-Gelb"></button>
-                  <button class="canvas-color-dot" data-color="#8b5cf6" style="background:#8b5cf6;" onclick="setPdfMarkupColor('#8b5cf6')" title="Lila"></button>
                   <label class="canvas-color-picker-label" title="Beliebige Farbe wählen">
                     🎨
                     <input type="color" id="pdf-markup-color-picker" value="#dc2626" onchange="setPdfMarkupColor(this.value)">
@@ -2123,12 +2661,10 @@
                 <div class="canvas-divider"></div>
 
                 <div class="canvas-palm-group">
-                  <button class="btn btn-primary" id="btn-pdf-palm-rejection" title="Handballenschutz: Nur Apple Pencil schreibt auf die Folie, Finger scrollt die Seite!" onclick="togglePdfPalmRejection()">
-                    ✋ Handballenschutz: <strong id="pdf-palm-status-text">AN (Finger scrollt)</strong>
+                  <button class="btn btn-canvas-palm active" id="btn-pdf-palm-rejection" title="Handballenschutz: Nur Apple Pencil schreibt auf die Folie, Finger scrollt die Seite!" onclick="togglePdfPalmRejection()">
+                    ✋ <strong id="pdf-palm-status-text">Handballen</strong>
                   </button>
-                  <span id="pdf-pencil-indicator-pill" class="badge" style="font-size:0.75rem; padding:4px 8px; border-radius:12px; background:var(--bg-subtle); border:1px solid var(--border); color:var(--text-muted); display:inline-flex; align-items:center; gap:4px;">
-                    ✏️ Stift bereit
-                  </span>
+                  <span id="pdf-pencil-indicator-pill" style="display:none;"></span>
                 </div>
 
                 <div class="canvas-divider"></div>
@@ -4578,6 +5114,8 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
 
           noteViewModes.style.display = "none";
           pdfViewModes.style.display = "flex";
+          const edToolbarPdf = document.querySelector(".editor-toolbar");
+          if (edToolbarPdf) edToolbarPdf.style.display = "none";
           editorBody.className = "editor-body " + (state.pdfViewMode || "pdf-view-split");
           document.querySelectorAll("#pdf-view-modes .view-btn").forEach(b => {
             b.classList.toggle("active", b.dataset.pdfMode === (state.pdfViewMode || "pdf-view-split"));
@@ -4620,6 +5158,8 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
 
           noteViewModes.style.display = "flex";
           pdfViewModes.style.display = "none";
+          const edToolbarNote = document.querySelector(".editor-toolbar");
+          if (edToolbarNote) edToolbarNote.style.display = (state.noteViewMode === "view-canvas-only") ? "none" : "flex";
           editorBody.className = "editor-body " + (state.noteViewMode || "view-split");
           document.querySelectorAll("#note-view-modes .view-btn").forEach(b => {
             b.classList.toggle("active", b.dataset.mode === (state.noteViewMode || "view-split"));
@@ -4883,20 +5423,27 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         if (viewName === "notes") {
           document.getElementById("tab-btn-notes").classList.add("active");
           document.getElementById("view-notes").classList.add("active");
+          if (state.topToolsHidden) {
+            document.body.classList.add("top-tools-hidden");
+            if (typeof updateTopToolsButtons === "function") updateTopToolsButtons();
+          }
           if (state.noteViewMode?.includes("canvas") || state.pdfViewMode?.includes("canvas")) {
             setTimeout(() => { if (typeof initPencilCanvas === "function") initPencilCanvas(true); }, 50);
           }
-        } else if (viewName === "planner") {
-          document.getElementById("tab-btn-planner").classList.add("active");
-          document.getElementById("view-planner").classList.add("active");
-          updateCountdowns();
-          updateLiveDatesAndToday();
-          loadAllPlannerStates();
-          renderNotesTasksInPlanner();
-        } else if (viewName === "cockpit") {
-          document.getElementById("tab-btn-cockpit").classList.add("active");
-          document.getElementById("view-cockpit").classList.add("active");
-          renderCockpit();
+        } else {
+          document.body.classList.remove("top-tools-hidden");
+          if (viewName === "planner") {
+            document.getElementById("tab-btn-planner").classList.add("active");
+            document.getElementById("view-planner").classList.add("active");
+            updateCountdowns();
+            updateLiveDatesAndToday();
+            loadAllPlannerStates();
+            renderNotesTasksInPlanner();
+          } else if (viewName === "cockpit") {
+            document.getElementById("tab-btn-cockpit").classList.add("active");
+            document.getElementById("view-cockpit").classList.add("active");
+            renderCockpit();
+          }
         }
       };
 
@@ -5981,6 +6528,8 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
 
         const zoomLabel = document.getElementById("pdf-zoom-label");
         if (zoomLabel) zoomLabel.textContent = Math.round((currentPdfScale || 1.0) * 100) + "%";
+
+        if (typeof updateTopToolsButtons === "function") updateTopToolsButtons();
       }
 
       async function renderAllPdfPrintoutPages(preserveMarkup = false) {
@@ -6868,11 +7417,11 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         
         if (btn) {
           if (isAllHidden) {
-            btn.innerHTML = "📖 Fächer & Notizen anzeigen";
+            btn.innerHTML = '📖 <span class="btn-label-text">Seitenleiste</span>';
             btn.classList.add("btn-primary");
             btn.title = "Module und Notizliste wieder einblenden";
           } else {
-            btn.innerHTML = "⛶ Nur Notiz (Fokus)";
+            btn.innerHTML = '⛶ <span class="btn-label-text">Fokus</span>';
             btn.classList.remove("btn-primary");
             btn.title = "Module und Notizentitel ausblenden für maximale Notizfläche";
           }
@@ -6930,6 +7479,135 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           if (typeof initPencilCanvas === "function") initPencilCanvas(true);
         }, 80);
       }
+
+      // =======================================================================
+      // OBERE TOOLS AUSBLENDEN (Fokus & Vollbild für Notizen / PDF-Ausdruck)
+      // =======================================================================
+      function toggleTopTools(forceVal) {
+        const notesView = document.getElementById("view-notes");
+        if (!notesView) return;
+
+        if (typeof forceVal === "boolean") {
+          state.topToolsHidden = forceVal;
+        } else {
+          state.topToolsHidden = !state.topToolsHidden;
+        }
+
+        if (state.topToolsHidden) {
+          document.body.classList.add("top-tools-hidden");
+          notesView.classList.add("top-tools-hidden");
+          notesView.classList.remove("show-floating-pencil");
+          const bar = document.getElementById("pdf-markup-toolbar");
+          if (bar) bar.style.display = "none";
+          try { localStorage.setItem("studspace_top_tools_collapsed", "true"); } catch(e){}
+          showToast("▲ Obere Tools ausgeblendet (Tippe oben rechts auf '▼ Tools einblenden')");
+        } else {
+          document.body.classList.remove("top-tools-hidden");
+          notesView.classList.remove("top-tools-hidden");
+          notesView.classList.remove("show-floating-pencil");
+          const bar = document.getElementById("pdf-markup-toolbar");
+          if (bar) bar.style.display = "";
+          try { localStorage.setItem("studspace_top_tools_collapsed", "false"); } catch(e){}
+          showToast("▼ Obere Tools eingeblendet");
+        }
+
+        updateTopToolsButtons();
+
+        setTimeout(() => {
+          if (typeof initPencilCanvas === "function") initPencilCanvas(true);
+        }, 80);
+      }
+
+      function updateTopToolsButtons() {
+        const pill = document.getElementById("floating-top-tools-pill");
+        const quickActions = document.getElementById("floating-quick-actions");
+        const isHidden = !!state.topToolsHidden;
+
+        if (pill) {
+          pill.style.display = isHidden ? "inline-flex" : "none";
+        }
+        if (quickActions) {
+          const isDrawing = (state.activeType === "pdf") || (state.noteViewMode && state.noteViewMode.includes("canvas"));
+          quickActions.style.display = (isHidden && isDrawing) ? "inline-flex" : "none";
+        }
+
+        document.querySelectorAll("#btn-toggle-top-tools, #btn-toggle-top-tools-header, #btn-toggle-top-tools-bar, #btn-pdf-toggle-tools").forEach(btn => {
+          if (isHidden) {
+            btn.innerHTML = '▼ <span class="btn-label-text">Menü</span>';
+            btn.classList.add("btn-primary");
+            btn.title = "Obere Leisten & Werkzeuge wieder einblenden";
+          } else {
+            btn.innerHTML = '▲ <span class="btn-label-text">Zen</span>';
+            btn.classList.remove("btn-primary");
+            btn.title = "Alle oberen Leisten & Werkzeuge ausblenden (Vollbild Fokus)";
+          }
+        });
+      }
+
+      function togglePdfMarkupToolbarOnly() {
+        const bar = document.getElementById("pdf-markup-toolbar");
+        const btn = document.getElementById("btn-toggle-pdf-markup-bar");
+        const notesView = document.getElementById("view-notes");
+        if (!bar) return;
+        const isHidden = (window.getComputedStyle(bar).display === "none");
+        if (notesView && notesView.classList.contains("top-tools-hidden")) {
+          notesView.classList.toggle("show-floating-pencil", isHidden);
+        }
+        bar.style.display = isHidden ? "flex" : "none";
+        if (btn) {
+          btn.classList.toggle("btn-primary", isHidden);
+          btn.innerHTML = isHidden ? "✏️ Stiftleiste" : "✏️ Stiftleiste verbergen";
+        }
+        showToast(isHidden ? "✏️ Stift-Werkzeugleiste eingeblendet" : "✏️ Stift-Werkzeugleiste verborgen");
+      }
+
+      function quickSelectPen() {
+        if (state.activeType === "pdf") {
+          setPdfMarkupTool("pen");
+          setPdfMarkupColor("#dc2626");
+        } else {
+          const pBtn = document.getElementById("canvas-tool-pen");
+          if (pBtn) pBtn.click();
+        }
+        showToast("🖊️ Stift aktiv");
+      }
+
+      function quickSelectMarker() {
+        if (state.activeType === "pdf") {
+          setPdfMarkupTool("highlighter");
+          setPdfMarkupColor("#facc15");
+        } else {
+          const hBtn = document.getElementById("canvas-tool-highlighter");
+          if (hBtn) hBtn.click();
+        }
+        showToast("🖍️ Textmarker aktiv");
+      }
+
+      function quickSelectEraser() {
+        if (state.activeType === "pdf") {
+          setPdfMarkupTool("eraser");
+        } else {
+          const eBtn = document.getElementById("canvas-tool-eraser");
+          if (eBtn) eBtn.click();
+        }
+        showToast("🧹 Radierer aktiv");
+      }
+
+      function quickUndoDrawing() {
+        if (state.activeType === "pdf") {
+          undoPdfMarkup();
+        } else {
+          const uBtn = document.getElementById("btn-canvas-undo");
+          if (uBtn) uBtn.click();
+        }
+        showToast("↩️ Letzter Strich rückgängig");
+      }
+
+      document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape" && state.topToolsHidden) {
+          toggleTopTools(false);
+        }
+      });
 
       function closeSidebarsMobile() {
         const notesView = document.getElementById("view-notes");
@@ -9439,7 +10117,8 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         document.body.setAttribute("data-theme", theme);
         document.body.classList.toggle("dark-mode", theme === "dark");
         localStorage.setItem(THEME_KEY, theme);
-        document.getElementById("btn-theme-toggle").textContent = theme === "dark" ? "☀️" : "🌙";
+        const toggleBtn = document.getElementById("btn-theme-toggle");
+        if (toggleBtn) toggleBtn.textContent = theme === "dark" ? "☀️" : "🌙";
         if (typeof setCanvasColor === "function") {
           if (theme === "dark" && currentColor === "#0f172a") {
             setCanvasColor("#ffffff");
@@ -9448,10 +10127,11 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           }
         }
       }
+      window.setTheme = setTheme;
 
       document.getElementById("btn-theme-toggle").onclick = () => {
-        const cur = document.body.getAttribute("data-theme");
-        setTheme(cur === "dark" ? "light" : "dark");
+        const isDark = document.body.classList.contains("dark-mode") || (document.body.getAttribute("data-theme") === "dark");
+        setTheme(isDark ? "light" : "dark");
       };
 
       // Shortcuts (Ctrl+S, Ctrl+F, Ctrl+\ / Ctrl+B für Fokus)
@@ -10184,6 +10864,13 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         }
       } catch(e) {}
 
+      // Restore top tools collapsed state
+      try {
+        if (localStorage.getItem("studspace_top_tools_collapsed") === "true") {
+          toggleTopTools(true);
+        }
+      } catch(e) {}
+
       // =======================================================================
       // GLOBAL WINDOW EXPORTS FOR HTML ONCLICK / ONCHANGE HANDLERS
       // =======================================================================
@@ -10199,6 +10886,13 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       window.toggleSidebars = toggleSidebars;
       window.toggleModuleSidebar = toggleModuleSidebar;
       window.toggleTopicsSidebar = toggleTopicsSidebar;
+      window.toggleTopTools = toggleTopTools;
+      window.updateTopToolsButtons = updateTopToolsButtons;
+      window.togglePdfMarkupToolbarOnly = togglePdfMarkupToolbarOnly;
+      window.quickSelectPen = quickSelectPen;
+      window.quickSelectMarker = quickSelectMarker;
+      window.quickSelectEraser = quickSelectEraser;
+      window.quickUndoDrawing = quickUndoDrawing;
       window.closeSidebarsMobile = closeSidebarsMobile;
       window.toggleNoteOptionsMenu = toggleNoteOptionsMenu;
       window.closeNoteOptionsMenu = closeNoteOptionsMenu;
