@@ -1444,8 +1444,9 @@
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 18px 20px;
+      padding: 16px 20px;
       box-shadow: var(--shadow-sm);
+      margin-bottom: 20px;
     }
     body.dark-mode .deadline-banner {
       background: var(--card);
@@ -1457,45 +1458,48 @@
       justify-content: space-between;
       margin-bottom: 14px;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 12px;
     }
-    .deadline-banner-header h2 {
-      font-size: 1rem;
+    .deadline-title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .deadline-heading {
+      font-size: 0.95rem;
       font-weight: 700;
       color: var(--text-main);
       display: flex;
       align-items: center;
       gap: 8px;
       margin: 0;
+      letter-spacing: -0.01em;
     }
-    body.dark-mode .deadline-banner-header h2 {
-      color: var(--text-main);
-    }
-    .banner-hint {
-      font-size: 0.76rem;
+    .deadline-header-pill {
+      font-size: 0.7rem;
+      font-weight: 600;
       color: var(--text-muted);
-      font-weight: 400;
-      margin-top: 2px;
-    }
-    body.dark-mode .banner-hint {
-      color: var(--text-muted);
+      background: var(--card-subtle);
+      border: 1px solid var(--border);
+      padding: 2px 9px;
+      border-radius: 9999px;
     }
     .deadline-view-toggle {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
       background: var(--card-subtle);
       border: 1px solid var(--border);
       border-radius: 9999px;
-      padding: 2px;
+      padding: 3px;
     }
     .toggle-pill {
       background: transparent;
       border: none;
       color: var(--text-muted);
-      padding: 4px 11px;
+      padding: 4px 12px;
       border-radius: 9999px;
-      font-size: 0.72rem;
+      font-size: 0.74rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.15s ease;
@@ -1517,32 +1521,39 @@
     /* 2-Spalten-Struktur für Fristen & Folge-Aufträge */
     .deadline-dual-wrap {
       display: grid;
-      grid-template-columns: 1fr 1fr;
       gap: 14px;
-      margin-top: 10px;
+      margin-top: 4px;
       transition: all 0.2s ease;
+    }
+    .deadline-dual-wrap.is-single {
+      grid-template-columns: 1fr;
+    }
+    .deadline-dual-wrap.is-single .dual-task-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 10px;
+    }
+    .deadline-dual-wrap.is-all {
+      grid-template-columns: 1fr 1fr;
+    }
+    .deadline-dual-wrap.is-all .dual-task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
     @media (max-width: 900px) {
       .deadline-dual-wrap { grid-template-columns: 1fr !important; }
+      .deadline-dual-wrap.is-single .dual-task-list { grid-template-columns: 1fr !important; }
     }
     .dual-col-box {
       background: var(--card-subtle);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 14px 16px;
+      padding: 12px 14px;
       display: flex;
       flex-direction: column;
       gap: 10px;
       box-shadow: none;
-    }
-    .dual-col-box.col-current {
-      border-top: 2px solid #3b82f6;
-    }
-    .dual-col-box.col-next {
-      border-top: 2px solid #8b5cf6;
-    }
-    body.dark-mode .dual-col-box.col-next {
-      background: var(--card-subtle);
     }
     .dual-col-header {
       display: flex;
@@ -1558,42 +1569,46 @@
       gap: 8px;
     }
     .dual-col-title h3 {
-      font-size: 0.88rem;
+      font-size: 0.82rem;
       font-weight: 700;
       color: var(--text-main);
       margin: 0;
+      letter-spacing: -0.01em;
     }
-    .dual-col-subtitle {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      margin: 0;
+    .col-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      display: inline-block;
     }
+    .col-dot.dot-cur { background: #3b82f6; }
+    .col-dot.dot-next { background: #8b5cf6; }
+
     .col-status-pill {
       font-size: 0.68rem;
-      font-weight: 700;
+      font-weight: 600;
       padding: 2px 8px;
       border-radius: 9999px;
-      letter-spacing: 0.2px;
     }
     .pill-cur {
-      background: rgba(59, 130, 246, 0.12);
+      background: rgba(59, 130, 246, 0.1);
       color: #3b82f6;
-      border: 1px solid rgba(59, 130, 246, 0.25);
+      border: 1px solid rgba(59, 130, 246, 0.2);
     }
     body.dark-mode .pill-cur {
-      background: rgba(59, 130, 246, 0.16);
+      background: rgba(59, 130, 246, 0.15);
       color: #93c5fd;
-      border-color: rgba(59, 130, 246, 0.3);
+      border-color: rgba(59, 130, 246, 0.25);
     }
     .pill-next {
-      background: rgba(139, 92, 246, 0.12);
+      background: rgba(139, 92, 246, 0.1);
       color: #8b5cf6;
-      border: 1px solid rgba(139, 92, 246, 0.25);
+      border: 1px solid rgba(139, 92, 246, 0.2);
     }
     body.dark-mode .pill-next {
-      background: rgba(139, 92, 246, 0.16);
+      background: rgba(139, 92, 246, 0.15);
       color: #c4b5fd;
-      border-color: rgba(139, 92, 246, 0.3);
+      border-color: rgba(139, 92, 246, 0.25);
     }
 
     .dual-task-list {
@@ -1609,12 +1624,13 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
-      transition: all 0.15s ease;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
     }
     .dual-task-item:hover {
       border-color: var(--border-focus);
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      transform: translateY(-1px);
     }
     .dual-task-item.item-philo { border-left: 3px solid #8b5cf6; }
     .dual-task-item.item-accounting { border-left: 3px solid #0d9488; }
@@ -3577,37 +3593,34 @@
         <!-- 1. Deadline- & Benachrichtigungs-Banner (Unterteilung Diese Woche & Neue Folge-Aufträge) -->
         <section class="deadline-banner">
           <div class="deadline-banner-header">
-            <div>
-              <h2>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <div class="deadline-title-group">
+              <h2 class="deadline-heading">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
                   <line x1="16" y1="2" x2="16" y2="6"/>
                   <line x1="8" y1="2" x2="8" y2="6"/>
                   <line x1="3" y1="10" x2="21" y2="10"/>
                 </svg>
-                Fristen, Abgaben & Folge-Aufträge
+                Fristen & Vorbereitung
               </h2>
-              <div class="banner-hint">Laufende Woche vs. neue Aufträge für die Folgewoche</div>
+              <span class="deadline-header-pill">5 aktiv</span>
             </div>
             <div class="deadline-view-toggle">
-              <button class="toggle-pill is-active" id="tabDeadlineAll" onclick="switchDeadlineTab('all')">👁️ Beide</button>
-              <button class="toggle-pill" id="tabDeadlineCur" onclick="switchDeadlineTab('current')">📌 Diese Woche</button>
-              <button class="toggle-pill" id="tabDeadlineNext" onclick="switchDeadlineTab('next')">🚀 Folgewoche</button>
+              <button class="toggle-pill is-active" id="tabDeadlineCur" onclick="switchDeadlineTab('current')">📌 Diese Woche</button>
+              <button class="toggle-pill" id="tabDeadlineNext" onclick="switchDeadlineTab('next')">🚀 Nächste Woche</button>
+              <button class="toggle-pill" id="tabDeadlineAll" onclick="switchDeadlineTab('all')">👁️ Beide</button>
             </div>
           </div>
 
-          <div class="deadline-dual-wrap" id="deadlineDualWrap">
+          <div class="deadline-dual-wrap is-single" id="deadlineDualWrap" style="grid-template-columns: 1fr;">
             <!-- SPALTE 1: Diese Woche (Laufend & Erledigt) -->
             <div class="dual-col-box col-current" id="colDeadlineCurrent">
               <div class="dual-col-header cur-header">
                 <div class="dual-col-title">
-                  <span class="col-icon">📌</span>
-                  <div>
-                    <h3>Diese Woche (Laufend & Erledigt)</h3>
-                    <p class="dual-col-subtitle">Fristen, Lektüren & Übungen der aktuellen Kalenderwoche</p>
-                  </div>
+                  <span class="col-dot dot-cur"></span>
+                  <h3>Diese Woche</h3>
                 </div>
-                <span class="col-status-pill pill-cur">Laufende Woche</span>
+                <span class="col-status-pill pill-cur">Laufende Fristen</span>
               </div>
 
               <div class="dual-task-list">
@@ -3617,7 +3630,7 @@
                     <span class="dual-item-title">Theoretische Philosophie (6 ECTS)</span>
                     <span class="countdown-badge cd-yellow" id="cd-philo">⏳ Rechnet...</span>
                   </div>
-                  <div class="dual-item-detail" id="target-philo">🕒 Vorbereitung Lektüre Di 10:15 Uhr &bull; Besprechung im Seminar</div>
+                  <div class="dual-item-detail" id="target-philo">Vorbereitung Lektüre Di 10:15 Uhr &bull; Besprechung im Seminar</div>
                   <div class="dual-item-actions">
                     <div class="dual-item-cbs">
                       <label class="card-cb-label" onclick="event.stopPropagation()">
@@ -3635,7 +3648,7 @@
                     <span class="dual-item-title">Accounting Finance (6 ECTS)</span>
                     <span class="countdown-badge cd-green" id="cd-accounting">Laufend</span>
                   </div>
-                  <div class="dual-item-detail" id="target-accounting">🕒 Mi 14:00 (Block 1) &bull; Do 14:00 (Block 2) &bull; Selbststudium</div>
+                  <div class="dual-item-detail" id="target-accounting">Mi 14:00 (Block 1) &bull; Do 14:00 (Block 2) &bull; Selbststudium</div>
                   <div class="dual-item-actions">
                     <div class="dual-item-cbs">
                       <label class="card-cb-label" onclick="event.stopPropagation()">
@@ -3657,7 +3670,7 @@
                     <span class="dual-item-title">Finance I (3 ECTS)</span>
                     <span class="countdown-badge cd-green" id="cd-finance">Laufend</span>
                   </div>
-                  <div class="dual-item-detail" id="target-finance">🕒 Fr 14:00 Wiederholungen &bull; Sa 14:00 Serie (VL Mo Präsenz)</div>
+                  <div class="dual-item-detail" id="target-finance">Fr 14:00 Wiederholungen &bull; Sa 14:00 Serie (VL Mo Präsenz)</div>
                   <div class="dual-item-actions">
                     <div class="dual-item-cbs">
                       <label class="card-cb-label" onclick="event.stopPropagation()">
@@ -3676,15 +3689,15 @@
                 <!-- 4. Critical Thinking -->
                 <div class="dual-task-item item-critical" data-module="critical">
                   <div class="dual-item-head">
-                    <span class="dual-item-title">Critical Thinking (🚨 Upload Fr 20:00)</span>
+                    <span class="dual-item-title">Critical Thinking (6 ECTS)</span>
                     <span class="countdown-badge cd-red" id="cd-critical">⏳ Rechnet...</span>
                   </div>
-                  <div class="dual-item-detail" id="target-critical">🕒 Frist: Fr, 20:00 Uhr &bull; Upload OLAT (Seminar Di 14:00 Präsenz)</div>
+                  <div class="dual-item-detail" id="target-critical">Frist: Fr, 20:00 Uhr &bull; Upload OLAT (Seminar Di 14:00)</div>
                   <div class="dual-item-actions">
                     <div class="dual-item-cbs">
                       <label class="card-cb-label" onclick="event.stopPropagation()">
                         <input type="checkbox" data-task="task-critical" onchange="toggleWeeklyTask('task-critical', this.checked)">
-                        <span><strong>Diese Woche eingereicht!</strong></span>
+                        <span>Diese Woche eingereicht</span>
                       </label>
                     </div>
                     <button class="btn-event-note" onclick="openNoteForModule('critical', 'Critical Thinking', 'Abgabe Künzle')">📖 Notiz</button>
@@ -3694,15 +3707,15 @@
                 <!-- 5. Formale Logik -->
                 <div class="dual-task-item item-logic" data-module="logic">
                   <div class="dual-item-head">
-                    <span class="dual-item-title">Formale Logik (🚨 Blatt So 18:00)</span>
+                    <span class="dual-item-title">Formale Logik (6 ECTS)</span>
                     <span class="countdown-badge cd-red" id="cd-logic">⏳ Rechnet...</span>
                   </div>
-                  <div class="dual-item-detail" id="target-logic">🕒 Frist: So, 18:00 Uhr &bull; Upload OLAT (Übung Di 12:15 Präsenz)</div>
+                  <div class="dual-item-detail" id="target-logic">Frist: So, 18:00 Uhr &bull; Upload OLAT (Übung Di 12:15)</div>
                   <div class="dual-item-actions">
                     <div class="dual-item-cbs">
                       <label class="card-cb-label" onclick="event.stopPropagation()">
                         <input type="checkbox" data-task="task-logic-sheet" onchange="toggleWeeklyTask('task-logic-sheet', this.checked)">
-                        <span><strong>Blatt hochgeladen!</strong></span>
+                        <span>Übungsblatt hochgeladen</span>
                       </label>
                     </div>
                     <button class="btn-event-note" onclick="openNoteForModule('logic', 'Formale Logik', 'Übungsblatt Aufgaben')">📖 Notiz</button>
@@ -3712,26 +3725,23 @@
             </div>
 
             <!-- SPALTE 2: Neue Aufträge für die Folgewoche -->
-            <div class="dual-col-box col-next" id="colDeadlineNext">
+            <div class="dual-col-box col-next" id="colDeadlineNext" style="display: none;">
               <div class="dual-col-header next-header">
                 <div class="dual-col-title">
-                  <span class="col-icon">🚀</span>
-                  <div>
-                    <h3>Folgewoche: Neue Aufträge & Vorbereitung</h3>
-                    <p class="dual-col-subtitle">Neue Aufträge aus den Vorlesungen für nächste Woche</p>
-                  </div>
+                  <span class="col-dot dot-next"></span>
+                  <h3>Nächste Woche</h3>
                 </div>
-                <span class="col-status-pill pill-next">Folgewoche</span>
+                <span class="col-status-pill pill-next">Vorschau</span>
               </div>
 
               <div class="dual-task-list">
                 <!-- 1. Philo Next -->
                 <div class="dual-task-item item-philo" data-module="philo">
                   <div class="dual-item-head">
-                    <span class="dual-item-title">Theor. Philosophie (Folge-Lektüre)</span>
+                    <span class="dual-item-title">Theoretische Philosophie</span>
                     <span class="countdown-badge cd-green" id="cd-philo-next">Folgewoche</span>
                   </div>
-                  <div class="dual-item-detail" id="target-philo-next">✨ Neuer Lektüre-Auftrag aus Dienstags-Seminar auf nächste Woche</div>
+                  <div class="dual-item-detail" id="target-philo-next">Neuer Lektüre-Auftrag auf nächsten Dienstag</div>
                   <div class="dual-item-actions">
                     <label class="card-cb-label" onclick="event.stopPropagation()">
                       <input type="checkbox" data-task-next="task-philo-read" onchange="toggleNextWeekTask('task-philo-read', this.checked)">
@@ -3744,10 +3754,10 @@
                 <!-- 2. Accounting Next -->
                 <div class="dual-task-item item-accounting" data-module="accounting">
                   <div class="dual-item-head">
-                    <span class="dual-item-title">Accounting Finance (Nächste Blöcke)</span>
+                    <span class="dual-item-title">Accounting Finance</span>
                     <span class="countdown-badge cd-green" id="cd-accounting-next">Folgewoche</span>
                   </div>
-                  <div class="dual-item-detail" id="target-accounting-next">✨ Neue Buchungsbeispiele & Theorieblöcke auf nächsten Mi & Do</div>
+                  <div class="dual-item-detail" id="target-accounting-next">Neue Buchungsbeispiele & Theorieblöcke auf Mi & Do</div>
                   <div class="dual-item-actions">
                     <label class="card-cb-label" onclick="event.stopPropagation()">
                       <input type="checkbox" data-task-next="task-accounting-1" onchange="toggleNextWeekTask('task-accounting-1', this.checked)">
@@ -3760,10 +3770,10 @@
                 <!-- 3. Finance Next -->
                 <div class="dual-task-item item-finance" data-module="finance">
                   <div class="dual-item-head">
-                    <span class="dual-item-title">Finance I (Folge-VL & neue Serie)</span>
+                    <span class="dual-item-title">Finance I</span>
                     <span class="countdown-badge cd-green" id="cd-finance-next">Folgewoche</span>
                   </div>
-                  <div class="dual-item-detail" id="target-finance-next">✨ Nächste Vorlesung am Mo 14:00 Uhr & neue Übungsserie</div>
+                  <div class="dual-item-detail" id="target-finance-next">Nächste Vorlesung Mo 14:00 Uhr & neue Übungsserie</div>
                   <div class="dual-item-actions">
                     <label class="card-cb-label" onclick="event.stopPropagation()">
                       <input type="checkbox" data-task-next="task-finance-lec" onchange="toggleNextWeekTask('task-finance-lec', this.checked)">
@@ -3776,10 +3786,10 @@
                 <!-- 4. Critical Thinking Next -->
                 <div class="dual-task-item item-critical" data-module="critical">
                   <div class="dual-item-head">
-                    <span class="dual-item-title">Critical Thinking (Neue Folge-Abgabe)</span>
+                    <span class="dual-item-title">Critical Thinking</span>
                     <span class="countdown-badge cd-green" id="cd-critical-next">Folgewoche</span>
                   </div>
-                  <div class="dual-item-detail" id="target-critical-next">✨ Neuer Aufsatz / Abgabe auf kommenden Fr, 20:00 Uhr</div>
+                  <div class="dual-item-detail" id="target-critical-next">Neuer Aufsatz / Abgabe auf kommenden Fr, 20:00 Uhr</div>
                   <div class="dual-item-actions">
                     <label class="card-cb-label" onclick="event.stopPropagation()">
                       <input type="checkbox" data-task-next="task-critical" onchange="toggleNextWeekTask('task-critical', this.checked)">
@@ -3792,10 +3802,10 @@
                 <!-- 5. Formale Logik Next -->
                 <div class="dual-task-item item-logic" data-module="logic">
                   <div class="dual-item-head">
-                    <span class="dual-item-title">Formale Logik (Neues Folge-Übungsblatt)</span>
+                    <span class="dual-item-title">Formale Logik</span>
                     <span class="countdown-badge cd-green" id="cd-logic-next">Folgewoche</span>
                   </div>
-                  <div class="dual-item-detail" id="target-logic-next">✨ Neues Übungsblatt auf kommenden So, 18:00 Uhr</div>
+                  <div class="dual-item-detail" id="target-logic-next">Neues Übungsblatt auf kommenden So, 18:00 Uhr</div>
                   <div class="dual-item-actions">
                     <label class="card-cb-label" onclick="event.stopPropagation()">
                       <input type="checkbox" data-task-next="task-logic-sheet" onchange="toggleNextWeekTask('task-logic-sheet', this.checked)">
@@ -9917,8 +9927,12 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
 
         if (wrap) {
           if (mode === 'all') {
+            wrap.classList.remove('is-single');
+            wrap.classList.add('is-all');
             wrap.style.gridTemplateColumns = '1fr 1fr';
           } else {
+            wrap.classList.remove('is-all');
+            wrap.classList.add('is-single');
             wrap.style.gridTemplateColumns = '1fr';
           }
         }
@@ -10055,7 +10069,7 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
               cdPhiloCur.className = 'countdown-badge cd-green';
             }
             if (targetPhiloCur) {
-              targetPhiloCur.textContent = `✓ Vorlesung am ${cycleCur.deadlineTarget.toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric', month: 'short' })} besprochen • Vorbereitung für diese Woche abgeschlossen`;
+              targetPhiloCur.textContent = `Vorlesung am ${cycleCur.deadlineTarget.toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric', month: 'short' })} besprochen · Vorbereitung abgeschlossen`;
             }
           } else {
             const cd = formatCountdown(cycleCur.deadlineTarget);
@@ -10064,7 +10078,7 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
               cdPhiloCur.className = `countdown-badge ${cd.cls}`;
             }
             if (targetPhiloCur) {
-              targetPhiloCur.textContent = `🕒 Frist: Di, ${cycleCur.deadlineTarget.toLocaleDateString('de-DE', { day: 'numeric', month: 'short' })}, 10:15 Uhr • Vorlesungsbeginn`;
+              targetPhiloCur.textContent = `Frist: Di, ${cycleCur.deadlineTarget.toLocaleDateString('de-DE', { day: 'numeric', month: 'short' })}, 10:15 Uhr · Vorlesungsbeginn`;
             }
           }
 
@@ -10078,7 +10092,7 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           }
           if (targetPhiloNext) {
             const dateStr = cycleCur.nextWeekTarget.toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric', month: 'short' });
-            targetPhiloNext.textContent = `✨ Neuer Lektüre-Auftrag auf ${dateStr}, 10:15 Uhr`;
+            targetPhiloNext.textContent = `Neuer Lektüre-Auftrag auf ${dateStr}, 10:15 Uhr`;
           }
         }
 
@@ -10100,12 +10114,12 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           }
         }
         if (targetAcc) {
-          targetAcc.textContent = `🕒 Block 1 (Mi 14:00) & Block 2 (Do 14:00) • Selbststudium`;
+          targetAcc.textContent = `Block 1 (Mi 14:00) & Block 2 (Do 14:00) · Selbststudium`;
         }
         const cdAccNext = document.getElementById('cd-accounting-next');
         const targetAccNext = document.getElementById('target-accounting-next');
         if (cdAccNext) cdAccNext.textContent = 'Folgewoche';
-        if (targetAccNext) targetAccNext.textContent = `✨ Neue Buchungsbeispiele & Theorieblöcke für nächsten Mi & Do`;
+        if (targetAccNext) targetAccNext.textContent = `Buchungsbeispiele & Theorieblöcke für nächsten Mi & Do`;
 
         // 3. Finance I (Fr & Sa)
         const finRepDone = getWeeklyTaskState('task-finance-rep', currentWeekOffset);
@@ -10123,12 +10137,12 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           }
         }
         if (targetFin) {
-          targetFin.textContent = `🕒 Fr 14:00 Wiederholungen • Sa 14:00 Serie (VL Mo Präsenz)`;
+          targetFin.textContent = `Fr 14:00 Wiederholungen · Sa 14:00 Serie (VL Mo Präsenz)`;
         }
         const cdFinNext = document.getElementById('cd-finance-next');
         const targetFinNext = document.getElementById('target-finance-next');
         if (cdFinNext) cdFinNext.textContent = 'Folgewoche';
-        if (targetFinNext) targetFinNext.textContent = `✨ Nächste Vorlesung am Mo 14:00 Uhr & neue Serie`;
+        if (targetFinNext) targetFinNext.textContent = `Nächste Vorlesung am Mo 14:00 Uhr & neue Serie`;
 
         // 4. Critical Thinking (Fr 20:00)
         const critCfg = RECURRING_WEEKLY_TASKS['task-critical'];
@@ -10144,7 +10158,7 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
               cdCrit.className = 'countdown-badge cd-green';
             }
             if (targetCrit) {
-              targetCrit.textContent = `✓ Abgabe für diese Woche beendet (${cycleCur.deadlineTarget.toLocaleDateString('de-DE', { day: 'numeric', month: 'short' })})`;
+              targetCrit.textContent = `Abgabe für diese Woche beendet (${cycleCur.deadlineTarget.toLocaleDateString('de-DE', { day: 'numeric', month: 'short' })})`;
             }
           } else {
             const cd = formatCountdown(cycleCur.deadlineTarget);
@@ -10153,7 +10167,7 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
               cdCrit.className = `countdown-badge ${cd.cls}`;
             }
             if (targetCrit) {
-              targetCrit.textContent = `🕒 Frist: Fr, ${cycleCur.deadlineTarget.toLocaleDateString('de-DE', { day: 'numeric', month: 'short' })}, 20:00 Uhr • OLAT Upload`;
+              targetCrit.textContent = `Frist: Fr, ${cycleCur.deadlineTarget.toLocaleDateString('de-DE', { day: 'numeric', month: 'short' })}, 20:00 Uhr · OLAT Upload`;
             }
           }
 
@@ -10164,7 +10178,7 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           if (cdCritNext) cdCritNext.textContent = cdN.text;
           if (targetCritNext) {
             const dateStr = cycleCur.nextWeekTarget.toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric', month: 'short' });
-            targetCritNext.textContent = `✨ Neuer Aufsatz / Abgabe auf ${dateStr}, 20:00 Uhr`;
+            targetCritNext.textContent = `Neuer Aufsatz / Abgabe auf ${dateStr}, 20:00 Uhr`;
           }
         }
 
@@ -10182,7 +10196,7 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
               cdLog.className = 'countdown-badge cd-green';
             }
             if (targetLog) {
-              targetLog.textContent = `✓ Übungsblatt für diese Woche abgeschlossen (${cycleCur.deadlineTarget.toLocaleDateString('de-DE', { day: 'numeric', month: 'short' })})`;
+              targetLog.textContent = `Übungsblatt für diese Woche abgeschlossen (${cycleCur.deadlineTarget.toLocaleDateString('de-DE', { day: 'numeric', month: 'short' })})`;
             }
           } else {
             const cd = formatCountdown(cycleCur.deadlineTarget);
@@ -10191,7 +10205,7 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
               cdLog.className = `countdown-badge ${cd.cls}`;
             }
             if (targetLog) {
-              targetLog.textContent = `🕒 Frist: So, ${cycleCur.deadlineTarget.toLocaleDateString('de-DE', { day: 'numeric', month: 'short' })}, 18:00 Uhr • OLAT Upload`;
+              targetLog.textContent = `Frist: So, ${cycleCur.deadlineTarget.toLocaleDateString('de-DE', { day: 'numeric', month: 'short' })}, 18:00 Uhr · OLAT Upload`;
             }
           }
 
@@ -10202,7 +10216,7 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           if (cdLogNext) cdLogNext.textContent = cdN.text;
           if (targetLogNext) {
             const dateStr = cycleCur.nextWeekTarget.toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric', month: 'short' });
-            targetLogNext.textContent = `✨ Neues Übungsblatt auf ${dateStr}, 18:00 Uhr`;
+            targetLogNext.textContent = `Neues Übungsblatt auf ${dateStr}, 18:00 Uhr`;
           }
         }
       }
