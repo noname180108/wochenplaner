@@ -2252,7 +2252,7 @@
       gap: 16px;
       align-items: start;
     }
-    @media (max-width: 1024px) {
+    @media (max-width: 1200px), (max-width: 1366px) and (pointer: coarse), (max-width: 1366px) and (hover: none) {
       .bottom-dashboard-grid { grid-template-columns: 1fr; }
     }
     .todo-section {
@@ -3116,9 +3116,9 @@
     }
 
     /* =========================================================================
-       IPAD & TABLET RESPONSIVE REGELN (max-width: 1024px)
+       IPAD & TABLET RESPONSIVE REGELN (max-width: 1200px / iPad Querformat & Pro)
        ========================================================================= */
-    @media (max-width: 1024px) {
+    @media (max-width: 1200px), (max-width: 1366px) and (pointer: coarse), (max-width: 1366px) and (hover: none) {
       .navbar {
         padding: 0.4rem 0.8rem;
         gap: 0.5rem;
@@ -3436,6 +3436,16 @@
       .day-column {
         min-width: 195px !important;
         scroll-snap-align: start;
+      }
+      @media (min-width: 1025px) {
+        .week-grid {
+          min-width: 100% !important;
+          grid-template-columns: repeat(7, minmax(135px, 1fr)) !important;
+          gap: 8px !important;
+        }
+        .day-column {
+          min-width: 135px !important;
+        }
       }
 
       /* Klausuren- & Noten-Modal auf iPad: Keine abgeschnittenen Noten oder Buttons */
@@ -5475,6 +5485,11 @@
   <script>
     (function () {
       "use strict";
+ 
+       // HELPER: Erkennt iPad, Tablets (Hoch- & Querformat) sowie Mobilgeräte zuverlässig
+       function isTabletOrMobile() {
+         return window.innerWidth <= 1200 || (window.innerWidth <= 1366 && (window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window));
+       }
 
       // STORAGE KEYS
       const STORAGE_KEY = "studnotes_data_v2";
@@ -6224,7 +6239,7 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
             state.activeType = "note";
             state.activeNoteId = item.id;
           }
-          if (window.innerWidth <= 1024 && typeof closeSidebarsMobile === "function") {
+          if (isTabletOrMobile() && typeof closeSidebarsMobile === "function") {
             closeSidebarsMobile();
           }
           renderAll();
@@ -6303,13 +6318,13 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           noteViewModes.style.display = "flex";
           pdfViewModes.style.display = "none";
           
-          if (window.innerWidth <= 1024 && (!state.noteViewMode || state.noteViewMode === "view-split")) {
+          if (isTabletOrMobile() && (!state.noteViewMode || state.noteViewMode === "view-split")) {
             state.noteViewMode = "view-only-preview";
           }
           
           const edToolbarNote = document.querySelector(".editor-toolbar");
           if (edToolbarNote) {
-            if (window.innerWidth <= 1024 && (state.noteViewMode === "view-only-preview" || state.noteViewMode === "view-canvas-only")) {
+            if (isTabletOrMobile() && (state.noteViewMode === "view-only-preview" || state.noteViewMode === "view-canvas-only")) {
               edToolbarNote.style.display = "none";
             } else {
               edToolbarNote.style.display = (state.noteViewMode === "view-canvas-only") ? "none" : "flex";
@@ -6583,6 +6598,10 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
             document.body.classList.add("top-tools-hidden");
             if (typeof updateTopToolsButtons === "function") updateTopToolsButtons();
           }
+          if (isTabletOrMobile() && (!state.noteViewMode || state.noteViewMode === "view-split")) {
+            state.noteViewMode = "view-only-preview";
+            if (typeof renderEditor === "function") renderEditor();
+          }
           if (state.noteViewMode?.includes("canvas") || state.pdfViewMode?.includes("canvas")) {
             setTimeout(() => { if (typeof initPencilCanvas === "function") initPencilCanvas(true); }, 50);
           }
@@ -6826,7 +6845,7 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           
           const edToolbarNote = document.querySelector(".editor-toolbar");
           if (edToolbarNote) {
-            if (window.innerWidth <= 1024 && (mode === "view-only-preview" || mode === "view-canvas-only")) {
+            if (isTabletOrMobile() && (mode === "view-only-preview" || mode === "view-canvas-only")) {
               edToolbarNote.style.display = "none";
             } else {
               edToolbarNote.style.display = (mode === "view-canvas-only") ? "none" : "flex";
@@ -8624,7 +8643,7 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         const btn = document.getElementById("btn-toggle-sidebar");
         if (!btn) return;
         
-        if (window.innerWidth <= 1024) {
+        if (isTabletOrMobile()) {
           const isOpen = notesView.classList.contains("sidebars-mobile-open");
           btn.innerHTML = isOpen ? '✕ <span class="btn-label-text">Schließen</span>' : '📖 <span class="btn-label-text">Fächer & Notizen</span>';
           if (isOpen) {
@@ -8653,7 +8672,7 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       function toggleSidebars() {
         const notesView = document.getElementById("view-notes");
         if (!notesView) return;
-        if (window.innerWidth <= 1024) {
+        if (isTabletOrMobile()) {
           notesView.classList.toggle("sidebars-mobile-open");
           updateSidebarToggleButtons();
         } else {
@@ -12289,8 +12308,11 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       });
 
       // Initialisierung von Sync & iPad Fokus-Modus
-      const savedFocusMode = localStorage.getItem("uzh_planner_focus_mode") || (window.innerWidth <= 1024 ? "schedule" : "all");
+      const savedFocusMode = localStorage.getItem("uzh_planner_focus_mode") || (isTabletOrMobile() && window.innerWidth <= 1024 ? "schedule" : "all");
       setPlannerFocusMode(savedFocusMode);
+      if (typeof updateSidebarToggleButtons === "function") {
+        updateSidebarToggleButtons();
+      }
       checkUrlSyncParams();
       setTimeout(initPeerSync, 1000);
       setTimeout(cloudSyncPull, 1200);
@@ -12313,7 +12335,7 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
 
       // Restore sidebars collapsed state
       try {
-        if (localStorage.getItem("studspace_sidebars_collapsed") === "true" && window.innerWidth > 1024) {
+        if (localStorage.getItem("studspace_sidebars_collapsed") === "true" && !isTabletOrMobile()) {
           const nv = document.getElementById("view-notes");
           if (nv) nv.classList.add("sidebars-hidden");
           updateSidebarToggleButtons();
