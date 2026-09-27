@@ -1862,6 +1862,11 @@
     }
 
     /* Week Grid & Calendar Columns */
+    .week-grid-container {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+    }
     .week-grid {
       display: grid;
       grid-template-columns: repeat(7, minmax(150px, 1fr));
@@ -3192,6 +3197,111 @@
       .editor-title-row {
         gap: 8px;
       }
+
+      /* Notizen Kopfzeile & Ansichtsmodi auf iPad */
+      .editor-meta-bar {
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+      }
+      .editor-meta-left {
+        flex: 1 1 auto;
+      }
+      .editor-meta-right {
+        margin-left: auto;
+      }
+      .editor-meta-right .meta-date {
+        display: none !important;
+      }
+      .editor-meta-center {
+        width: 100% !important;
+        order: 3;
+        justify-content: flex-start !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 2px;
+      }
+      .editor-meta-center .view-modes {
+        flex-shrink: 0;
+      }
+
+      /* Cockpit Dashboard: Symmetrisches 2x2 Grid auf iPad */
+      .cockpit-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 14px !important;
+      }
+
+      /* Wochenplaner Utility-Bar auf iPad: Elegantes Rounded Rect statt überdehnter Pille */
+      .utility-bar {
+        border-radius: 16px !important;
+        padding: 10px 14px !important;
+      }
+
+      /* Wochenplaner Kalender-Grid Touch-Scroll für iPad */
+      .week-grid-container {
+        width: 100%;
+        min-width: 0;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x proximity;
+        padding-bottom: 8px;
+      }
+      .week-grid {
+        min-width: 1100px !important;
+        gap: 12px !important;
+        padding-bottom: 12px;
+      }
+      .day-column {
+        min-width: 195px !important;
+        scroll-snap-align: start;
+      }
+
+      /* Klausuren- & Noten-Modal auf iPad: Keine abgeschnittenen Noten oder Buttons */
+      #grades-modal .modal-box {
+        width: 96vw !important;
+        max-width: 96vw !important;
+        height: 88vh !important;
+      }
+      .grades-modal-body {
+        padding: 12px 14px !important;
+        gap: 14px !important;
+      }
+      .gpa-summary-banner {
+        padding: 12px 14px !important;
+        gap: 10px !important;
+      }
+      .exams-table-wrap {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .exams-table {
+        min-width: 690px;
+      }
+      .exams-table th, .exams-table td {
+        padding: 8px 5px !important;
+        font-size: 0.78rem !important;
+      }
+      .exams-table th:first-child, .exams-table td:first-child {
+        min-width: 125px !important;
+      }
+      .exams-table th:nth-child(3), .exams-table td:nth-child(3) {
+        min-width: 120px !important;
+      }
+      .exams-table th:last-child, .exams-table td:last-child {
+        min-width: 44px !important;
+        text-align: center !important;
+      }
+
+      /* Karteikarten-Modal auf iPad */
+      #flashcard-modal .modal-box {
+        width: 96vw !important;
+        max-width: 96vw !important;
+        height: 88vh !important;
+      }
+      #flashcard-modal .modal-header {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
     }
 
     /* Print Stile */
@@ -3979,8 +4089,9 @@
 
         <!-- 3. Standardisierte Wochenansicht (5 einheitliche Zeitslots für perfekte horizontale Ausrichtung) -->
         <section>
-          <div class="week-grid">
-            <!-- Montag (data-day="1") -->
+          <div class="week-grid-container">
+            <div class="week-grid">
+              <!-- Montag (data-day="1") -->
             <div class="day-column" data-day="1">
               <div class="day-header">
                 <div class="day-header-top">
@@ -4533,7 +4644,8 @@
               </div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
         </div> <!-- /plannerScheduleWrap -->
 
         <!-- 4. Unterer Bereich: To-Dos + Notizen-Aufgaben + Widgets -->
@@ -6264,6 +6376,9 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           }
           if (state.noteViewMode?.includes("canvas") || state.pdfViewMode?.includes("canvas")) {
             setTimeout(() => { if (typeof initPencilCanvas === "function") initPencilCanvas(true); }, 50);
+          }
+          if (typeof updateSidebarToggleButtons === "function") {
+            updateSidebarToggleButtons();
           }
         } else {
           document.body.classList.remove("top-tools-hidden");
@@ -8277,19 +8392,31 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         const notesView = document.getElementById("view-notes");
         if (!notesView) return;
         const btn = document.getElementById("btn-toggle-sidebar");
+        if (!btn) return;
+        
+        if (window.innerWidth <= 1024) {
+          const isOpen = notesView.classList.contains("sidebars-mobile-open");
+          btn.innerHTML = isOpen ? '✕ <span class="btn-label-text">Schließen</span>' : '📖 <span class="btn-label-text">Fächer & Notizen</span>';
+          if (isOpen) {
+            btn.classList.add("btn-primary");
+          } else {
+            btn.classList.remove("btn-primary");
+          }
+          btn.title = isOpen ? "Seitenleiste schließen" : "Fächer und Notizliste einblenden";
+          return;
+        }
+
         const isAllHidden = notesView.classList.contains("sidebars-hidden") ||
           (notesView.classList.contains("modules-hidden") && notesView.classList.contains("topics-hidden"));
         
-        if (btn) {
-          if (isAllHidden) {
-            btn.innerHTML = '📖 <span class="btn-label-text">Seitenleiste</span>';
-            btn.classList.add("btn-primary");
-            btn.title = "Module und Notizliste wieder einblenden";
-          } else {
-            btn.innerHTML = '⛶ <span class="btn-label-text">Fokus</span>';
-            btn.classList.remove("btn-primary");
-            btn.title = "Module und Notizentitel ausblenden für maximale Notizfläche";
-          }
+        if (isAllHidden) {
+          btn.innerHTML = '📖 <span class="btn-label-text">Seitenleiste</span>';
+          btn.classList.add("btn-primary");
+          btn.title = "Module und Notizliste wieder einblenden";
+        } else {
+          btn.innerHTML = '⛶ <span class="btn-label-text">Fokus</span>';
+          btn.classList.remove("btn-primary");
+          btn.title = "Module und Notizentitel ausblenden für maximale Notizfläche";
         }
       }
 
@@ -8298,11 +8425,7 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         if (!notesView) return;
         if (window.innerWidth <= 1024) {
           notesView.classList.toggle("sidebars-mobile-open");
-          const isOpen = notesView.classList.contains("sidebars-mobile-open");
-          const btn = document.getElementById("btn-toggle-sidebar");
-          if (btn) {
-            btn.innerHTML = isOpen ? "✕ Schließen" : "📖 Fächer & Notizen";
-          }
+          updateSidebarToggleButtons();
         } else {
           const isCurrentlyHidden = notesView.classList.contains("sidebars-hidden") ||
             (notesView.classList.contains("modules-hidden") && notesView.classList.contains("topics-hidden"));
@@ -8477,6 +8600,7 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       function closeSidebarsMobile() {
         const notesView = document.getElementById("view-notes");
         if (notesView) notesView.classList.remove("sidebars-mobile-open");
+        updateSidebarToggleButtons();
       };
 
       function toggleNoteOptionsMenu() {
@@ -11951,6 +12075,12 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         if (!document.hidden) cloudSyncPull();
       }, 25000);
 
+      window.addEventListener("resize", () => {
+        if (typeof updateSidebarToggleButtons === "function") {
+          updateSidebarToggleButtons();
+        }
+      });
+
       // Restore sidebars collapsed state
       try {
         if (localStorage.getItem("studspace_sidebars_collapsed") === "true" && window.innerWidth > 1024) {
@@ -11980,6 +12110,7 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       window.switchAppView = switchAppView;
       window.setPlannerFocusMode = setPlannerFocusMode;
       window.toggleSidebars = toggleSidebars;
+      window.updateSidebarToggleButtons = updateSidebarToggleButtons;
       window.toggleModuleSidebar = toggleModuleSidebar;
       window.toggleTopicsSidebar = toggleTopicsSidebar;
       window.toggleTopTools = toggleTopTools;
