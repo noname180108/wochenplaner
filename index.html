@@ -459,6 +459,10 @@
       font-weight: 600;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     }
+    .btn-tablet-text { display: none; }
+    .btn-desk-text { display: inline; }
+    .btn-desk-split { display: inline-flex; }
+    .btn-floating-edit, .btn-floating-done { display: none; }
 
     /* Editor Body */
     .editor-body { flex: 1; display: flex; overflow: hidden; position: relative; }
@@ -3198,30 +3202,209 @@
         gap: 8px;
       }
 
-      /* Notizen Kopfzeile & Ansichtsmodi auf iPad */
+      /* Notizen Kopfzeile auf iPad: Einzeilige, ruhige Apple-Notes-Leiste */
+      .editor-top {
+        padding: 8px 14px 4px 14px !important;
+        background: var(--card) !important;
+        border-bottom: 1px solid var(--border) !important;
+      }
       .editor-meta-bar {
-        flex-wrap: wrap !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        flex-wrap: nowrap !important;
         gap: 8px !important;
       }
       .editor-meta-left {
-        flex: 1 1 auto;
+        flex: 0 0 auto !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
       }
-      .editor-meta-right {
-        margin-left: auto;
+      /* Redundante Buttons auf iPad ausblenden */
+      #btn-toggle-top-tools-header {
+        display: none !important;
+      }
+      .meta-pill-group {
+        display: none !important;
+      }
+      #btn-quick-pencil {
+        display: none !important;
       }
       .editor-meta-right .meta-date {
         display: none !important;
       }
-      .editor-meta-center {
-        width: 100% !important;
-        order: 3;
-        justify-content: flex-start !important;
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch;
-        padding-bottom: 2px;
+      .editor-meta-right #save-indicator {
+        font-size: 0.72rem !important;
       }
-      .editor-meta-center .view-modes {
-        flex-shrink: 0;
+      .editor-meta-right {
+        flex: 0 0 auto !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        margin-left: 0 !important;
+      }
+
+      /* Segmented Control mittig in der oberen Leiste */
+      .editor-meta-center {
+        flex: 1 1 auto !important;
+        order: unset !important;
+        width: auto !important;
+        justify-content: center !important;
+        overflow: visible !important;
+      }
+      #note-view-modes {
+        display: inline-flex !important;
+        background: var(--bg-subtle) !important;
+        border: 1px solid var(--border) !important;
+        border-radius: 9999px !important;
+        padding: 2px !important;
+        gap: 2px !important;
+      }
+      #note-view-modes .view-btn {
+        padding: 4px 10px !important;
+        font-size: 0.75rem !important;
+        font-weight: 600 !important;
+        border-radius: 9999px !important;
+        white-space: nowrap !important;
+      }
+
+      /* Desktop Split-Knopf & Desktop-Labels auf iPad ausblenden */
+      .btn-desk-split {
+        display: none !important;
+      }
+      .btn-desk-text {
+        display: none !important;
+      }
+      .btn-tablet-text {
+        display: inline !important;
+      }
+
+      /* Titelzeile auf iPad */
+      .editor-hero-row {
+        margin-top: 4px !important;
+        padding: 2px 4px !important;
+      }
+      .note-title-input {
+        font-size: 1.35rem !important;
+        font-weight: 800 !important;
+        letter-spacing: -0.02em !important;
+        padding: 4px 0 !important;
+        border: none !important;
+        background: transparent !important;
+      }
+
+      /* Formatierungs-Toolbar auf iPad */
+      .editor-toolbar {
+        padding: 4px 10px !important;
+        margin: 4px 12px 6px 12px !important;
+        border: 1px solid var(--border) !important;
+        border-radius: 9999px !important;
+        background: var(--card-subtle) !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        flex-wrap: nowrap !important;
+        gap: 4px !important;
+      }
+      .editor-toolbar .tools-left {
+        flex-wrap: nowrap !important;
+        gap: 2px !important;
+      }
+      #btn-insert-pdf-printout-direct {
+        display: none !important;
+      }
+      .editor-toolbar [data-format="hr"],
+      .editor-toolbar [data-format="strike"],
+      .editor-toolbar [data-format="h3"],
+      .editor-toolbar [data-format="wiki"] {
+        display: none !important;
+      }
+
+      /* Apple Pencil Toolbar am unteren Rand */
+      .pdf-markup-toolbar {
+        top: auto !important;
+        bottom: 24px !important;
+      }
+
+      /* Editor Body: Schöne Ränder und Lesefluss */
+      .pane-text, .pane-view {
+        padding: 18px 24px 80px 24px !important;
+      }
+      .textarea-edit {
+        font-size: 1.05rem !important;
+        line-height: 1.65 !important;
+        max-width: 760px !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+      }
+      .note-preview, .markdown {
+        font-size: 1rem !important;
+        line-height: 1.7 !important;
+        max-width: 760px !important;
+        margin: 0 auto !important;
+      }
+
+      /* Floating Action Buttons für schnelles Umschalten zwischen Lesen und Schreiben */
+      .editor-body.view-only-preview .btn-floating-edit {
+        display: inline-flex !important;
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 90;
+        background: var(--primary);
+        color: #ffffff;
+        border: none;
+        border-radius: 9999px;
+        padding: 10px 18px;
+        font-size: 0.88rem;
+        font-weight: 700;
+        box-shadow: 0 8px 24px rgba(59, 130, 246, 0.35);
+        cursor: pointer;
+        gap: 6px;
+        align-items: center;
+        touch-action: manipulation;
+        transition: transform 0.15s ease;
+      }
+      .editor-body.view-only-preview .btn-floating-edit:active {
+        transform: scale(0.95);
+      }
+
+      .editor-body.view-only-edit .btn-floating-done {
+        display: inline-flex !important;
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 90;
+        background: #10b981;
+        color: #ffffff;
+        border: none;
+        border-radius: 9999px;
+        padding: 10px 18px;
+        font-size: 0.88rem;
+        font-weight: 700;
+        box-shadow: 0 8px 24px rgba(16, 185, 129, 0.35);
+        cursor: pointer;
+        gap: 6px;
+        align-items: center;
+        touch-action: manipulation;
+        transition: transform 0.15s ease;
+      }
+      .editor-body.view-only-edit .btn-floating-done:active {
+        transform: scale(0.95);
+      }
+
+      /* Drawer / Sidebar auf iPad: Clean & beruhigt */
+      .col-topics #btn-add-pdf-direct {
+        display: none !important;
+      }
+      .col-topics .filter-tab[data-filter="pdfs"] {
+        display: none !important;
+      }
+      #btn-header-sync {
+        display: none !important;
+      }
+      #btn-quick-nav-pencil {
+        display: none !important;
       }
 
       /* Cockpit Dashboard: Symmetrisches 2x2 Grid auf iPad */
@@ -3439,11 +3622,23 @@
               <div class="editor-meta-center">
                 <!-- Ansichtsmodi für Notizen -->
                 <div class="view-modes" id="note-view-modes">
-                  <button class="view-btn" data-mode="view-only-edit">Editor</button>
-                  <button class="view-btn active" data-mode="view-split">Geteilt</button>
-                  <button class="view-btn" data-mode="view-canvas-split" title="Text links, Apple Pencil rechts">✏️ Stift + Notiz</button>
-                  <button class="view-btn" data-mode="view-canvas-only" title="Vollbild Apple Pencil Zeichenfläche">🎨 Nur Stift</button>
-                  <button class="view-btn" data-mode="view-only-preview">Vorschau</button>
+                  <button class="view-btn" data-mode="view-only-edit" title="Vollbild Text-Editor">
+                    <span class="btn-desk-text">Editor</span>
+                    <span class="btn-tablet-text">📝 Text</span>
+                  </button>
+                  <button class="view-btn active" data-mode="view-only-preview" title="Reine Notiz-Leseansicht">
+                    <span class="btn-desk-text">Vorschau</span>
+                    <span class="btn-tablet-text">📖 Lesen</span>
+                  </button>
+                  <button class="view-btn" data-mode="view-canvas-only" title="Vollbild Apple Pencil Zeichenfläche">
+                    <span class="btn-desk-text">🎨 Nur Stift</span>
+                    <span class="btn-tablet-text">✏️ Stift</span>
+                  </button>
+                  <button class="view-btn" data-mode="view-canvas-split" title="Text links, Apple Pencil rechts">
+                    <span class="btn-desk-text">✏️ Stift + Notiz</span>
+                    <span class="btn-tablet-text">🌓 Geteilt</span>
+                  </button>
+                  <button class="view-btn btn-desk-split" data-mode="view-split" title="Code links, Vorschau rechts">Geteilt</button>
                 </div>
                 <!-- Ansichtsmodi für PDF + Mitschrift -->
                 <div class="view-modes" id="pdf-view-modes" style="display:none;">
@@ -3612,9 +3807,11 @@
             </div>
             <div class="pane-text" id="pane-text">
               <textarea id="note-content" class="textarea-edit" placeholder="# Titel der Notiz&#10;&#10;Hier einfach alles in Markdown schreiben...&#10;- [ ] To-Do Checklisten (erscheinen auch im Wochenplaner!)&#10;- [[Vernetzte Begriffe]]&#10;- $S$ Formeln in Mathe-Schreibweise&#10;- Tabellen, Bilder, Code & Zitate"></textarea>
+              <button class="btn-floating-done" id="btn-floating-done-tablet" onclick="switchNoteModeToPreview()" title="Fertig / Notiz ansehen">✓ Fertig</button>
             </div>
             <div class="pane-view" id="pane-view">
               <div class="markdown" id="note-preview"></div>
+              <button class="btn-floating-edit" id="btn-floating-edit-tablet" onclick="switchNoteModeToEdit()" title="Notiz bearbeiten">✏️ Bearbeiten</button>
             </div>
 
             <!-- Apple Pencil & Stylus Zeichenfläche -->
@@ -6105,8 +6302,20 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
 
           noteViewModes.style.display = "flex";
           pdfViewModes.style.display = "none";
+          
+          if (window.innerWidth <= 1024 && (!state.noteViewMode || state.noteViewMode === "view-split")) {
+            state.noteViewMode = "view-only-preview";
+          }
+          
           const edToolbarNote = document.querySelector(".editor-toolbar");
-          if (edToolbarNote) edToolbarNote.style.display = (state.noteViewMode === "view-canvas-only") ? "none" : "flex";
+          if (edToolbarNote) {
+            if (window.innerWidth <= 1024 && (state.noteViewMode === "view-only-preview" || state.noteViewMode === "view-canvas-only")) {
+              edToolbarNote.style.display = "none";
+            } else {
+              edToolbarNote.style.display = (state.noteViewMode === "view-canvas-only") ? "none" : "flex";
+            }
+          }
+          
           editorBody.className = "editor-body " + (state.noteViewMode || "view-split");
           document.querySelectorAll("#note-view-modes .view-btn").forEach(b => {
             b.classList.toggle("active", b.dataset.mode === (state.noteViewMode || "view-split"));
@@ -6614,6 +6823,16 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           const mode = btn.dataset.mode;
           state.noteViewMode = mode;
           editorBody.className = "editor-body " + mode;
+          
+          const edToolbarNote = document.querySelector(".editor-toolbar");
+          if (edToolbarNote) {
+            if (window.innerWidth <= 1024 && (mode === "view-only-preview" || mode === "view-canvas-only")) {
+              edToolbarNote.style.display = "none";
+            } else {
+              edToolbarNote.style.display = (mode === "view-canvas-only") ? "none" : "flex";
+            }
+          }
+
           if (mode.includes("canvas")) {
             setTimeout(() => {
               if (typeof initPencilCanvas === "function") initPencilCanvas(true);
@@ -6623,6 +6842,17 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           saveData();
         };
       });
+
+      function switchNoteModeToEdit() {
+        const btn = document.querySelector('#note-view-modes [data-mode="view-only-edit"]');
+        if (btn) btn.click();
+      }
+      function switchNoteModeToPreview() {
+        const btn = document.querySelector('#note-view-modes [data-mode="view-only-preview"]');
+        if (btn) btn.click();
+      }
+      window.switchNoteModeToEdit = switchNoteModeToEdit;
+      window.switchNoteModeToPreview = switchNoteModeToPreview;
 
       // PDF-Ansichtsmodi
       document.querySelectorAll("#pdf-view-modes .view-btn").forEach(btn => {
