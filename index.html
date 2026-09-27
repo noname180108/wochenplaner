@@ -2553,18 +2553,76 @@
     }
 
     /* =========================================================================
-       3. COCKPIT / DASHBOARD VIEW
+       3. COCKPIT / DASHBOARD VIEW (Quiet Luxury)
        ========================================================================= */
     .cockpit-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+      margin-top: 14px;
     }
     .cockpit-banner {
-      background: linear-gradient(135deg, var(--card) 0%, var(--bg-subtle) 100%);
-      border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-sm);
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 22px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
     }
-    .cockpit-banner h1 { font-size: 1.5rem; font-weight: 800; }
-    .cockpit-banner p { color: var(--text-muted); font-size: 0.9rem; }
+    .cockpit-greeting-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .cockpit-banner h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+    .cockpit-sub-row {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cockpit-stats-ribbon {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .c-stat-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--card-subtle);
+      border: 1px solid var(--border);
+      padding: 5px 12px;
+      border-radius: 9999px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--text-main);
+      transition: all 0.15s ease;
+    }
+    .c-stat-chip .chip-icon { font-size: 0.82rem; }
+    .c-stat-chip:hover {
+      border-color: var(--border-focus);
+      background: var(--card-hover, var(--card));
+    }
+    .widget-header-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .widget-icon { font-size: 0.95rem; }
 
     /* Modals */
     .modal-overlay {
@@ -2657,18 +2715,68 @@
       display: flex; gap: 10px; width: 100%; max-width: 680px; justify-content: center; flex-wrap: wrap;
     }
     .btn-rate {
-      padding: 10px 18px; border-radius: 8px; font-weight: 700; font-size: 0.85rem; border: none;
-      cursor: pointer; transition: all 0.15s ease; display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 20px;
+      border-radius: 9999px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
-    .btn-rate-again { background: #fee2e2; color: #991b1b; }
-    .btn-rate-again:hover { background: #fecdd3; transform: translateY(-1px); }
-    body.dark-mode .btn-rate-again { background: #4c0519; color: #fecdd3; }
-    .btn-rate-hard { background: #fef3c7; color: #92400e; }
-    .btn-rate-hard:hover { background: #fde68a; transform: translateY(-1px); }
-    body.dark-mode .btn-rate-hard { background: #451a03; color: #fde68a; }
-    .btn-rate-good { background: #d1fae5; color: #065f46; }
-    .btn-rate-good:hover { background: #a7f3d0; transform: translateY(-1px); }
-    body.dark-mode .btn-rate-good { background: #022c22; color: #a7f3d0; }
+    .btn-rate:hover { transform: translateY(-1px); }
+    .btn-rate-again {
+      background: rgba(239, 68, 68, 0.12);
+      color: #ef4444;
+      border-color: rgba(239, 68, 68, 0.25);
+    }
+    body.dark-mode .btn-rate-again {
+      background: rgba(239, 68, 68, 0.16);
+      color: #fca5a5;
+      border-color: rgba(239, 68, 68, 0.35);
+    }
+    .btn-rate-hard {
+      background: rgba(245, 158, 11, 0.12);
+      color: #d97706;
+      border-color: rgba(245, 158, 11, 0.25);
+    }
+    body.dark-mode .btn-rate-hard {
+      background: rgba(245, 158, 11, 0.16);
+      color: #fde68a;
+      border-color: rgba(245, 158, 11, 0.35);
+    }
+    .btn-rate-good {
+      background: rgba(16, 185, 129, 0.12);
+      color: #10b981;
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    body.dark-mode .btn-rate-good {
+      background: rgba(16, 185, 129, 0.16);
+      color: #a7f3d0;
+      border-color: rgba(16, 185, 129, 0.35);
+    }
+    .fc-source-pill {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--card-subtle);
+      border: 1px solid var(--border);
+      padding: 3px 12px;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 8px;
+    }
+    .fc-source-pill:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-1px);
+    }
 
     /* 3. Klausuren- & Notenrechner */
     .grades-modal-body {
@@ -2686,6 +2794,8 @@
     .exams-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; }
     .exams-table th, .exams-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
     .exams-table th { background: var(--bg-subtle); font-weight: 700; color: var(--text-muted); }
+    .exams-table th:first-child, .exams-table td:first-child { min-width: 175px; }
+    .exams-table th:nth-child(3), .exams-table td:nth-child(3) { min-width: 160px; }
     .grade-input {
       width: 65px; padding: 4px 6px; border: 1px solid var(--border); border-radius: 4px;
       font-size: 0.85rem; font-weight: 700; text-align: center; background: var(--card); color: var(--text-main);
@@ -4630,13 +4740,23 @@
       <div id="view-cockpit" class="scrollable-view">
         <div class="scrollable-inner">
         <div class="cockpit-banner">
-          <div>
-            <h1 id="cockpitGreeting">Willkommen zu deinem Studientag 🚀</h1>
-            <p id="cockpitSubGreeting">Hier ist deine Übersicht über heutige Termine, anstehende Fristen und Notizen.</p>
+          <div class="cockpit-greeting-group">
+            <h1 id="cockpitGreeting">Guten Tag, Fabian ☀️</h1>
+            <div class="cockpit-sub-row" id="cockpitSubGreeting">Sonntag, 27. September 2026 · Herbstsemester UZH</div>
           </div>
-          <div style="display:flex; gap:8px;">
-            <button class="btn btn-primary" onclick="switchAppView('notes')">✍️ Zu den Notizen</button>
-            <button class="btn" onclick="switchAppView('planner')">📅 Zum Wochenplan</button>
+          <div class="cockpit-stats-ribbon">
+            <div class="c-stat-chip chip-deadlines" id="cStatDeadlines">
+              <span class="chip-icon">📌</span>
+              <span class="chip-val" id="cStatDeadlinesVal">2 Fristen fällig</span>
+            </div>
+            <div class="c-stat-chip chip-tasks" id="cStatTasks">
+              <span class="chip-icon">☑️</span>
+              <span class="chip-val" id="cStatTasksVal">13 Notiz-Aufgaben</span>
+            </div>
+            <div class="c-stat-chip chip-ects" id="cStatEcts">
+              <span class="chip-icon">🎓</span>
+              <span class="chip-val" id="cStatEctsVal">24 ECTS gemeldet</span>
+            </div>
           </div>
         </div>
 
@@ -4649,7 +4769,10 @@
           <!-- Karte 1: Heutige Veranstaltungen -->
           <div class="widget-card">
             <div class="widget-header">
-              <span>📅 Heute auf dem Stundenplan</span>
+              <div class="widget-header-title">
+                <span class="widget-icon">📅</span>
+                <span>Heute auf dem Stundenplan</span>
+              </div>
               <span class="badge" id="cockpitTodayBadge">Heute</span>
             </div>
             <div id="cockpitTodayEvents" style="display:flex; flex-direction:column; gap:8px;">
@@ -4660,8 +4783,11 @@
           <!-- Karte 2: Dringende Deadlines -->
           <div class="widget-card">
             <div class="widget-header">
-              <span>🚨 Anstehende Fristen</span>
-              <span class="ects-pill">Countdown aktiv</span>
+              <div class="widget-header-title">
+                <span class="widget-icon">📌</span>
+                <span>Anstehende Fristen</span>
+              </div>
+              <span class="ects-pill" id="cockpitDeadlineCountBadge">5 aktiv</span>
             </div>
             <div id="cockpitDeadlinesList" style="display:flex; flex-direction:column; gap:8px;">
               <!-- Deadlines -->
@@ -4671,7 +4797,10 @@
           <!-- Karte 3: Offene Vorlesungs-Checklisten -->
           <div class="widget-card">
             <div class="widget-header">
-              <span>☑️ Offene Aufgaben aus Vorlesungen</span>
+              <div class="widget-header-title">
+                <span class="widget-icon">☑️</span>
+                <span>Aufgaben aus Notizen</span>
+              </div>
               <span class="badge" id="cockpitTaskCountBadge">0 offen</span>
             </div>
             <ul class="todo-list" id="cockpitNotesTasksList">
@@ -4682,8 +4811,11 @@
           <!-- Karte 4: Noten & Klausuren Übersicht (Nr 3) -->
           <div class="widget-card">
             <div class="widget-header">
-              <span>🎯 Klausuren & Notenschnitt</span>
-              <button class="btn btn-primary" onclick="openGradesModal()" style="padding: 2px 7px; font-size: 0.72rem;">Rechner ↗</button>
+              <div class="widget-header-title">
+                <span class="widget-icon">🎯</span>
+                <span>Klausuren & Notenschnitt</span>
+              </div>
+              <button class="btn btn-primary" onclick="openGradesModal()" style="padding: 3px 9px; font-size: 0.72rem; border-radius: 9999px;">Rechner ↗</button>
             </div>
             <div id="cockpitGradesOverview" style="display:flex; flex-direction:column; gap:8px;">
               <!-- Dynamische Notenübersicht -->
@@ -4737,6 +4869,7 @@
             <option value="finance">Finance I</option>
             <option value="accounting">Accounting</option>
           </select>
+          <button class="btn" onclick="syncFlashcardsFromNotes(true)" title="Karteikarten automatisch aus deinen Vorlesungsnotizen synchronisieren">📥 Aus Notizen synchronisieren</button>
           <button class="btn btn-ai" id="btn-fc-ai-generate" onclick="generateFlashcardsWithAi()" title="KI generiert automatisch Karteikarten aus der aktuellen Notiz">✨ Mit KI generieren</button>
           <button class="btn" onclick="openAddCardPrompt()" title="Karteikarte manuell hinzufügen">+ Neu</button>
           <button class="btn btn-icon" id="btn-close-flashcards" onclick="closeFlashcardModal()">✕</button>
@@ -6207,43 +6340,73 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         saveData();
       };
 
-      // Cockpit Rendering
+      // Cockpit Rendering (Quiet Luxury)
       function renderCockpit() {
         const todayEventsBox = document.getElementById("cockpitTodayEvents");
         const deadlinesBox = document.getElementById("cockpitDeadlinesList");
         const greetingEl = document.getElementById("cockpitGreeting");
+        const subEl = document.getElementById("cockpitSubGreeting");
 
         const now = new Date();
-        const days = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
-        const dayNum = now.getDay();
-        const dayName = days[dayNum];
+        const hr = now.getHours();
+        const greeting = hr < 11 ? "Guten Morgen" : (hr < 18 ? "Guten Tag" : "Guten Abend");
 
-        greetingEl.textContent = `Schönen ${dayName}! Hier ist dein Studientag 🚀`;
+        if (greetingEl) greetingEl.textContent = `${greeting}, Fabian ☀️`;
+        if (subEl) {
+          const dateOpts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+          subEl.textContent = `${now.toLocaleDateString('de-DE', dateOpts)} · Herbstsemester UZH`;
+        }
 
-        // Kopiere heutige Veranstaltungen aus dem Kalender
-        todayEventsBox.innerHTML = "";
-        const todayCol = document.querySelector(`.day-column[data-day="${dayNum}"]`);
-        if (todayCol) {
-          const events = todayCol.querySelectorAll(".event-card");
-          if (events.length > 0) {
-            events.forEach(ev => {
-              const clone = ev.cloneNode(true);
-              todayEventsBox.appendChild(clone);
-            });
-          } else {
-            todayEventsBox.innerHTML = '<p style="color:var(--text-muted); font-size:0.85rem;">Heute stehen keine festen Vorlesungen an. Perfekt zum Lernen & Nachbereiten!</p>';
+        // 1. Kopiere heutige Veranstaltungen aus dem Kalender
+        if (todayEventsBox) {
+          todayEventsBox.innerHTML = "";
+          const dayNum = now.getDay();
+          const todayCol = document.querySelector(`.day-column[data-day="${dayNum}"]`);
+          if (todayCol) {
+            const events = todayCol.querySelectorAll(".event-card");
+            if (events.length > 0) {
+              events.forEach(ev => {
+                const clone = ev.cloneNode(true);
+                todayEventsBox.appendChild(clone);
+              });
+            } else {
+              todayEventsBox.innerHTML = '<div style="padding:16px; background:var(--card-subtle); border:1px solid var(--border); border-radius:12px; font-size:0.82rem; color:var(--text-muted); text-align:center;">🌿 Heute stehen keine festen Präsenzvorlesungen an – ideal für freie Lernblöcke & Lektüre!</div>';
+            }
           }
         }
 
-        // Kopiere Deadlines
-        deadlinesBox.innerHTML = "";
-        const deadlines = document.querySelectorAll(".deadline-card");
-        deadlines.forEach(dl => {
-          const clone = dl.cloneNode(true);
-          deadlinesBox.appendChild(clone);
-        });
+        // 2. Kopiere aktive Deadlines aus der aktuellen Woche
+        if (deadlinesBox) {
+          deadlinesBox.innerHTML = "";
+          const curDeadlines = document.querySelectorAll("#colDeadlineCurrent .dual-task-item");
+          if (curDeadlines && curDeadlines.length > 0) {
+            curDeadlines.forEach(dl => {
+              const clone = dl.cloneNode(true);
+              deadlinesBox.appendChild(clone);
+            });
+            const dlBadge = document.getElementById("cockpitDeadlineCountBadge");
+            if (dlBadge) dlBadge.textContent = `${curDeadlines.length} aktiv`;
+            const chipDl = document.getElementById("cStatDeadlinesVal");
+            if (chipDl) chipDl.textContent = `${curDeadlines.length} Fristen`;
+          } else {
+            deadlinesBox.innerHTML = '<div style="padding:14px; background:var(--card-subtle); border:1px solid var(--border); border-radius:12px; font-size:0.82rem; color:var(--text-muted); text-align:center;">🎉 Alle Fristen dieser Woche erledigt!</div>';
+          }
+        }
 
+        // 3. Notiz-Aufgaben Checklisten
         renderNotesTasksInPlanner();
+        const openTasks = document.querySelectorAll("#cockpitNotesTasksList .todo-item").length;
+        const chipTasks = document.getElementById("cStatTasksVal");
+        if (chipTasks) chipTasks.textContent = `${openTasks} Notiz-Aufgaben`;
+
+        // 4. ECTS Chip
+        const chipEcts = document.getElementById("cStatEctsVal");
+        if (chipEcts) chipEcts.textContent = "24 ECTS gemeldet";
+
+        // 5. Noten & Klausuren
+        if (typeof renderExams === "function") {
+          renderExams();
+        }
       }
 
       // =======================================================================
@@ -11089,7 +11252,7 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       }
 
       // =======================================================================
-      // 2. KARTEIKARTEN & ACTIVE RECALL (NR 1)
+      // 2. KARTEIKARTEN & ACTIVE RECALL (NR 1) - AUS NOTIZEN EXTRAHIERT
       // =======================================================================
       const FLASHCARDS_KEY = "uzh_studnotes_flashcards_v1";
       const DEFAULT_FLASHCARDS = [
@@ -11104,20 +11267,166 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         { id: "fc_9", modKey: "accounting", front: "Wie lautet die **fundamentale Bilanzgleichung**?", back: "$$\\text{Aktiven} = \\text{Passiven} = \\text{Fremdkapital} + \\text{Eigenkapital}$$", box: 1 }
       ];
 
-      let flashcards = loadFlashcards();
-      let activeFcList = [];
-      let activeFcIndex = 0;
+      // Automatischer Notizen-Extraktions-Engine für Karteikarten
+      function extractFlashcardsFromNotes() {
+        const extracted = [];
+        const modulesList = (typeof state !== "undefined" && state.modules && state.modules.length > 0)
+          ? state.modules
+          : (typeof DEFAULT_DATA !== "undefined" && DEFAULT_DATA.modules ? DEFAULT_DATA.modules : []);
+
+        modulesList.forEach(mod => {
+          let modKey = (mod.id || "").replace("m_", "").toLowerCase();
+          const modNameLower = (mod.name || "").toLowerCase();
+          if (modNameLower.includes("critical")) modKey = "critical";
+          else if (modNameLower.includes("philo")) modKey = "philo";
+          else if (modNameLower.includes("logik") || modNameLower.includes("logic")) modKey = "logic";
+          else if (modNameLower.includes("finance")) modKey = "finance";
+          else if (modNameLower.includes("accounting")) modKey = "accounting";
+          else if (!modKey) modKey = "general";
+
+          (mod.notes || []).forEach(note => {
+            if (!note.content) return;
+            const text = note.content;
+            const lines = text.split("\n");
+
+            let currentSectionHeader = null;
+            let currentSectionBody = [];
+
+            function commitSection() {
+              if (!currentSectionHeader) return;
+              let cleanHeader = currentSectionHeader.replace(/^[#\s*:]+/, "").replace(/[:\s]+$/, "").trim();
+              const lower = cleanHeader.toLowerCase();
+              if (
+                lower.includes("to-do") || lower.includes("todo") || lower.includes("checkliste") ||
+                lower.includes("dozent") || lower.includes("mitschrift") || lower.includes("häufige fehlschlüsse") ||
+                lower.includes("wichtige gesetze") || lower.includes("wichtig für")
+              ) {
+                currentSectionHeader = null;
+                currentSectionBody = [];
+                return;
+              }
+
+              const bodyText = currentSectionBody.join("\n").trim();
+              if (bodyText && bodyText.length > 5 && !bodyText.startsWith("- **")) {
+                let q = cleanHeader;
+                if (!q.endsWith("?")) {
+                  if (/^(barwert|net present value|npv|grundgleichung|buchungssatz|struktur|formel)/i.test(q)) {
+                    q = `Wie lautet: **${cleanHeader}**?`;
+                  } else if (/^(die |das |der )/i.test(q)) {
+                    q = `Was besagt: **${cleanHeader}**?`;
+                  } else {
+                    q = `Erkläre das Konzept: **${cleanHeader}**`;
+                  }
+                }
+                extracted.push({
+                  id: `fc_${note.id}_h_${extracted.length}`,
+                  modKey: modKey,
+                  sourceNoteId: note.id,
+                  sourceNoteTitle: note.title,
+                  front: q,
+                  back: bodyText,
+                  box: 1
+                });
+              }
+              currentSectionHeader = null;
+              currentSectionBody = [];
+            }
+
+            for (let i = 0; i < lines.length; i++) {
+              const line = lines[i];
+              const trimmed = line.trim();
+
+              // 1. Explizite Definitionen: "Term :: Definition"
+              if (trimmed.includes("::")) {
+                const parts = trimmed.split("::");
+                const q = parts[0].replace(/^[-*#\s]+/, "").trim();
+                const a = parts.slice(1).join("::").trim();
+                if (q && a) {
+                  extracted.push({
+                    id: `fc_${note.id}_c_${extracted.length}`,
+                    modKey: modKey,
+                    sourceNoteId: note.id,
+                    sourceNoteTitle: note.title,
+                    front: q.includes("**") ? q : `**${q}**`,
+                    back: a,
+                    box: 1
+                  });
+                  continue;
+                }
+              }
+
+              // 2. Aufzählungspunkte mit fettem Begriff: "- **Term:** Definition"
+              const boldBulletMatch = trimmed.match(/^[-*]\s+\*\*([^*]+)\*\*:?\s*(.*)$/);
+              if (boldBulletMatch) {
+                let term = boldBulletMatch[1].trim().replace(/[:\s]+$/, "");
+                let def = boldBulletMatch[2].trim();
+                if (!def && i + 1 < lines.length && (lines[i+1].startsWith("  ") || lines[i+1].startsWith("\t"))) {
+                  i++;
+                  def = lines[i].trim();
+                }
+                if (term && def && !term.toLowerCase().includes("wichtig für") && !term.toLowerCase().includes("to-do")) {
+                  extracted.push({
+                    id: `fc_${note.id}_b_${extracted.length}`,
+                    modKey: modKey,
+                    sourceNoteId: note.id,
+                    sourceNoteTitle: note.title,
+                    front: `Was versteht man unter **${term}**?`,
+                    back: def,
+                    box: 1
+                  });
+                  continue;
+                }
+              }
+
+              // 3. Überschriften / Konzeptblöcke: "### Concept"
+              if (trimmed.startsWith("### ") || trimmed.startsWith("## ")) {
+                commitSection();
+                currentSectionHeader = trimmed;
+                currentSectionBody = [];
+                continue;
+              }
+
+              if (currentSectionHeader) {
+                if (/^[-*]\s+\*\*([^*]+)\*\*/.test(trimmed)) {
+                  // Separater Begriff wird im nächsten Durchlauf erfasst
+                } else {
+                  currentSectionBody.push(line);
+                }
+              }
+            }
+            commitSection();
+          });
+        });
+
+        return extracted;
+      }
 
       function loadFlashcards() {
         try {
           const saved = localStorage.getItem(FLASHCARDS_KEY);
           if (saved) {
             const parsed = JSON.parse(saved);
-            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              const hasSource = parsed.some(c => c.sourceNoteId);
+              if (hasSource) return parsed;
+            }
           }
         } catch (e) {}
+
+        const extracted = extractFlashcardsFromNotes();
+        if (extracted && extracted.length > 0) {
+          try {
+            localStorage.setItem(FLASHCARDS_KEY, JSON.stringify(extracted));
+          } catch (e) {}
+          return extracted;
+        }
+
         return JSON.parse(JSON.stringify(DEFAULT_FLASHCARDS));
       }
+
+      let flashcards = loadFlashcards();
+      let activeFcList = [];
+      let activeFcIndex = 0;
 
       function saveFlashcards() {
         try {
@@ -11125,7 +11434,73 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         } catch (e) {}
       }
 
+      // Synchronisiert Karteikarten aus Vorlesungsnotizen und behält Lernfortschritt
+      function syncFlashcardsFromNotes(showNotification = false) {
+        const extracted = extractFlashcardsFromNotes();
+        if (!extracted || extracted.length === 0) {
+          if (showNotification) alert("Keine Vorlesungsnotizen mit extrahierbaren Inhalten gefunden.");
+          return;
+        }
+
+        const boxMap = new Map();
+        flashcards.forEach(c => {
+          if (c.front) boxMap.set(c.front, c.box || 1);
+          if (c.id) boxMap.set(c.id, c.box || 1);
+        });
+
+        // Manuell hinzugefügte Karten erhalten
+        const manualCards = flashcards.filter(c => c.isManual || (c.id && !c.sourceNoteId && !c.id.startsWith("fc_") && !DEFAULT_FLASHCARDS.some(df => df.id === c.id)));
+
+        extracted.forEach(card => {
+          if (boxMap.has(card.front)) {
+            card.box = boxMap.get(card.front);
+          } else if (boxMap.has(card.id)) {
+            card.box = boxMap.get(card.id);
+          }
+        });
+
+        flashcards = [...extracted, ...manualCards];
+        saveFlashcards();
+        filterFlashcardsByModule();
+
+        if (showNotification) {
+          if (typeof showToast === "function") {
+            showToast(`📥 ${extracted.length} Karteikarten aus deinen Notizen synchronisiert!`, "success");
+          } else {
+            alert(`📥 ${extracted.length} Karteikarten erfolgreich aus deinen Notizen synchronisiert!`);
+          }
+        }
+      }
+      window.syncFlashcardsFromNotes = syncFlashcardsFromNotes;
+
+      // Direktes Öffnen einer Notiz bei Klick auf das Herkunfts-Badge der Karteikarte
+      function openNoteDirectly(noteId) {
+        if (!noteId || !state || !state.modules) return;
+        for (const mod of state.modules) {
+          const found = (mod.notes || []).find(n => n.id === noteId);
+          if (found) {
+            state.activeModId = mod.id;
+            state.activeNoteId = found.id;
+            state.activeType = "note";
+            closeFlashcardModal();
+            if (typeof switchAppView === "function") {
+              switchAppView("notes");
+            }
+            if (typeof renderAll === "function") {
+              renderAll();
+            }
+            return;
+          }
+        }
+      }
+      window.openNoteDirectly = openNoteDirectly;
+
       function openFlashcardsModal(filterModKey) {
+        // Falls noch keine Karten aus Notizen stammen, direkt initial synchronisieren
+        if (!flashcards.some(c => c.sourceNoteId)) {
+          syncFlashcardsFromNotes(false);
+        }
+
         const modal = document.getElementById("flashcard-modal");
         modal.style.display = "flex";
 
@@ -11173,7 +11548,7 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           statusEl.textContent = "Keine Karten";
           boxTag.textContent = "-";
           progBar.style.width = "0%";
-          frontText.innerHTML = "<p>Keine Karteikarten für dieses Fach vorhanden.<br>Klicke oben auf <b>'+ Neu'</b> oder <b>'✨ Mit KI generieren'</b>!</p>";
+          frontText.innerHTML = "<p>Keine Karteikarten für dieses Fach vorhanden.<br>Klicke oben auf <b>'📥 Aus Notizen synchronisieren'</b> oder <b>'+ Neu'</b>!</p>";
           backText.innerHTML = "";
           return;
         }
@@ -11193,8 +11568,13 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
         const pct = Math.round(((activeFcIndex) / activeFcList.length) * 100);
         progBar.style.width = `${pct}%`;
 
-        frontText.innerHTML = parseMarkdown(curCard.front);
-        backText.innerHTML = parseMarkdown(curCard.back);
+        let sourceBadgeHtml = "";
+        if (curCard.sourceNoteTitle) {
+          sourceBadgeHtml = `<div class="fc-source-pill" onclick="event.stopPropagation(); openNoteDirectly('${curCard.sourceNoteId}')" title="Klicken, um Vorlesungsnotiz direkt zu öffnen">📖 ${curCard.sourceNoteTitle} ↗</div>`;
+        }
+
+        frontText.innerHTML = parseMarkdown(curCard.front) + (sourceBadgeHtml ? `<div style="margin-top:14px;">${sourceBadgeHtml}</div>` : "");
+        backText.innerHTML = parseMarkdown(curCard.back) + (sourceBadgeHtml ? `<div style="margin-top:14px;">${sourceBadgeHtml}</div>` : "");
       }
 
       function flipFlashcard() {
@@ -11231,7 +11611,8 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
           modKey: modKey,
           front: front.trim(),
           back: back.trim(),
-          box: 1
+          box: 1,
+          isManual: true
         };
 
         flashcards.push(newCard);
@@ -11605,6 +11986,8 @@ $$\\text{Soll} \\quad \\text{an} \\quad \\text{Haben}$$
       window.applyFilter = applyFilter;
       window.openFlashcardsModal = openFlashcardsModal;
       window.closeFlashcardModal = closeFlashcardModal;
+      window.syncFlashcardsFromNotes = syncFlashcardsFromNotes;
+      window.openNoteDirectly = openNoteDirectly;
       window.filterFlashcardsByModule = filterFlashcardsByModule;
       window.flipFlashcard = flipFlashcard;
       window.rateFlashcard = rateFlashcard;
